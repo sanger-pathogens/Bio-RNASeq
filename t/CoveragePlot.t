@@ -8,10 +8,10 @@ BEGIN { unshift(@INC, './modules') }
 BEGIN {
 
     use Test::Most;
-    use_ok('Pathogens::RNASeq::CoveragePlot');
+    use_ok('CoveragePlot');
 }
 
-ok my $coverage_plots_from_bam = Pathogens::RNASeq::CoveragePlot->new(
+ok my $coverage_plots_from_bam = CoveragePlot->new(
    filename             => 't/data/small_multi_sequence.bam',
    output_base_filename => 't/data/coverage',
    mpileup_cmd          => "samtools mpileup"

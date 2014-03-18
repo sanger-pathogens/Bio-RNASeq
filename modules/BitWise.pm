@@ -12,9 +12,9 @@ my $bitwise = Pathogens::RNASeq::BitWise->new(
 $bitwise->update_bitwise_flags;
 
 =cut
-package Pathogens::RNASeq::BitWise;
+package BitWise;
 use Moose;
-use Pathogens::RNASeq::Exceptions;
+use Exceptions;
 use VertRes::Wrapper::samtools;
 
 has 'filename'                      => ( is => 'rw', isa => 'Str', required  => 1 );
@@ -76,14 +76,14 @@ sub _build__output_file_handle
 {
   my ($self) = @_;
   my $output_file_handle; 
-  open($output_file_handle, '|- ', $self->samtools_exec." view -bS - > ". $self->output_filename) || Pathogens::RNASeq::Exceptions::FailedToCreateNewBAM->throw(error => "Couldnt open output file for writing ". $self->output_filename);
+  open($output_file_handle, '|- ', $self->samtools_exec." view -bS - > ". $self->output_filename) || Exceptions::FailedToCreateNewBAM->throw(error => "Couldnt open output file for writing ". $self->output_filename);
   return $output_file_handle;
 }
 
 sub _build__read_protocol_class
 {
 	my ($self) = @_;
-	my $read_protocol_class = "Pathogens::RNASeq::".$self->protocol."::Read";
+	my $read_protocol_class = $self->protocol."::Read";
 	eval("use $read_protocol_class");
   return $read_protocol_class;
 }
@@ -92,7 +92,7 @@ sub _build__sequence_data_file_handle
 {
   my ($self) = @_;
   my $sequence_data_file_handle;
-  open($sequence_data_file_handle, $self->_sequence_data_stream ) || Pathogens::RNASeq::Exceptions::FailedToOpenAlignmentSlice->throw( error => "Cant view ".$self->filename."" );
+  open($sequence_data_file_handle, $self->_sequence_data_stream ) || Exceptions::FailedToOpenAlignmentSlice->throw( error => "Cant view ".$self->filename."" );
   return $sequence_data_file_handle;
 }
 

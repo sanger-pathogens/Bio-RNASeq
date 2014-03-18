@@ -6,14 +6,14 @@ use Data::Dumper;
 BEGIN { unshift(@INC, './modules') }
 BEGIN {
     use Test::Most;
-    use_ok('Pathogens::RNASeq::FeaturesTabFile');
+    use_ok('FeaturesTabFile');
 }
-use Pathogens::RNASeq::GFF;
-use Pathogens::RNASeq::IntergenicRegions;
+use GFF;
+use IntergenicRegions;
 
-my $rna_seq_gff = Pathogens::RNASeq::GFF->new(filename => 't/data/Citrobacter_rodentium_ICC168_v1_test.gff');
+my $rna_seq_gff = GFF->new(filename => 't/data/Citrobacter_rodentium_ICC168_v1_test.gff');
 
-my $intergenic_regions = Pathogens::RNASeq::IntergenicRegions->new(
+my $intergenic_regions = IntergenicRegions->new(
   features => $rna_seq_gff->features(),
   window_margin => 50,
   sequence_lengths => $rna_seq_gff->sequence_lengths
@@ -22,7 +22,7 @@ my $features = $intergenic_regions->intergenic_features;
 my @sequence_names = keys %{$rna_seq_gff->sequence_lengths};
 
 
-ok my $tab_file_results = Pathogens::RNASeq::FeaturesTabFile->new(
+ok my $tab_file_results = FeaturesTabFile->new(
   output_filename => 't/data/intergenic',
   features => $intergenic_regions->intergenic_features,
   sequence_names => \@sequence_names

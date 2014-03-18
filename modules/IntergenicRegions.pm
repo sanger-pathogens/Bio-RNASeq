@@ -12,9 +12,9 @@ my $intergenic_regions = Pathogens::RNASeq::IntergenicRegions->new(
 $intergenic_regions->intergenic_features;
 
 =cut
-package Pathogens::RNASeq::IntergenicRegions;
+package IntergenicRegions;
 use Moose;
-use Pathogens::RNASeq::IntergenicFeature;
+use IntergenicFeature;
 
 has 'features'            => ( is => 'rw', isa => 'HashRef', required => 1 );
 has 'window_margin'       => ( is => 'rw', isa => 'Int',     required => 1 );
@@ -88,7 +88,7 @@ sub _create_intergenic_feature
   
   if( $intergenic_end - $intergenic_start > $self->minimum_size)
   {
-    my $intergenic_feature =  Pathogens::RNASeq::IntergenicFeature->new(
+    my $intergenic_feature =  IntergenicFeature->new(
       gene_start => $intergenic_start,
       gene_end   => $intergenic_end,
       seq_id     => $seq_id

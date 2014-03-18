@@ -12,7 +12,7 @@ my $intergenicfeature = RNASeq::IntergenicFeature->new(
   );
 
 =cut
-package Pathogens::RNASeq::IntergenicFeature;
+package IntergenicFeature;
 use Moose;
 
 has 'gene_start'    => ( is => 'rw', isa => 'Int',      required => 1 );

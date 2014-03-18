@@ -14,17 +14,17 @@ my $expression_results = Pathogens::RNASeq::Expression->new(
 $expression_results->output_spreadsheet();
 
 =cut
-package Pathogens::RNASeq::Expression;
+package Expression;
 use Moose;
-use Pathogens::RNASeq::SequenceFile;
-use Pathogens::RNASeq::GFF;
-use Pathogens::RNASeq::AlignmentSlice;
-use Pathogens::RNASeq::ExpressionStatsSpreadsheet;
-use Pathogens::RNASeq::ValidateInputs;
-use Pathogens::RNASeq::Exceptions;
-use Pathogens::RNASeq::BitWise;
-use Pathogens::RNASeq::IntergenicRegions;
-use Pathogens::RNASeq::FeaturesTabFile;
+use SequenceFile;
+use GFF;
+use AlignmentSlice;
+use ExpressionStatsSpreadsheet;
+use ValidateInputs;
+use Exceptions;
+use BitWise;
+use IntergenicRegions;
+use FeaturesTabFile;
 
 has 'sequence_filename'       => ( is => 'rw', isa => 'Str', required => 1 );
 has 'annotation_filename'     => ( is => 'rw', isa => 'Str', required => 1 );
@@ -38,9 +38,9 @@ has 'window_margin'           => ( is => 'rw', isa => 'Int',  default => 50 );
 has 'intergenic_regions'      => ( is => 'rw', isa => 'Bool', default => 0 );
 has 'minimum_intergenic_size' => ( is => 'rw', isa => 'Int',  default => 10 );
 
-has '_sequence_file'          => ( is => 'rw', isa => 'Pathogens::RNASeq::SequenceFile',               lazy_build  => 1 );
-has '_annotation_file'        => ( is => 'rw', isa => 'Pathogens::RNASeq::GFF',                        lazy_build  => 1 );
-has '_results_spreadsheet'    => ( is => 'rw', isa => 'Pathogens::RNASeq::ExpressionStatsSpreadsheet', lazy_build  => 1 );
+has '_sequence_file'          => ( is => 'rw', isa => 'SequenceFile',               lazy_build  => 1 );
+has '_annotation_file'        => ( is => 'rw', isa => 'GFF',                        lazy_build  => 1 );
+has '_results_spreadsheet'    => ( is => 'rw', isa => 'ExpressionStatsSpreadsheet', lazy_build  => 1 );
 has '_expression_results'     => ( is => 'rw', isa => 'ArrayRef',                                      lazy_build  => 1 );
 has '_alignment_slice_protocol_class'  => ( is => 'rw',                                              lazy_build  => 1 );
 
@@ -48,25 +48,25 @@ sub _build__sequence_file
 {
   my ($self) = @_;
 
-	my $validator = Pathogens::RNASeq::ValidateInputs->new( sequence_filename => $self->sequence_filename, annotation_filename => $self->annotation_filename);
+	my $validator = ValidateInputs->new( sequence_filename => $self->sequence_filename, annotation_filename => $self->annotation_filename);
 	if($validator->are_input_files_valid() == 0)
 	{
-		Pathogens::RNASeq::Exceptions::FailedToOpenAlignmentSlice->throw( error => "Input files invalid: ".$self->sequence_filename." ".$self->annotation_filename."\n" );
+		Exceptions::FailedToOpenAlignmentSlice->throw( error => "Input files invalid: ".$self->sequence_filename." ".$self->annotation_filename."\n" );
 	}
 	
-  Pathogens::RNASeq::SequenceFile->new(filename => $self->sequence_filename);
+  SequenceFile->new(filename => $self->sequence_filename);
 }
 
 sub _build__annotation_file
 {
   my ($self) = @_;
-  Pathogens::RNASeq::GFF->new( filename => $self->annotation_filename);
+  GFF->new( filename => $self->annotation_filename);
 }
 
 sub _build__results_spreadsheet
 {
   my ($self) = @_;
-  Pathogens::RNASeq::ExpressionStatsSpreadsheet->new( output_filename => $self->output_base_filename.".expression.csv", protocol => $self->protocol);
+  ExpressionStatsSpreadsheet->new( output_filename => $self->output_base_filename.".expression.csv", protocol => $self->protocol);
 }
 
 sub _corrected_sequence_filename
@@ -80,7 +80,7 @@ sub _build__expression_results
   my ($self) = @_;
   my $total_mapped_reads = $self->_sequence_file->total_mapped_reads;
   
-  Pathogens::RNASeq::BitWise->new(
+  BitWise->new(
       filename        => $self->sequence_filename,
       output_filename => $self->_corrected_sequence_filename,
       protocol        => $self->protocol,
@@ -120,7 +120,7 @@ sub _calculate_values_for_intergenic_regions
 {
    my ($self, $expression_results, $total_mapped_reads) = @_;
    # get intergenic regions
-   my $intergenic_regions = Pathogens::RNASeq::IntergenicRegions->new(
+   my $intergenic_regions = IntergenicRegions->new(
      features       => $self->_annotation_file->features,
      window_margin  => $self->window_margin,
      minimum_size   => $self->minimum_intergenic_size,
@@ -128,7 +128,7 @@ sub _calculate_values_for_intergenic_regions
      );
 
   # print out the features into a tab file for loading into Artemis
-     my $tab_file_results = Pathogens::RNASeq::FeaturesTabFile->new(
+     my $tab_file_results = FeaturesTabFile->new(
        output_filename => $self->_corrected_sequence_filename.".intergenic",
        features        => $intergenic_regions->intergenic_features,
        sequence_names  => $intergenic_regions->sequence_names
@@ -160,7 +160,7 @@ sub _calculate_values_for_intergenic_regions
 sub _build__alignment_slice_protocol_class
 {
 	my ($self) = @_;
-	my $alignment_slice_protocol_class = "Pathogens::RNASeq::".$self->protocol."::AlignmentSlice";
+	my $alignment_slice_protocol_class = $self->protocol."::AlignmentSlice";
 	eval("use $alignment_slice_protocol_class");
   return $alignment_slice_protocol_class;
 }

@@ -12,10 +12,10 @@ my $rna_seq_gff = RNASeq::GFF->new(
 $rna_seq_gff->features();
 
 =cut
-package Pathogens::RNASeq::GFF;
+package GFF;
 use Moose;
 use Bio::Tools::NonStandardGFF;
-use Pathogens::RNASeq::Feature;
+use Feature;
 
 has 'filename'          => ( is => 'rw', isa => 'Str',             required   => 1 );
 has 'features'          => ( is => 'rw', isa => 'HashRef',         lazy_build => 1 );

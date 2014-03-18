@@ -5,8 +5,8 @@ AlignmentSlice.pm   - tradis protocol, just inherits from the base class
 =head1 SYNOPSIS
 
 =cut
-package Pathogens::RNASeq::TradisProtocol::AlignmentSlice;
+package TradisProtocol::AlignmentSlice;
 use Moose;
-extends 'Pathogens::RNASeq::AlignmentSlice';
+extends 'AlignmentSlice';
 
 1;

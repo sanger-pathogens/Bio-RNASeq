@@ -14,7 +14,7 @@ $expression_results->build_and_close();
 
 
 =cut
-package Pathogens::RNASeq::CommonSpreadsheet;
+package CommonSpreadsheet;
 use Moose;
 use Text::CSV;
 
@@ -59,7 +59,7 @@ sub build_and_close
 {
   my ($self) = @_;
 
-  my $csv = Text::CSV->new ( { binary => 1 } ) || Pathogens::RNASeq::Exceptions::FailedToOpenExpressionResultsSpreadsheetForWriting->throw( error => "Cant open ".$self->output_filename." for writing ".Text::CSV->error_diag());
+  my $csv = Text::CSV->new ( { binary => 1 } ) || Exceptions::FailedToOpenExpressionResultsSpreadsheetForWriting->throw( error => "Cant open ".$self->output_filename." for writing ".Text::CSV->error_diag());
   $csv->eol("\r\n");
 
   # print out the header

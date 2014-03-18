@@ -10,7 +10,7 @@ my $bam_container = Pathogens::RNASeq::BAM->new(
   );
 
 =cut
-package Pathogens::RNASeq::BAMStats;
+package BAMStats;
 use Moose;
 use VertRes::Parser::bas;
 use VertRes::Utils::Sam;

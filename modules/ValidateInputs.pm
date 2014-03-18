@@ -12,7 +12,7 @@ my $validator = Pathogens::RNASeq::ValidateInputs->new(
 $validator->are_input_files_valid();
 
 =cut
-package Pathogens::RNASeq::ValidateInputs;
+package ValidateInputs;
 use Moose;
 use VertRes::Parser::bam;
 use Bio::Tools::GFF;

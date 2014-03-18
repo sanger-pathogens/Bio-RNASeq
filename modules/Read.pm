@@ -15,9 +15,9 @@ my $alignment_slice = Pathogens::RNASeq::Read->new(
   $mapped_reads{antisense};
 
 =cut
-package Pathogens::RNASeq::Read;
+package Read;
 use Moose;
-use Pathogens::RNASeq::Exceptions;
+use Exceptions;
 
 has 'alignment_line' => ( is => 'rw', isa => 'Str',      required   => 1 );
 has 'exons'          => ( is => 'rw', isa => 'ArrayRef', required   => 1 );

@@ -15,7 +15,7 @@ $coverage_plots_from_bam->create_plots();
 
 
 =cut
-package Pathogens::RNASeq::CoveragePlot;
+package CoveragePlot;
 use Moose;
 use VertRes::Parser::bam;
 
@@ -62,7 +62,7 @@ sub _build__output_file_handles
   my %output_file_handles;
   for my $sequence_name (@{$self->_sequence_names} )
   {
-    open($output_file_handles{$sequence_name}, '|-', " gzip >". $self->output_base_filename.".$sequence_name.coverageplot.gz") || Pathogens::RNASeq::Exceptions::FailedToCreateOutputFileHandle->throw(error => "Couldnt create output file handle for saving coverage plot results for ". $sequence_name. " in ". $self->filename. " and output base ".$self->output_base_filename);
+    open($output_file_handles{$sequence_name}, '|-', " gzip >". $self->output_base_filename.".$sequence_name.coverageplot.gz") || Exceptions::FailedToCreateOutputFileHandle->throw(error => "Couldnt create output file handle for saving coverage plot results for ". $sequence_name. " in ". $self->filename. " and output base ".$self->output_base_filename);
   }
   
   return \%output_file_handles;
@@ -74,7 +74,7 @@ sub _build__input_file_handle
   my $input_file_handle; 
   # TODO remove direct call to samtools and allow for filtering options
   # this only extracts the sequence name, base position, bases.
-  open($input_file_handle, '-|', $self->mpileup_cmd." -A -q ".$self->mapping_quality." ". $self->filename.' | awk \'{print $1"\t"$2"\t"$5}\'') || Pathogens::RNASeq::Exceptions::FailedToCreateMpileup->throw(error => "Failed to create mpileup for ".$self->filename );
+  open($input_file_handle, '-|', $self->mpileup_cmd." -A -q ".$self->mapping_quality." ". $self->filename.' | awk \'{print $1"\t"$2"\t"$5}\'') || Exceptions::FailedToCreateMpileup->throw(error => "Failed to create mpileup for ".$self->filename );
   return $input_file_handle;
 }
 

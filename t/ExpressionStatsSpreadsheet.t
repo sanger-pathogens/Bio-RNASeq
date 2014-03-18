@@ -8,9 +8,9 @@ BEGIN { unshift(@INC, './modules') }
 BEGIN {
 
     use Test::Most;
-    use_ok('Pathogens::RNASeq::ExpressionStatsSpreadsheet');
+    use_ok('ExpressionStatsSpreadsheet');
 }
-ok my $expression_results = Pathogens::RNASeq::ExpressionStatsSpreadsheet->new(
+ok my $expression_results = ExpressionStatsSpreadsheet->new(
   output_filename => 'my_result_file.csv',
   protocol => 'StrandSpecificProtocol'
   ), 'initialise';
@@ -57,7 +57,7 @@ unlink('my_result_file.csv');
 ## Standard protocol
 #####################
 
-ok my $expression_results_standard = Pathogens::RNASeq::ExpressionStatsSpreadsheet->new(
+ok my $expression_results_standard = ExpressionStatsSpreadsheet->new(
   output_filename => 'my_result_file_standard.csv',
   protocol => 'StandardProtocol'
   ), 'initialise';
@@ -85,7 +85,7 @@ unlink('my_result_file_standard.csv');
 ## Another new protocol
 #####################
 
-ok my $expression_results_tradis = Pathogens::RNASeq::ExpressionStatsSpreadsheet->new(
+ok my $expression_results_tradis = ExpressionStatsSpreadsheet->new(
   output_filename => 'my_result_file_tradis.csv',
   protocol => 'TradisProtocol'
   ), 'initialise';
