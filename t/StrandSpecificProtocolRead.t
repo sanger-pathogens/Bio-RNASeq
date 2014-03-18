@@ -5,12 +5,12 @@ use warnings;
 BEGIN { unshift(@INC, './modules') }
 BEGIN {
     use Test::Most;
-    use_ok('Pathogens::RNASeq::StrandSpecificProtocol::Read');
+    use_ok('StrandSpecificProtocol::Read');
 }
 
 # nothing should happen any differently to any other protocol. The bit switching has been moved to the corrected bam
 
-ok my $alignment_slice = Pathogens::RNASeq::StrandSpecificProtocol::Read->new(
+ok my $alignment_slice = StrandSpecificProtocol::Read->new(
   alignment_line => 'IL25_4928:3:53:13462:11492#2	147	FN543502	1918	29	1S53M	=	1689	-282	ACGCTTAATTCGCCTGGTGAAAGAATATCATCTACTCAATCCGGTGATTGTTGA	BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB@BBBB?BBB??BBBBBBBBB?BB	XT:A:M	NM:i:5	SM:i:29	AM:i:29	XM:i:5	XO:i:0	XG:i:0	MD:Z:26C5G2T2C11C2	RG:Z:4928_3#2
 	',
   gene_strand => 1,

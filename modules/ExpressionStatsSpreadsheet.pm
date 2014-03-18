@@ -14,9 +14,9 @@ $expression_results->build_and_close();
 
 
 =cut
-package Pathogens::RNASeq::ExpressionStatsSpreadsheet;
+package ExpressionStatsSpreadsheet;
 use Moose;
-extends 'Pathogens::RNASeq::CommonSpreadsheet';
+extends 'CommonSpreadsheet';
 
 sub _result_rows
 {

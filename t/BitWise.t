@@ -6,11 +6,11 @@ use Data::Dumper;
 BEGIN { unshift(@INC, './modules') }
 BEGIN {
     use Test::Most;
-    use_ok('Pathogens::RNASeq::BitWise');
+    use_ok('BitWise');
 }
 
 # strand specific protocol
-ok my $bitwise = Pathogens::RNASeq::BitWise->new(
+ok my $bitwise = BitWise->new(
   filename => 't/data/rna_seq_bitwise_flags_set.bam',
   output_filename => 't/data/my_file.bam',
   protocol => 'StrandSpecificProtocol'
@@ -30,7 +30,7 @@ is $duplicate_read, 117, 'unmark duplicates StrandSpecificProtocol' ;
 
 
 # Standard protocol
-ok $bitwise = Pathogens::RNASeq::BitWise->new(
+ok $bitwise = BitWise->new(
   filename => 't/data/rna_seq_bitwise_flags_set.bam',
   output_filename => 't/data/my_file.bam'
   ), 'initialise Standard Protocol';

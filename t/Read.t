@@ -5,10 +5,10 @@ use warnings;
 BEGIN { unshift(@INC, './modules') }
 BEGIN {
     use Test::Most;
-    use_ok('Pathogens::RNASeq::Read');
+    use_ok('Read');
 }
 
-ok my $alignment_slice = Pathogens::RNASeq::Read->new(
+ok my $alignment_slice = Read->new(
   alignment_line => 'IL25_4928:3:53:7118:13952#4	163	FN543502	66737	60	54M	=	66903	220	GGGGGGCGTTTTCCGGCGATTCTTTACTGTACATATCCAGTTGACCGTTCGGGA	BBBBBBBBBBBBBBBB@B9=B@BBBF@@@@@@@@@@@@@@@@@@?>@?@?@@B?	XT:A:U	NM:i:1	SM:i:37	AM:i:37	X0:i:1	X1:i:0	XM:i:1	XO:i:0	XG:i:0	MD:Z:0C53	RG:Z:4928_3#4',
   gene_strand => 1,
   exons => [[66337,66937],[4,5]]
@@ -24,14 +24,14 @@ is  $mapped_reads{antisense}, 0, 'identified antisense read';
 
 
 #Skipped bases will be added to the read length
-ok $alignment_slice = Pathogens::RNASeq::Read->new(
+ok $alignment_slice = Read->new(
   alignment_line => 'IL25_4928:3:53:7118:13952#4	163	FN543502	66737	60	18M10N26M	=	66903	220	GGGGGGCGTTTTCCGGCG..........GTACATATCCAGTTGACCGTTCGGGA	BBBBBBBBBBBBBBBB@B9=B@BBBF@@@@@@@@@@@@@@@@@@?>@?@?@@B?	XT:A:U	NM:i:1	SM:i:37	AM:i:37	X0:i:1	X1:i:0	XM:i:1	XO:i:0	XG:i:0	MD:Z:0C53	RG:Z:4928_3#4',
   gene_strand => 1,
   exons => [[66337,66937],[4,5]]
   ), 'initialise';
   
 is $alignment_slice->_read_position, 66737, 'read position with skipped bases on reference';
-is $alignment_slice->_read_length, 54, 'read length with skipped bases on reference';
+is $alignment_slice->_read_length, 44, 'read length with skipped bases on reference';
 is $alignment_slice->read_strand, 1, 'read strand with skipped bases on reference';
 
 ok  %mapped_reads = %{$alignment_slice->mapped_reads}, 'build the mapped reads with skipped bases on reference';
@@ -41,7 +41,7 @@ is  $mapped_reads{antisense}, 0, 'identified antisense read with skipped bases o
 
 # filter out low quality reads 
 my %filters = (mapping_quality => 30);
-ok $alignment_slice = Pathogens::RNASeq::Read->new(
+ok $alignment_slice = Read->new(
   alignment_line => 'IL25_4928:3:53:7118:13952#4	163	FN543502	66737	20	54M	=	66903	220	GGGGGGCGTTTTCCGGCGATTCTTTACTGTACATATCCAGTTGACCGTTCGGGA	BBBBBBBBBBBBBBBB@B9=B@BBBF@@@@@@@@@@@@@@@@@@?>@?@?@@B?	XT:A:U	NM:i:1	SM:i:37	AM:i:37	X0:i:1	X1:i:0	XM:i:1	XO:i:0	XG:i:0	MD:Z:0C53	RG:Z:4928_3#4',
   gene_strand => 1,
   exons => [[66337,66937],[4,5]],
@@ -55,7 +55,7 @@ is  $mapped_reads{antisense}, 0, 'identified antisense read with filter';
 
 # dont filter high quality reads
 %filters = (mapping_quality => 30);
-ok $alignment_slice = Pathogens::RNASeq::Read->new(
+ok $alignment_slice = Read->new(
   alignment_line => 'IL25_4928:3:53:7118:13952#4	163	FN543502	66737	60	54M	=	66903	220	GGGGGGCGTTTTCCGGCGATTCTTTACTGTACATATCCAGTTGACCGTTCGGGA	BBBBBBBBBBBBBBBB@B9=B@BBBF@@@@@@@@@@@@@@@@@@?>@?@?@@B?	XT:A:U	NM:i:1	SM:i:37	AM:i:37	X0:i:1	X1:i:0	XM:i:1	XO:i:0	XG:i:0	MD:Z:0C53	RG:Z:4928_3#4',
   gene_strand => 1,
   exons => [[66337,66937],[4,5]],
@@ -69,7 +69,7 @@ is  $mapped_reads{antisense}, 0, 'identified antisense read with high quality re
 
 # Passes bitwise filter
 %filters = (bitwise_flag => 2);
-ok my $alignment_slice2 = Pathogens::RNASeq::Read->new(
+ok my $alignment_slice2 = Read->new(
   alignment_line => 'IL25_4928:3:53:7118:13952#4	3	FN543502	66737	60	54M	=	66903	220	GGGGGGCGTTTTCCGGCGATTCTTTACTGTACATATCCAGTTGACCGTTCGGGA	BBBBBBBBBBBBBBBB@B9=B@BBBF@@@@@@@@@@@@@@@@@@?>@?@?@@B?	XT:A:U	NM:i:1	SM:i:37	AM:i:37	X0:i:1	X1:i:0	XM:i:1	XO:i:0	XG:i:0	MD:Z:0C53	RG:Z:4928_3#4',
   gene_strand => 1,
   exons => [[66337,66937],[4,5]],
@@ -81,7 +81,7 @@ is  $mapped_reads2{antisense}, 0, 'identified antisense read Passes bitwise filt
 
 # Doesnt pass bitwise filter
 %filters = (bitwise_flag => 2);
-ok my $alignment_slice3 = Pathogens::RNASeq::Read->new(
+ok my $alignment_slice3 = Read->new(
   alignment_line => 'IL25_4928:3:53:7118:13952#4	13	FN543502	66737	60	54M	=	66903	220	GGGGGGCGTTTTCCGGCGATTCTTTACTGTACATATCCAGTTGACCGTTCGGGA	BBBBBBBBBBBBBBBB@B9=B@BBBF@@@@@@@@@@@@@@@@@@?>@?@?@@B?	XT:A:U	NM:i:1	SM:i:37	AM:i:37	X0:i:1	X1:i:0	XM:i:1	XO:i:0	XG:i:0	MD:Z:0C53	RG:Z:4928_3#4',
   gene_strand => 1,
   exons => [[66337,66937],[4,5]],
@@ -93,7 +93,7 @@ is  $mapped_reads3{antisense}, 0, 'identified antisense read Doesnt pass bitwise
 
 # complex filter pass
 %filters = (bitwise_flag => 5);
-ok my $alignment_slice4 = Pathogens::RNASeq::Read->new(
+ok my $alignment_slice4 = Read->new(
   alignment_line => 'IL25_4928:3:53:7118:13952#4	3	FN543502	66737	60	54M	=	66903	220	GGGGGGCGTTTTCCGGCGATTCTTTACTGTACATATCCAGTTGACCGTTCGGGA	BBBBBBBBBBBBBBBB@B9=B@BBBF@@@@@@@@@@@@@@@@@@?>@?@?@@B?	XT:A:U	NM:i:1	SM:i:37	AM:i:37	X0:i:1	X1:i:0	XM:i:1	XO:i:0	XG:i:0	MD:Z:0C53	RG:Z:4928_3#4',
   gene_strand => 1,
   exons => [[66337,66937],[4,5]],
@@ -106,7 +106,7 @@ is  $mapped_reads4{antisense}, 0, 'identified antisense read complex filter pass
 
 # complex filter fail
 %filters = (bitwise_flag => 10);
-ok my $alignment_slice5 = Pathogens::RNASeq::Read->new(
+ok my $alignment_slice5 = Read->new(
   alignment_line => 'IL25_4928:3:53:7118:13952#4	21	FN543502	66737	60	54M	=	66903	220	GGGGGGCGTTTTCCGGCGATTCTTTACTGTACATATCCAGTTGACCGTTCGGGA	BBBBBBBBBBBBBBBB@B9=B@BBBF@@@@@@@@@@@@@@@@@@?>@?@?@@B?	XT:A:U	NM:i:1	SM:i:37	AM:i:37	X0:i:1	X1:i:0	XM:i:1	XO:i:0	XG:i:0	MD:Z:0C53	RG:Z:4928_3#4',
   gene_strand => 1,
   exons => [[66337,66937],[4,5]],
@@ -118,7 +118,7 @@ is  $mapped_reads5{antisense}, 0, 'identified antisense read complex filter fail
 
 
 # unmapped reads fail
-ok my $alignment_slice6 = Pathogens::RNASeq::Read->new(
+ok my $alignment_slice6 = Read->new(
   alignment_line => 'IL25_4928:3:53:7118:13952#4	7	FN543502	66737	60	54M	=	66903	220	GGGGGGCGTTTTCCGGCGATTCTTTACTGTACATATCCAGTTGACCGTTCGGGA	BBBBBBBBBBBBBBBB@B9=B@BBBF@@@@@@@@@@@@@@@@@@?>@?@?@@B?	XT:A:U	NM:i:1	SM:i:37	AM:i:37	X0:i:1	X1:i:0	XM:i:1	XO:i:0	XG:i:0	MD:Z:0C53	RG:Z:4928_3#4',
   gene_strand => 1,
   exons => [[66337,66937],[4,5]]

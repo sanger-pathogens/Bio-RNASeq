@@ -6,15 +6,15 @@ use Data::Dumper;
 BEGIN { unshift(@INC, './modules') }
 BEGIN {
     use Test::Most;
-    use_ok('Pathogens::RNASeq::IntergenicRegions');
+    use_ok('IntergenicRegions');
 }
-use Pathogens::RNASeq::GFF;
-use Pathogens::RNASeq::FeaturesTabFile;
-my $rna_seq_gff = Pathogens::RNASeq::GFF->new(filename => 't/data/Citrobacter_rodentium_ICC168_v1_test.gff');
+use GFF;
+use FeaturesTabFile;
+my $rna_seq_gff = GFF->new(filename => 't/data/Citrobacter_rodentium_ICC168_v1_test.gff');
 
 
 # valid intergenic region generation where some features are close by
-ok my $intergenic_regions = Pathogens::RNASeq::IntergenicRegions->new(
+ok my $intergenic_regions = IntergenicRegions->new(
   features => $rna_seq_gff->features(),
   window_margin => 50,
   sequence_lengths => $rna_seq_gff->sequence_lengths
@@ -35,7 +35,7 @@ is_deeply $features->{"FN543502_intergenic_7471_7640"}->exons, \@expected_exons,
 
 
 # intergenic regions where there is a tiny window margin
-ok $intergenic_regions = Pathogens::RNASeq::IntergenicRegions->new(
+ok $intergenic_regions = IntergenicRegions->new(
   features => $rna_seq_gff->features(),
   window_margin => 0,
   minimum_size => 0,

@@ -16,14 +16,14 @@ my $alignment_slice = Pathogens::RNASeq::StrandSpecificProtocol::Read->new(
 
 =cut
 
-package Pathogens::RNASeq::StrandSpecificProtocol::Read;
+package StrandSpecificProtocol::Read;
 use Moose;
-extends 'Pathogens::RNASeq::Read';
+extends 'Read';
 
 sub _process_read_details
 {
   my ($self, $read_details) = @_;
-  $read_details->{flag} = Pathogens::RNASeq::Read->_unmark_duplicates($read_details->{flag});
+  $read_details->{flag} = Read->_unmark_duplicates($read_details->{flag});
 }
 
 sub _calculate_bitwise_flag
@@ -40,7 +40,7 @@ sub _calculate_bitwise_flag
       $flag = $flag + 16;
     }
   }
-  $flag = Pathogens::RNASeq::Read->_unmark_duplicates($flag);
+  $flag = Read->_unmark_duplicates($flag);
   
   return $flag;
 }

@@ -11,9 +11,9 @@ my $rna_seq_bam = Pathogens::RNASeq::SequenceFile->new(
   $rna_seq_bam->total_mapped_reads;
 
 =cut
-package Pathogens::RNASeq::SequenceFile;
+package SequenceFile;
 use Moose;
-extends 'Pathogens::RNASeq::BAMStats';
+extends 'BAMStats';
 
 has 'filename'           => ( is => 'rw', isa => 'Str', required   => 1 );
 1;

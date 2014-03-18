@@ -20,10 +20,10 @@ my $alignment_slice = Pathogens::RNASeq::AlignmentSlice->new(
   $rpkm_values{mapped_reads_reverse};
 
 =cut
-package Pathogens::RNASeq::AlignmentSlice;
+package AlignmentSlice;
 use Moose;
-use Pathogens::RNASeq::Exceptions;
-use Pathogens::RNASeq::Read;
+use Exceptions;
+use Read;
 
 # required inputs
 has 'filename'           => ( is => 'rw', isa => 'Str',                        required   => 1 );
@@ -62,7 +62,7 @@ sub _build__slice_file_handle
 {
   my ($self) = @_;
   my $slice_file_handle;
-  open($slice_file_handle, $self->_slice_stream ) || Pathogens::RNASeq::Exceptions::FailedToOpenAlignmentSlice->throw( error => "Cant view slice for ".$self->filename." ".$self->_window_start." " .$self->_window_end );
+  open($slice_file_handle, $self->_slice_stream ) || Exceptions::FailedToOpenAlignmentSlice->throw( error => "Cant view slice for ".$self->filename." ".$self->_window_start." " .$self->_window_end );
   return $slice_file_handle;
 }
 
@@ -82,7 +82,7 @@ sub _slice_stream
 sub _build__read_protocol_class
 {
 	my ($self) = @_;
-	my $read_protocol_class = "Pathogens::RNASeq::".$self->protocol."::Read";
+	my $read_protocol_class = $self->protocol."::Read";
 	eval("use $read_protocol_class");
   return $read_protocol_class;
 }
