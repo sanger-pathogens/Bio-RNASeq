@@ -48,7 +48,7 @@ use Digest::MD5;
 use Filesys::DfPortable;
 use Filesys::DiskUsage qw/du/;
 use File::Rsync;
-use VertRes::Utils::VRTrackFactory;
+#use VertRes::Utils::VRTrackFactory;
 
 use base qw(VertRes::Base);
 
@@ -253,6 +253,10 @@ sub rmtree {
 
 =cut
 
+#Jorge Comment
+
+=head
+
 sub copy {
     my ($self, $source, $dest, $max_retries) = @_;
     unless (defined $max_retries) {
@@ -332,6 +336,8 @@ sub copy {
     }
 }
 
+=cut
+
 =head2 move
 
  Title   : move
@@ -349,6 +355,10 @@ sub copy {
            (default 3).
 
 =cut
+
+#Jorge Comment
+
+=head
 
 sub move {
     my ($self, $source, $dest, $max_retries) = @_;
@@ -398,6 +408,9 @@ sub move {
     
     return 1;
 }
+
+=cut
+
 
 =head2 verify_md5
 
@@ -721,6 +734,8 @@ sub set_stripe_dir_tree {
     closedir($dfh);
 }
 
+#Jorge Comment
+
 =head2 file_exists
 
  Title   : file_exists
@@ -747,6 +762,8 @@ sub set_stripe_dir_tree {
                                 and return 0)
 
 =cut
+
+=head
 
 sub file_exists {
     my ($self, $file, %opts) = @_;
@@ -878,5 +895,7 @@ sub DESTROY {
         $self->{_dbh}->disconnect;
     }
 }
+
+=cut
 
 1;

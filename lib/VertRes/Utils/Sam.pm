@@ -31,11 +31,17 @@ use File::Copy;
 use File::Basename;
 use File::Spec;
 use VertRes::IO;
-use VertRes::Utils::FileSystem;
+
+#Jorge Comment
+#use VertRes::Utils::FileSystem;
+
 use VertRes::Wrapper::samtools;
 use VertRes::Wrapper::picard;
 use VertRes::Wrapper::fastqcheck;
-use HierarchyUtilities;
+
+#Jorge Comment
+#use HierarchyUtilities;
+
 use VertRes::Parser::dict;
 use VertRes::Parser::sequence_index;
 use VertRes::Parser::sam;
@@ -44,7 +50,10 @@ use VertRes::Parser::dict;
 use VertRes::Parser::fasta;
 use VertRes::Utils::FastQ;
 use VertRes::Utils::Math;
-use VertRes::Utils::Hierarchy;
+
+#Jorge Comment
+#use VertRes::Utils::Hierarchy;
+
 use Digest::MD5;
 use VertRes::Parser::bamcheck;
 use VertRes::Parser::fastqcheck;
@@ -497,6 +506,8 @@ sub split_bam_by_sequence {
            command_line => refarray, ref to array of command lines.
 
 =cut
+
+#Jorge Comment
 
 sub add_sam_header {
     my ($self, $raw_sam_file, %args) = @_;

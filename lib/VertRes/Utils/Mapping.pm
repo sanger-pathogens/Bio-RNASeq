@@ -38,9 +38,13 @@ use VertRes::Utils::FastQ;
 use VertRes::IO;
 use VertRes::Parser::bas;
 use File::Basename;
-use VertRes::Utils::Hierarchy;
+
+#Jorge Comment
+#use VertRes::Utils::Hierarchy;
 use VertRes::Utils::FileSystem;
-use VRTrack::Lane;
+
+#Jorge Comment
+#use VRTrack::Lane;
 
 use base qw(VertRes::Base);
 
@@ -398,6 +402,10 @@ sub _verify_fastq_md5 {
 
 =cut
 
+#Jorge Comment
+
+=head
+
 sub mapping_hierarchy_report {
     my ($self, $output_csv, $vrtrack) = @_;
     my $genome_size = 3e9;
@@ -509,6 +517,8 @@ sub mapping_hierarchy_report {
     return;
 }
 
+=cut
+
 =head2 get_mapping_stats
 
  Title   : get_mapping_stats
@@ -531,6 +541,10 @@ sub mapping_hierarchy_report {
            (defaults to 3e9)
 
 =cut
+
+#Jorge Comment
+
+=head
 
 sub get_mapping_stats {
     my ($self, $thing, $genome_size) = @_;
@@ -567,6 +581,8 @@ sub get_mapping_stats {
     
     return %stats;
 }
+
+=cut
 
 =head2 command_line
 

@@ -41,7 +41,8 @@ use File::Spec;
 use IO::Uncompress::AnyUncompress;
 use File::Fetch;
 use Net::FTP::Robust;
-use VertRes::Utils::FileSystem;
+#Jorge Comment
+#use VertRes::Utils::FileSystem;
 
 use base qw(VertRes::Base);
 
@@ -337,6 +338,9 @@ sub parse_fofn {
     return @sorted;
 }
 
+
+#Jorge Comment
+
 =head2  get_remote_file
 
  Title   : get_remote_file
@@ -351,6 +355,8 @@ sub parse_fofn {
                   to 3 times. Currently only applies to ftp downloads.
 
 =cut
+
+=head
 
 sub get_remote_file {
     my ($self, $url, %opts) = @_;
@@ -446,5 +452,7 @@ sub DESTROY {
     my $self = shift;
     $self->close;
 }
+
+=cut
 
 1;
