@@ -10,7 +10,7 @@ my $file_meta_data_container = RNASeq::Feature->new(
   );
 
 =cut
-package Pathogens::RNASeq::Feature;
+package Feature;
 use Moose;
 
 has 'raw_feature'   => ( is => 'rw', isa => 'Bio::SeqFeature::Generic', required   => 1 );

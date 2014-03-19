@@ -35,6 +35,7 @@ use strict;
 use warnings;
 
 use base qw(VertRes::Parser::ParserI);
+use Debug;
 
 =head2 new
 
@@ -46,9 +47,16 @@ use base qw(VertRes::Parser::ParserI);
 
 =cut
 
+my $debug = Debug->new();
+
+$debug->sr('new');
+$debug->where('before');
+$debug->print_where();
+
 sub new {
     my ($class, @args) = @_;
-    
+    $debug->where('In');
+    $debug->print_where();
     my $self = $class->SUPER::new(@args);
     
     return $self;
@@ -96,9 +104,17 @@ sub new {
 
 =cut
 
+
+$debug->sr('next_result');
+$debug->where('before');
+$debug->print_where();
+
 sub next_result {
     my $self = shift;
-    
+
+    $debug->where('In');
+    $debug->print_where();    
+
     # get the next line
     my $fh = $self->fh() || return;
     my $line = <$fh> || return;
@@ -163,14 +179,25 @@ sub next_result {
 
 =cut
 
+$debug->sr('total_reads');
+$debug->where('before');
+$debug->print_where();
+
 sub total_reads {
     my $self = shift;
+
+    $debug->where('In');
+    $debug->print_where();
+
     return $self->_total(9);
 }
 
 sub _total {
     my ($self, $index) = @_;
     
+    $debug->where('In');
+    $debug->print_where();
+
     my $fh = $self->fh() || return;
     my $fh_id = $self->_fh_id;
     $self->_save_position || return;
@@ -199,8 +226,16 @@ sub _total {
 
 =cut
 
+$debug->sr('mapped_reads');
+$debug->where('before');
+$debug->print_where();
+
 sub mapped_reads {
     my $self = shift;
+
+    $debug->where('In');
+    $debug->print_where();
+
     return $self->_total(10);
 }
 
@@ -215,8 +250,16 @@ sub mapped_reads {
 
 =cut
 
+$debug->sr('total_bases');
+$debug->where('before');
+$debug->print_where();
+
 sub total_bases {
     my $self = shift;
+
+    $debug->where('In');
+    $debug->print_where();
+
     return $self->_total(7);
 }
 
@@ -231,8 +274,15 @@ sub total_bases {
 
 =cut
 
+$debug->sr('mapped_bases');
+$debug->where('before');
+$debug->print_where();
+
 sub mapped_bases {
     my $self = shift;
+    $debug->where('In');
+    $debug->print_where();
+
     return $self->_total(8);
 }
 
@@ -247,8 +297,16 @@ sub mapped_bases {
 
 =cut
 
+$debug->sr('percent_mapped');
+$debug->where('before');
+$debug->print_where();
+
 sub percent_mapped {
     my $self = shift;
+
+    $debug->where('In');
+    $debug->print_where();
+
     my $total = $self->total_reads;
     my $mapped = $self->mapped_reads;
     return (100 / $total) * $mapped;

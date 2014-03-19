@@ -16,29 +16,50 @@ package GFF;
 use Moose;
 use Bio::Tools::NonStandardGFF;
 use Feature;
+use Debug;
 
 has 'filename'          => ( is => 'rw', isa => 'Str',             required   => 1 );
 has 'features'          => ( is => 'rw', isa => 'HashRef',         lazy_build => 1 );
 has '_gff_parser'       => ( is => 'rw', isa => 'Bio::Tools::NonStandardGFF', lazy_build => 1 );
 has 'sequence_lengths' => ( is => 'rw', isa => 'HashRef',         lazy_build => 1 );
 
+my $debug = Debug->new();
+
+$debug->sr('_build__gff_parser');
+$debug->where('before');
+$debug->print_where();
+
 sub _build__gff_parser
 {
   my ($self) = @_;
+
+  $debug->where('In');
+  $debug->print_where();
+
   Bio::Tools::NonStandardGFF->new(-gff_version => 3, -file => $self->filename);
 }
+
+$debug->where('out');
+$debug->print_where();
+
+$debug->sr('_build_features');
+$debug->where('before');
+$debug->print_where();
 
 sub _build_features
 {
   my ($self) = @_;
+  $debug->where('In');
+  $debug->print_where();
+
   my %features;
-  
+
   while( my $raw_feature = $self->_gff_parser->next_feature())
   {
       last unless defined($raw_feature); # No more features
       next if !($raw_feature->primary_tag eq 'CDS' ||   $raw_feature->primary_tag eq 'polypeptide');
-        
-      my $feature_object = Pathogens::RNASeq::Feature->new(raw_feature => $raw_feature);
+
+      my $feature_object = Feature->new(raw_feature => $raw_feature);
 
       if(defined($features{$feature_object->gene_id}))
       {
@@ -48,37 +69,72 @@ sub _build_features
       {
         $features{$feature_object->gene_id} = $feature_object;
       }
-      
+
   }
-  
+
   return \%features;
 }
+
+$debug->where('out');
+$debug->print_where();
+
+$debug->sr('_build_sequence_lengths');
+$debug->where('before');
+$debug->print_where();
 
 # create a hash with sequence names and the length of the sequence
 sub _build_sequence_lengths
 {
-	my ($self) = @_;
-	my %sequence_lengths;
-	while(my $sequence_region = $self->_gff_parser->next_segment())
-	{
-		$sequence_lengths{$sequence_region->id()} = $sequence_region->end() + 1 - $sequence_region->start();
-	}
-	return \%sequence_lengths;
+  my ($self) = @_;
+
+  $debug->where('In');
+  $debug->print_where();
+
+  my %sequence_lengths;
+  while(my $sequence_region = $self->_gff_parser->next_segment())
+    {
+      $sequence_lengths{$sequence_region->id()} = $sequence_region->end() + 1 - $sequence_region->start();
+    }
+  return \%sequence_lengths;
 }
+
+$debug->where('out');
+$debug->print_where();
+
+$debug->sr('sorted_gene_ids');
+$debug->where('before');
+$debug->print_where();
 
 sub sorted_gene_ids
 {
   my ($self) = @_;
+
+  $debug->where('In');
+  $debug->print_where();
+
   my @sorted_ids = sort _idsort keys(%{$self->features});
   return \@sorted_ids;
 }
+
+$debug->where('out');
+$debug->print_where();
+
+$debug->sr('_idsort');
+$debug->where('before');
+$debug->print_where();
 
 sub _idsort
 {
   my @A = split(/\./,$a,2);
   my @B = split(/\./,$b,2);
 
+  $debug->where('In');
+  $debug->print_where();
+
   $A[0] cmp $B[0] || $A[1] <=> $B[1];
 }
+
+$debug->where('out');
+$debug->print_where();
 
 1;

@@ -25,6 +25,7 @@ use Exceptions;
 use BitWise;
 use IntergenicRegions;
 use FeaturesTabFile;
+use Debug;
 
 has 'sequence_filename'       => ( is => 'rw', isa => 'Str', required => 1 );
 has 'annotation_filename'     => ( is => 'rw', isa => 'Str', required => 1 );
@@ -43,41 +44,85 @@ has '_annotation_file'        => ( is => 'rw', isa => 'GFF',                    
 has '_results_spreadsheet'    => ( is => 'rw', isa => 'ExpressionStatsSpreadsheet', lazy_build  => 1 );
 has '_expression_results'     => ( is => 'rw', isa => 'ArrayRef',                                      lazy_build  => 1 );
 has '_alignment_slice_protocol_class'  => ( is => 'rw',                                              lazy_build  => 1 );
+my $debug = Debug->new();
 
+$debug->sr('_build__sequence_file');
+$debug->where('before');
+$debug->print_where();
 sub _build__sequence_file
 {
   my ($self) = @_;
 
-	my $validator = ValidateInputs->new( sequence_filename => $self->sequence_filename, annotation_filename => $self->annotation_filename);
-	if($validator->are_input_files_valid() == 0)
-	{
-		Exceptions::FailedToOpenAlignmentSlice->throw( error => "Input files invalid: ".$self->sequence_filename." ".$self->annotation_filename."\n" );
-	}
-	
+  $debug->where('In');
+  $debug->print_where();
+
+  my $validator = ValidateInputs->new( sequence_filename => $self->sequence_filename, annotation_filename => $self->annotation_filename);
+  if($validator->are_input_files_valid() == 0)
+    {
+      Exceptions::FailedToOpenAlignmentSlice->throw( error => "Input files invalid: ".$self->sequence_filename." ".$self->annotation_filename."\n" );
+    }
   SequenceFile->new(filename => $self->sequence_filename);
 }
+
+$debug->where('out');
+$debug->print_where();
+
+$debug->sr('_build__annotation_file');
+$debug->where('before');
+$debug->print_where();
 
 sub _build__annotation_file
 {
   my ($self) = @_;
+
+  $debug->where('In');
+  $debug->print_where();
   GFF->new( filename => $self->annotation_filename);
 }
 
+$debug->where('out');
+$debug->print_where();
+
+
+$debug->sr('_build__results_spreadsheet');
+$debug->where('before');
+$debug->print_where();
 sub _build__results_spreadsheet
 {
   my ($self) = @_;
+  $debug->where('In');
+  $debug->print_where();
   ExpressionStatsSpreadsheet->new( output_filename => $self->output_base_filename.".expression.csv", protocol => $self->protocol);
 }
+
+$debug->where('out');
+$debug->print_where();
+
+$debug->sr('_corrected_sequence_filename');
+$debug->where('before');
+$debug->print_where();
 
 sub _corrected_sequence_filename
 {
   my ($self) = @_;
+  $debug->where('In');
+  $debug->print_where();
   return $self->output_base_filename.".corrected.bam";
 }
+
+$debug->where('out');
+$debug->print_where();
+
+$debug->sr('_build__expression_results');
+$debug->where('before');
+$debug->print_where();
 
 sub _build__expression_results
 {
   my ($self) = @_;
+  $debug->where('In');
+  $debug->print_where();
+
   my $total_mapped_reads = $self->_sequence_file->total_mapped_reads;
   
   BitWise->new(
@@ -116,58 +161,86 @@ sub _build__expression_results
   return \@expression_results;
 }
 
+$debug->where('out');
+$debug->print_where();
+
+$debug->sr('_calculate_values_for_intergenic_regions');
+$debug->where('before');
+$debug->print_where();
+
 sub _calculate_values_for_intergenic_regions
 {
-   my ($self, $expression_results, $total_mapped_reads) = @_;
-   # get intergenic regions
-   my $intergenic_regions = IntergenicRegions->new(
-     features       => $self->_annotation_file->features,
-     window_margin  => $self->window_margin,
-     minimum_size   => $self->minimum_intergenic_size,
-     sequence_lengths => $self->_annotation_file->sequence_lengths
-     );
+  my ($self, $expression_results, $total_mapped_reads) = @_;
+
+  $debug->where('In');
+  $debug->print_where();
+  # get intergenic regions
+  my $intergenic_regions = IntergenicRegions->new(
+						  features       => $self->_annotation_file->features,
+						  window_margin  => $self->window_margin,
+						  minimum_size   => $self->minimum_intergenic_size,
+						  sequence_lengths => $self->_annotation_file->sequence_lengths
+						 );
 
   # print out the features into a tab file for loading into Artemis
-     my $tab_file_results = FeaturesTabFile->new(
-       output_filename => $self->_corrected_sequence_filename.".intergenic",
-       features        => $intergenic_regions->intergenic_features,
-       sequence_names  => $intergenic_regions->sequence_names
-     );
-     $tab_file_results->create_files;
+  my $tab_file_results = FeaturesTabFile->new(
+					      output_filename => $self->_corrected_sequence_filename.".intergenic",
+					      features        => $intergenic_regions->intergenic_features,
+					      sequence_names  => $intergenic_regions->sequence_names
+					     );
+  $tab_file_results->create_files;
 
-   for my $feature_id (keys %{$intergenic_regions->intergenic_features})
-   {
-     my $alignment_slice = $self->_alignment_slice_protocol_class->new(
-       filename           => $self->_corrected_sequence_filename,
-       total_mapped_reads => $total_mapped_reads,
-       feature            => $intergenic_regions->intergenic_features->{$feature_id},
-       filters            => $self->filters,
-       protocol           => $self->protocol,
-       samtools_exec      => $self->samtools_exec,
-       window_margin      => 0,
-       );
-     my $alignment_slice_results = $alignment_slice->rpkm_values;
+  for my $feature_id (keys %{$intergenic_regions->intergenic_features}) {
+    my $alignment_slice = $self->_alignment_slice_protocol_class->new(
+								      filename           => $self->_corrected_sequence_filename,
+								      total_mapped_reads => $total_mapped_reads,
+								      feature            => $intergenic_regions->intergenic_features->{$feature_id},
+								      filters            => $self->filters,
+								      protocol           => $self->protocol,
+								      samtools_exec      => $self->samtools_exec,
+								      window_margin      => 0,
+								     );
+    my $alignment_slice_results = $alignment_slice->rpkm_values;
 
-     $alignment_slice_results->{gene_id} = $feature_id;
-     $alignment_slice_results->{seq_id}  = $intergenic_regions->intergenic_features->{$feature_id}->seq_id;
-     push(@{$expression_results}, $alignment_slice_results);
-   }
-   
-   return $expression_results;
+    $alignment_slice_results->{gene_id} = $feature_id;
+    $alignment_slice_results->{seq_id}  = $intergenic_regions->intergenic_features->{$feature_id}->seq_id;
+    push(@{$expression_results}, $alignment_slice_results);
+  }
+
+  return $expression_results;
 }
 
+$debug->where('out');
+$debug->print_where();
+
+$debug->sr('_build__alignment_slice_protocol_class');
+$debug->where('before');
+$debug->print_where();
 
 sub _build__alignment_slice_protocol_class
 {
-	my ($self) = @_;
-	my $alignment_slice_protocol_class = $self->protocol."::AlignmentSlice";
-	eval("use $alignment_slice_protocol_class");
+  my ($self) = @_;
+  $debug->where('In');
+  $debug->print_where();
+
+  my $alignment_slice_protocol_class = $self->protocol."::AlignmentSlice";
+  eval("use $alignment_slice_protocol_class");
   return $alignment_slice_protocol_class;
 }
+
+$debug->where('out');
+$debug->print_where();
+
+$debug->sr('output_spreadsheet');
+$debug->where('before');
+$debug->print_where();
 
 sub output_spreadsheet
 {
   my ($self) = @_;
+  $debug->where('In');
+  $debug->print_where();
+
   for my $expression_result (@{$self->_expression_results})
   {
     $self->_results_spreadsheet->add_result($expression_result);
@@ -175,7 +248,8 @@ sub output_spreadsheet
   $self->_results_spreadsheet->build_and_close();
   return 1;
 }
-
+$debug->where('out');
+$debug->print_where();
 
 1;
 
