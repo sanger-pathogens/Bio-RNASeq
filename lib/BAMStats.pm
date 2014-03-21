@@ -13,9 +13,6 @@ my $bam_container = Pathogens::RNASeq::BAM->new(
 package BAMStats;
 use Moose;
 use VertRes::Parser::bas;
-
-#Jorge Comment
-#use VertRes::Utils::Sam;
 use Time::Format;
 
 has 'total_mapped_reads' => ( is => 'rw', isa => 'Str', lazy_build   => 1 );
@@ -38,19 +35,5 @@ sub _build_total_mapped_reads
   my ($self) = @_;
   $self->_parser->mapped_reads;
 }
-
-
-#Jorge Comment
-
-=head
-
-sub _create_stats_files
-{
-   my ($self) = @_;
-   my $sam =  VertRes::Utils::Sam->new();
-   $sam->stats("$time{'yyyymmdd'}", $self->filename);
-}
-
-=cut
 
 1;
