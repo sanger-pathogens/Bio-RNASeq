@@ -1,4 +1,0 @@
-A test file for VertRes::IO->get_remote_file()
-it
-has
-4 lines.
