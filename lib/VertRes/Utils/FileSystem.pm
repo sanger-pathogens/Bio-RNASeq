@@ -35,7 +35,6 @@ package VertRes::Utils::FileSystem;
 
 use strict;
 use warnings;
-use Debug;
 
 no warnings 'recursion';
 
@@ -49,15 +48,8 @@ use Digest::MD5;
 use Filesys::DfPortable;
 use Filesys::DiskUsage qw/du/;
 use File::Rsync;
-use Debug;
 
 use base qw(VertRes::Base);
-
-my $debug = Debug->new();
-
-$debug->sr('new');
-$debug->where('before');
-$debug->print_where();
 
 =head2 new
 
@@ -71,17 +63,10 @@ $debug->print_where();
 
 sub new {
   my ($class, @args) = @_;
-
-  $debug->where('In');
-  $debug->print_where();
-
   my $self = $class->SUPER::new(@args);
-
   return $self;
 }
 
-$debug->where('out');
-$debug->print_where();
 
 =head2 get_filepaths
 
@@ -105,15 +90,9 @@ $debug->print_where();
 
 =cut
 
-$debug->sr('get_filepaths');
-$debug->where('before');
-$debug->print_where();
 
 sub get_filepaths {
     my ($self, $dir, %args) = @_;
-
-    $debug->where('In');
-    $debug->print_where();
 
     $dir = abs_path($dir);
     my $wanted_dir = $args{dir};
@@ -184,8 +163,7 @@ sub get_filepaths {
     return @filepaths;
 }
 
-$debug->where('out');
-$debug->print_where();
+
 
 =head2 tempfile
 
@@ -198,15 +176,8 @@ $debug->print_where();
 
 =cut
 
-$debug->sr('tempfile');
-$debug->where('before');
-$debug->print_where();
-
 sub tempfile {
     my $self = shift;
-
-    $debug->where('In');
-    $debug->print_where();
 
     my $ft = File::Temp->new(@_);
     push(@{$self->{_fts}}, $ft);
@@ -214,8 +185,8 @@ sub tempfile {
     return ($ft, $ft->filename);
 }
 
-$debug->where('out');
-$debug->print_where();
+
+
 
 =head2 tempdir
 
@@ -228,10 +199,6 @@ $debug->print_where();
 
 =cut
 
-$debug->sr('tempdir');
-$debug->where('before');
-$debug->print_where();
-
 sub tempdir {
     my $self = shift;
     
@@ -241,8 +208,8 @@ sub tempdir {
     return $ft->dirname;
 }
 
-$debug->where('out');
-$debug->print_where();
+
+
 
 =head2 catfile
 
@@ -255,21 +222,14 @@ $debug->print_where();
 
 =cut
 
-$debug->sr('catfile');
-$debug->where('before');
-$debug->print_where();
-
 sub catfile {
     my $self = shift;
-
-    $debug->where('In');
-    $debug->print_where();
 
     return File::Spec->catfile(@_);
 }
 
-$debug->where('out');
-$debug->print_where();
+
+
 
 =head2 rmtree
 
@@ -282,17 +242,13 @@ $debug->print_where();
 
 =cut
 
-$debug->sr('rmtree');
-$debug->where('before');
-$debug->print_where();
-
 sub rmtree {
     my $self = shift;
     return File::Path::rmtree(@_);
 }
 
-$debug->where('out');
-$debug->print_where();
+
+
 
 =head2 verify_md5
 
@@ -305,22 +261,15 @@ $debug->print_where();
 
 =cut
 
-$debug->sr('verify_md5');
-$debug->where('before');
-$debug->print_where();
-
 sub verify_md5 {
     my ($self, $file, $md5) = @_;
-
-    $debug->where('In');
-    $debug->print_where();
 
     my $new_md5 = $self->calculate_md5($file);
     return $new_md5 eq $md5;
 }
 
-$debug->where('out');
-$debug->print_where();
+
+
 
 =head2 calculate_md5
 
@@ -332,15 +281,8 @@ $debug->print_where();
 
 =cut
 
-$debug->sr('calculate_md5');
-$debug->where('before');
-$debug->print_where();
-
 sub calculate_md5 {
     my ($self, $file, $md5_file) = @_;
-
-    $debug->where('In');
-    $debug->print_where();
 
     open(my $fh, $file) || $self->throw("Could not open file $file");
     binmode($fh);
@@ -358,8 +300,8 @@ sub calculate_md5 {
     return $md5;
 }
 
-$debug->where('out');
-$debug->print_where();
+
+
 
 =head2 md5_from_file
 
@@ -372,15 +314,12 @@ $debug->print_where();
 
 =cut
 
-$debug->sr('md5_from_file');
-$debug->where('before');
-$debug->print_where();
+
+
+
 
 sub md5_from_file {
     my ($self, $file) = @_;
-
-    $debug->where('In');
-    $debug->print_where();
 
     open my $fh, "<$file" || $self->throw("Could not open $file to read md5");
     my ($md5) = <$fh> =~ m/^([0-9a-z]{32})\s/;
@@ -389,8 +328,8 @@ sub md5_from_file {
     return $md5;
 }
 
-$debug->where('out');
-$debug->print_where();
+
+
 
 =head2 directory_structure_same
 
@@ -415,15 +354,9 @@ $debug->print_where();
 
 =cut
 
-$debug->sr('directory_structure_same');
-$debug->where('before');
-$debug->print_where();
 
 sub directory_structure_same {
     my ($self, $root1, $root2, %opts) = @_;
-
-    $debug->where('In');
-    $debug->print_where();
 
     my $orig_path = delete $opts{orig_path};
     $orig_path ||= $root1;
@@ -524,8 +457,6 @@ sub directory_structure_same {
     return 1;
 }
 
-$debug->where('out');
-$debug->print_where();
 
 =head2 hashed_path
 
@@ -540,15 +471,9 @@ $debug->print_where();
 
 =cut
 
-$debug->sr('hashed_path');
-$debug->where('before');
-$debug->print_where();
 
 sub hashed_path {
     my ($self, $path) = @_;
-
-    $debug->where('In');
-    $debug->print_where();
 
     my $dmd5 = Digest::MD5->new();
     $dmd5->add($path);
@@ -558,8 +483,6 @@ sub hashed_path {
     return $self->catfile(@chars[0..3], $basename);
 }
 
-$debug->where('out');
-$debug->print_where();
 
 =head2 can_be_copied
 
@@ -572,23 +495,15 @@ $debug->print_where();
 
 =cut
 
-$debug->sr('can_be_copied');
-$debug->where('before');
-$debug->print_where();
 
 sub can_be_copied {
     my ($self, $source, $destination) = @_;
-
-    $debug->where('In');
-    $debug->print_where();
 
     my $usage = $self->disk_usage($source) || 0;
     my $available = $self->disk_available($destination) || return 0;
     return $available > $usage;
 }
 
-$debug->where('out');
-$debug->print_where();
 
 =head2 disk_available
 
@@ -602,22 +517,13 @@ $debug->print_where();
 
 =cut
 
-$debug->sr('disk_available');
-$debug->where('before');
-$debug->print_where();
-
 sub disk_available {
     my ($self, $path) = @_;
-
-    $debug->where('In');
-    $debug->print_where();
 
     my $ref = dfportable($path) || (return 0);
     return $ref->{bavail};
 }
 
-$debug->where('out');
-$debug->print_where();
 
 =head2 disk_usage
 
@@ -629,22 +535,17 @@ $debug->print_where();
 
 =cut
 
-$debug->sr('disk_usage');
-$debug->where('before');
-$debug->print_where();
+
+
+
 
 sub disk_usage {
     my ($self, $path) = @_;
-
-    $debug->where('In');
-    $debug->print_where();
 
     my $total = du($path);
     return $total || 0;
 }
 
-$debug->where('out');
-$debug->print_where();
 
 =head2 set_stripe_dir
 
@@ -656,14 +557,8 @@ $debug->print_where();
 
 =cut
 
-$debug->sr('set_stripe_dir');
-$debug->where('before');
-$debug->print_where();
-
 sub set_stripe_dir {
     my ($self, $path, $stripe_value) = @_;
-    $debug->where('In');
-    $debug->print_where();
 
     if ($stripe_value < -1 || $stripe_value > 10) {
         $self->throw("Invalid stripe value: $stripe_value");
@@ -677,8 +572,6 @@ sub set_stripe_dir {
     return 1;
 }
 
-$debug->where('out');
-$debug->print_where();
 
 =head2 set_stripe_dir_tree
 
@@ -690,15 +583,9 @@ $debug->print_where();
 
 =cut
 
-$debug->sr('set_stripe_dir_tree');
-$debug->where('before');
-$debug->print_where();
 
 sub set_stripe_dir_tree {
     my ($self, $root, $stripe_value) = @_;
-    $debug->where('In');
-    $debug->print_where();
-
 
     if ($stripe_value < -1 || $stripe_value > 10) {
         $self->throw("Invalid stripe value: $stripe_value");
@@ -718,8 +605,5 @@ sub set_stripe_dir_tree {
     }
     closedir($dfh);
 }
-
-$debug->where('out');
-$debug->print_where();
 
 1;
