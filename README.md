@@ -18,16 +18,16 @@ USAGE
 
 -a|annotation_file         - annotation file (GFF)
 
--p|protocol                - standard|nc_protocol>
+-p|protocol                - standard|nc_protocol
 
--o|output_base_filename    - Optional: base name and location to use for output files>
+-o|output_base_filename    - Optional: base name and location to use for output files
 
--q|minimum_mapping_quality - Optional: minimum mapping quality>
+-q|minimum_mapping_quality - Optional: minimum mapping quality
 
--c|no_coverage_plots       - Dont create Artemis coverage plots>
+-c|no_coverage_plots       - Dont create Artemis coverage plots
 
--i|intergenic_regions      - Include intergenic regions>
+-i|intergenic_regions      - Include intergenic regions
 
--b|bitwise_flag            - Only include reads which pass filter>
+-b|bitwise_flag            - Only include reads which pass filter
 
--h|help                    - print this message>
+-h|help                    - print this message
