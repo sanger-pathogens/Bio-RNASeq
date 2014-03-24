@@ -3,13 +3,13 @@ use strict;
 use warnings;
 use Data::Dumper;
 
-BEGIN { unshift(@INC, './modules') }
+BEGIN { unshift(@INC, './lib') }
 BEGIN {
     use Test::Most;
-    use_ok('Pathogens::RNASeq::GFF');
+    use_ok('Bio::RNASeq::GFF');
 }
 
-ok my $rna_seq_gff = Pathogens::RNASeq::GFF->new(filename => 't/data/Citrobacter_rodentium_ICC168_v1_test.gff'), 'Initialise valid GFF file';
+ok my $rna_seq_gff = Bio::RNASeq::GFF->new(filename => 't/data/Citrobacter_rodentium_ICC168_v1_test.gff'), 'Initialise valid GFF file';
 ok $rna_seq_gff->features(), 'build features';
 
 
@@ -40,7 +40,7 @@ is_deeply $rna_seq_gff->sorted_gene_ids, \@expected_gene_ids, 'sorting of gene i
 
 
 # Discontinous features
-ok( $rna_seq_gff = Pathogens::RNASeq::GFF->new(filename => 't/data/mm10.gff'), 'Discontinuous feature with overall CDS spanning' );
+ok( $rna_seq_gff = Bio::RNASeq::GFF->new(filename => 't/data/mm10.gff'), 'Discontinuous feature with overall CDS spanning' );
 ok(my $feature = $rna_seq_gff->features()->{"10.10"}, 'get discontinous feature');
 my @expected_exons = ([10206,10296],
 [15002,15271],

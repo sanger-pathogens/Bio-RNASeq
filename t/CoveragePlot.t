@@ -4,14 +4,14 @@ use warnings;
 use Data::Dumper;
 
 
-BEGIN { unshift(@INC, './modules') }
+BEGIN { unshift(@INC, './lib') }
 BEGIN {
 
     use Test::Most;
-    use_ok('CoveragePlot');
+    use_ok('Bio::RNASeq::CoveragePlot');
 }
 
-ok my $coverage_plots_from_bam = CoveragePlot->new(
+ok my $coverage_plots_from_bam = Bio::RNASeq::CoveragePlot->new(
    filename             => 't/data/small_multi_sequence.bam',
    output_base_filename => 't/data/coverage',
    mpileup_cmd          => "samtools mpileup"

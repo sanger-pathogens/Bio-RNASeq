@@ -21,8 +21,8 @@ use strict;
 use warnings;
 no warnings 'uninitialized';
 use Getopt::Long;
-use Expression;
-use CoveragePlot;
+use Bio::RNASeq::Expression;
+use Bio::RNASeq::CoveragePlot;
 
 my($sequence_file, $annotation_file, $protocol_name, $output_base_filename, $mapping_quality, $no_coverage_plots, $intergenic_regions, $bitwise_flag, $help );
 
@@ -69,7 +69,7 @@ my %protocols = (
 	tradis   => "TradisProtocol"
 );
 
-my $expression_results = Expression->new(
+my $expression_results = Bio::RNASeq::Expression->new(
   sequence_filename    => $sequence_file,
   annotation_filename  => $annotation_file,
   filters              => \%filters,
@@ -82,7 +82,7 @@ $expression_results->output_spreadsheet();
 
 unless($no_coverage_plots)
 {
-  CoveragePlot->new(
+  Bio::RNASeq::CoveragePlot->new(
     filename             => $expression_results->_corrected_sequence_filename,
     output_base_filename => $output_base_filename,
     mapping_quality      => $mapping_quality

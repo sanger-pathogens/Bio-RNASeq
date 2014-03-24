@@ -4,15 +4,15 @@ use warnings;
 use Data::Dumper;
 
 
-BEGIN { unshift(@INC, './modules') }
+BEGIN { unshift(@INC, './lib') }
 BEGIN {
 
     use Test::Most;
-    use_ok('ExpressionStatsSpreadsheet');
+    use_ok('Bio::RNASeq::ExpressionStatsSpreadsheet');
 }
-ok my $expression_results = ExpressionStatsSpreadsheet->new(
+ok my $expression_results = Bio::RNASeq::ExpressionStatsSpreadsheet->new(
   output_filename => 'my_result_file.csv',
-  protocol => 'StrandSpecificProtocol'
+  protocol => 'Bio::RNASeq::StrandSpecificProtocol'
   ), 'initialise';
 
 my %result_1 = (
@@ -46,7 +46,7 @@ $header =~ s/[\r\n]//g;
 $output_result_1 =~ s/[\r\n]//g;
 $output_result_2 =~ s/[\r\n]//g;
 
-is $header, '"Seq ID",GeneID,"Locus Tag","Antisense Reads Mapping","Antisense RPKM","Reads Mapping",RPKM', 'header okay';
+is $header, '"Seq ID",GeneID,"Locus Tag","Sense Reads Mapping","Sense RPKM","Antisense Reads Mapping","Antisense RPKM"', 'header okay';
 is $output_result_1, 'some_name,abc123,,2000,15.3245,10,1.34324', 'result set 1';
 is $output_result_2, 'some_name,efg456,some_locus_tag,10,0,200,780.34242543543', 'result set 2';
 close(IN);
@@ -57,9 +57,9 @@ unlink('my_result_file.csv');
 ## Standard protocol
 #####################
 
-ok my $expression_results_standard = ExpressionStatsSpreadsheet->new(
+ok my $expression_results_standard = Bio::RNASeq::ExpressionStatsSpreadsheet->new(
   output_filename => 'my_result_file_standard.csv',
-  protocol => 'StandardProtocol'
+  protocol => 'Bio::RNASeq::StandardProtocol'
   ), 'initialise';
 
 ok $expression_results_standard->add_result(\%result_1), 'add first result set';
@@ -74,7 +74,7 @@ $header_standard =~ s/[\r\n]//g;
 $output_result_1_standard =~ s/[\r\n]//g;
 $output_result_2_standard =~ s/[\r\n]//g;
 
-is $header_standard, '"Seq ID",GeneID,"Locus Tag","Reads Mapping",RPKM,"Antisense Reads Mapping","Antisense RPKM"', 'header okay';
+is $header_standard, '"Seq ID",GeneID,"Locus Tag","Sense Reads Mapping","Sense RPKM","Antisense Reads Mapping","Antisense RPKM"', 'header okay';
 is $output_result_1_standard, 'some_name,abc123,,2000,15.3245,10,1.34324', 'result set 1';
 is $output_result_2_standard, 'some_name,efg456,some_locus_tag,10,0,200,780.34242543543', 'result set 2';
 close(IN_STANDARD);
@@ -85,9 +85,9 @@ unlink('my_result_file_standard.csv');
 ## Another new protocol
 #####################
 
-ok my $expression_results_tradis = ExpressionStatsSpreadsheet->new(
+ok my $expression_results_tradis = Bio::RNASeq::ExpressionStatsSpreadsheet->new(
   output_filename => 'my_result_file_tradis.csv',
-  protocol => 'TradisProtocol'
+  protocol => 'Bio::RNASeq::TradisProtocol'
   ), 'initialise';
 
 ok $expression_results_tradis->add_result(\%result_1), 'add first result set';
@@ -102,7 +102,7 @@ $header_tradis =~ s/[\r\n]//g;
 $output_result_1_tradis =~ s/[\r\n]//g;
 $output_result_2_tradis =~ s/[\r\n]//g;
 
-is $header_tradis,  '"Seq ID",GeneID,"Locus Tag","Reads Mapping",RPKM,"Antisense Reads Mapping","Antisense RPKM"', 'header okay';
+is $header_tradis,  '"Seq ID",GeneID,"Locus Tag","Sense Reads Mapping","Sense RPKM","Antisense Reads Mapping","Antisense RPKM"', 'header okay';
 is $output_result_1_tradis, 'some_name,abc123,,2000,15.3245,10,1.34324', 'result set 1';
 is $output_result_2_tradis, 'some_name,efg456,some_locus_tag,10,0,200,780.34242543543', 'result set 2';
 close(IN_TRADIS);

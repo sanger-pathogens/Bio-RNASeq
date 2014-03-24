@@ -4,14 +4,14 @@ use warnings;
 use Data::Dumper;
 
 
-BEGIN { unshift(@INC, './modules') }
+BEGIN { unshift(@INC, './lib') }
 BEGIN {
     use Test::Most;
-    use_ok('Pathogens::RNASeq::StandardProtocol::AlignmentSlice');
+    use_ok('Bio::RNASeq::StandardProtocol::AlignmentSlice');
 }
-use Pathogens::RNASeq::GFF;
+use Bio::RNASeq::GFF;
 
-my $rna_seq_gff = Pathogens::RNASeq::GFF->new(filename => 't/data/Citrobacter_rodentium_ICC168_v1_test.gff');
+my $rna_seq_gff = Bio::RNASeq::GFF->new(filename => 't/data/Citrobacter_rodentium_ICC168_v1_test.gff');
 my $feature = $rna_seq_gff->features()->{continuous_feature_id};
 $feature->gene_strand(1);
 my @exons;
@@ -19,7 +19,7 @@ push @exons, [66630,66940];
 $feature->exons(\@exons);
 $feature->exon_length(50);
 
-ok my $alignment_slice = Pathogens::RNASeq::StandardProtocol::AlignmentSlice->new(
+ok my $alignment_slice = Bio::RNASeq::StandardProtocol::AlignmentSlice->new(
   filename => 't/data/bam',
   window_margin => 10,
   total_mapped_reads => 10000,
@@ -38,7 +38,7 @@ is $rpkm_values->{mapped_reads_antisense},0, 'mapped reads antisense';
 
 
 # invalid filehandle
-ok $alignment_slice = Pathogens::RNASeq::StandardProtocol::AlignmentSlice->new(
+ok $alignment_slice = Bio::RNASeq::StandardProtocol::AlignmentSlice->new(
   filename => 't/data/bam',
   total_mapped_reads => 10000,
   window_margin => 10,

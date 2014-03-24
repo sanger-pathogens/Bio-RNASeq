@@ -4,15 +4,15 @@ use warnings;
 use Data::Dumper;
 
 
-BEGIN { unshift(@INC, './modules') }
+BEGIN { unshift(@INC, './lib') }
 BEGIN {
 
     use Test::Most;
-    use_ok('Pathogens::RNASeq::Insertions');
+    use_ok('Bio::RNASeq::Insertions');
 }
 
 
-ok(my $expression_results = Pathogens::RNASeq::Insertions->new(
+ok(my $expression_results = Bio::RNASeq::Insertions->new(
   sequence_filename => 't/data/small_multi_sequence.bam',
   annotation_filename => 't/data/Citrobacter_rodentium_ICC168_v1_test.gff',
   output_base_filename => 'output_results'

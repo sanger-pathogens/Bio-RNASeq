@@ -3,14 +3,14 @@ use strict;
 use warnings;
 use Data::Dumper;
 
-BEGIN { unshift(@INC, './modules') }
+BEGIN { unshift(@INC, './lib') }
 BEGIN {
     use Test::Most;
-    use_ok('BitWise');
+    use_ok('Bio::RNASeq::BitWise');
 }
 
 # strand specific protocol
-ok my $bitwise = BitWise->new(
+ok my $bitwise = Bio::RNASeq::BitWise->new(
   filename => 't/data/rna_seq_bitwise_flags_set.bam',
   output_filename => 't/data/my_file.bam',
   protocol => 'StrandSpecificProtocol'
@@ -30,7 +30,7 @@ is $duplicate_read, 117, 'unmark duplicates StrandSpecificProtocol' ;
 
 
 # Standard protocol
-ok $bitwise = BitWise->new(
+ok $bitwise = Bio::RNASeq::BitWise->new(
   filename => 't/data/rna_seq_bitwise_flags_set.bam',
   output_filename => 't/data/my_file.bam'
   ), 'initialise Standard Protocol';
