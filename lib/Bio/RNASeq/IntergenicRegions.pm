@@ -88,7 +88,7 @@ sub _create_intergenic_feature
   
   if( $intergenic_end - $intergenic_start > $self->minimum_size)
   {
-    my $intergenic_feature =  IntergenicFeature->new(
+    my $intergenic_feature =  Bio::RNASeq::IntergenicFeature->new(
       gene_start => $intergenic_start,
       gene_end   => $intergenic_end,
       seq_id     => $seq_id

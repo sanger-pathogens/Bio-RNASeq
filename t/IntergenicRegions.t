@@ -3,18 +3,18 @@ use strict;
 use warnings;
 use Data::Dumper;
 
-BEGIN { unshift(@INC, './modules') }
+BEGIN { unshift(@INC, './lib') }
 BEGIN {
     use Test::Most;
-    use_ok('IntergenicRegions');
+    use_ok('Bio::RNASeq::IntergenicRegions');
 }
-use GFF;
-use FeaturesTabFile;
-my $rna_seq_gff = GFF->new(filename => 't/data/Citrobacter_rodentium_ICC168_v1_test.gff');
+use Bio::RNASeq::GFF;
+use Bio::RNASeq::FeaturesTabFile;
+my $rna_seq_gff = Bio::RNASeq::GFF->new(filename => 't/data/Citrobacter_rodentium_ICC168_v1_test.gff');
 
 
 # valid intergenic region generation where some features are close by
-ok my $intergenic_regions = IntergenicRegions->new(
+ok my $intergenic_regions = Bio::RNASeq::IntergenicRegions->new(
   features => $rna_seq_gff->features(),
   window_margin => 50,
   sequence_lengths => $rna_seq_gff->sequence_lengths
@@ -35,7 +35,7 @@ is_deeply $features->{"FN543502_intergenic_7471_7640"}->exons, \@expected_exons,
 
 
 # intergenic regions where there is a tiny window margin
-ok $intergenic_regions = IntergenicRegions->new(
+ok $intergenic_regions = Bio::RNASeq::IntergenicRegions->new(
   features => $rna_seq_gff->features(),
   window_margin => 0,
   minimum_size => 0,

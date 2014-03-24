@@ -4,14 +4,14 @@ use warnings;
 use Data::Dumper;
 
 
-BEGIN { unshift(@INC, './modules') }
+BEGIN { unshift(@INC, './lib') }
 BEGIN {
 
     use Test::Most;
-    use_ok('Pathogens::RNASeq::InsertSite');
+    use_ok('Bio::RNASeq::InsertSite');
 }
 
-ok my $insert_site_plots_from_bam = Pathogens::RNASeq::InsertSite->new(
+ok my $insert_site_plots_from_bam = Bio::RNASeq::InsertSite->new(
    filename             => 't/data/small_multi_sequence.bam',
    output_base_filename => 't/data/insert_site',
   );

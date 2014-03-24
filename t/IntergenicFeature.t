@@ -3,14 +3,14 @@ use strict;
 use warnings;
 use Data::Dumper;
 
-BEGIN { unshift(@INC, './modules') }
+BEGIN { unshift(@INC, './lib') }
 BEGIN {
 
     use Test::Most;
-    use_ok('Pathogens::RNASeq::IntergenicFeature');
+    use_ok('Bio::RNASeq::IntergenicFeature');
 }
 
-ok my $intergenicfeature = Pathogens::RNASeq::IntergenicFeature->new(
+ok my $intergenicfeature = Bio::RNASeq::IntergenicFeature->new(
    gene_start => 100,
    gene_end   => 200,
    seq_id     => "ABC"

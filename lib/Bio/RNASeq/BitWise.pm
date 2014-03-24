@@ -19,7 +19,7 @@ use Bio::RNASeq::VertRes::Wrapper::samtools;
 
 has 'filename'                      => ( is => 'rw', isa => 'Str', required  => 1 );
 has 'output_filename'               => ( is => 'rw', isa => 'Str', required  => 1 );
-has 'protocol'                      => ( is => 'rw', isa => 'Str', default   => 'Bio::RNASeq::StandardProtocol' );
+has 'protocol'                      => ( is => 'rw', isa => 'Str', default   => 'StandardProtocol' );
 has 'samtools_exec'                 => ( is => 'rw', isa => 'Str', default   => "samtools" );
 
 has '_input_sequence_data_filename' => ( is => 'rw', isa => 'Str'); # allow for testing

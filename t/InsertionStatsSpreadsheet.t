@@ -4,13 +4,13 @@ use warnings;
 use Data::Dumper;
 
 
-BEGIN { unshift(@INC, './modules') }
+BEGIN { unshift(@INC, './lib') }
 BEGIN {
 
     use Test::Most;
-    use_ok('Pathogens::RNASeq::InsertionStatsSpreadsheet');
+    use_ok('Bio::RNASeq::InsertionStatsSpreadsheet');
 }
-ok my $expression_results = Pathogens::RNASeq::InsertionStatsSpreadsheet->new(
+ok my $expression_results = Bio::RNASeq::InsertionStatsSpreadsheet->new(
   output_filename => 'my_result_file.csv',
   ), 'initialise';
 

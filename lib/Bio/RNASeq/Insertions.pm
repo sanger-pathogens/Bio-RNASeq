@@ -38,9 +38,9 @@ has 'samtools_exec'           => ( is => 'rw', isa => 'Str',  default => "samtoo
 has 'intergenic_regions'      => ( is => 'rw', isa => 'Bool', default => 1 );
 has 'minimum_intergenic_size' => ( is => 'rw', isa => 'Int',  default => 10 );
 
-has '_sequence_file'          => ( is => 'rw', isa => 'SequenceFile',               lazy_build  => 1 );
-has '_annotation_file'        => ( is => 'rw', isa => 'GFF',                        lazy_build  => 1 );
-has '_results_spreadsheet'    => ( is => 'rw', isa => 'InsertionStatsSpreadsheet',  lazy_build  => 1 );
+has '_sequence_file'          => ( is => 'rw', isa => 'Bio::RNASeq::SequenceFile',               lazy_build  => 1 );
+has '_annotation_file'        => ( is => 'rw', isa => 'Bio::RNASeq::GFF',                        lazy_build  => 1 );
+has '_results_spreadsheet'    => ( is => 'rw', isa => 'Bio::RNASeq::InsertionStatsSpreadsheet',  lazy_build  => 1 );
 has '_insertion_results'      => ( is => 'rw', isa => 'ArrayRef',                                      lazy_build  => 1 );
 has '_frequency_of_read_start' => ( is => 'rw', isa => 'HashRef', lazy  => 1, builder => '_build__frequency_of_read_start' );
 
@@ -60,7 +60,7 @@ sub _build__sequence_file
 sub _build__annotation_file
 {
   my ($self) = @_;
-  GFF->new( filename => $self->annotation_filename);
+  Bio::RNASeq::GFF->new( filename => $self->annotation_filename);
 }
 
 sub _build__results_spreadsheet
