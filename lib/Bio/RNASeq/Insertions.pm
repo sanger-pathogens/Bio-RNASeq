@@ -1,3 +1,5 @@
+#PODNAME: Bio::RNASeq
+
 =head1 NAME
 
 Insertions.pm   - Find the expression when given an input aligned file and an annotation file

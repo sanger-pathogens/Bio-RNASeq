@@ -1,3 +1,5 @@
+#PODNAME: Bio::RNASeq
+
 =head1 NAME
 
 BitWise.pm   - Manipulate the bitwise flags in a BAM file

@@ -1,3 +1,5 @@
+#PODNAME: Bio::RNASeq
+
 =head1 NAME
 
 IntergenicFeature.pm   - Represents a IntergenicFeature from a GFF file

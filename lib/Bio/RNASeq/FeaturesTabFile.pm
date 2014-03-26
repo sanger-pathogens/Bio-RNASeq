@@ -1,3 +1,5 @@
+#PODNAME: Bio::RNASeq
+
 =head1 NAME
 
 FeaturesTabFile.pm   - Builds a spreadsheet of expression results

@@ -1,3 +1,5 @@
+#PODNAME: Bio::RNASeq
+
 =head1 NAME
 
 InsertSite.pm   - Take in a bam file and plot the start position of each read

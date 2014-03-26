@@ -1,3 +1,5 @@
+#PODNAME: Bio::RNASeq
+
 =head1 NAME
 
 BAMStats.pm   - Functionality for Stats files for a BAM

@@ -1,3 +1,5 @@
+#PODNAME: Bio::RNASeq
+
 =head1 NAME
 
 IntergenicRegions.pm   - Represents a IntergenicRegions from a GFF file

@@ -1,3 +1,5 @@
+#PODNAME: Bio::RNASeq
+
 =head1 NAME
 
 ExpressionStatsSpreadsheet.pm   - Builds a spreadsheet of expression results

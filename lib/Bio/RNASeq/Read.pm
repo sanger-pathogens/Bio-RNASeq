@@ -1,3 +1,5 @@
+#PODNAME: Bio::RNASeq
+
 =head1 NAME
 
 Read.pm   - Extract a slice of reads for a sequence file within a specific region

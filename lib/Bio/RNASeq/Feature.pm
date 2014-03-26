@@ -1,3 +1,5 @@
+#PODNAME: Bio::RNASeq
+
 =head1 NAME
 
 Feature.pm   - Represents a Feature from a GFF file
