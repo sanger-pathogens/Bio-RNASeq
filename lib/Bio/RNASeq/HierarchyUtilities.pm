@@ -1,3 +1,4 @@
+#PODNAME: Bio::RNASeq
 package HierarchyUtilities;
 use strict;
 use Carp;

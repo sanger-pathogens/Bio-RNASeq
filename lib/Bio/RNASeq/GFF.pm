@@ -1,3 +1,5 @@
+#PODNAME: Bio::RNASeq
+
 =head1 NAME
 
 GFF.pm   - Represents a GFF from a GFF file

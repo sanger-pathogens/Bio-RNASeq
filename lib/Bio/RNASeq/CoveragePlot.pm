@@ -1,3 +1,5 @@
+#PODNAME: Bio::RNASeq
+
 =head1 NAME
 
 CoveragePlot.pm   - Take in a sequencing file, do a pileup and generate a dot plot of the number of reads at each position.Assumes the BAM is sorted.

@@ -1,3 +1,4 @@
+#PODNAME: Bio::RNASeq
 =head1 NAME
 
 ValidateInputs.pm   - Validate the input sequence file and the annotation file

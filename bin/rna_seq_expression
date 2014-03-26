@@ -1,4 +1,5 @@
 #!/usr/bin/env perl
+#PODNAME: Bio::RNASeq
 
 =head1 NAME
 
@@ -43,7 +44,7 @@ GetOptions(
 Usage: $0
   -s|sequence_file         <aligned BAM file>
   -a|annotation_file       <annotation file (GFF)>
-  -p|protocol              <standard|nc_protocol>
+  -p|protocol              <standard|nc_protocol|tradis>
   -o|output_base_filename  <Optional: base name and location to use for output files>
   -q|minimum_mapping_quality <Optional: minimum mapping quality>
   -c|no_coverage_plots     <Dont create Artemis coverage plots>

@@ -1,3 +1,5 @@
+#PODNAME: Bio::RNASeq
+
 =head1 NAME
 
 SequenceFile.pm   - Represents a SequenceFile file for use in RNASeq

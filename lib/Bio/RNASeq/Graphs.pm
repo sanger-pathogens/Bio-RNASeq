@@ -1,3 +1,4 @@
+#PODNAME: Bio::RNASeq
 package Bio::RNASeq::Graphs;
 
 use strict;

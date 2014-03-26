@@ -1,3 +1,5 @@
+#PODNAME: Bio::RNASeq
+
 package Bio::RNASeq::Exceptions;
 
 use Exception::Class (
