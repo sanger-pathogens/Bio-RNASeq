@@ -391,7 +391,7 @@ sub next_feature {
                 last unless $gff_string;
             }
         }
-        next if($gff_string =~ /^\#/ );
+        next if(defined $gff_string && $gff_string =~ /^\#/ );
 
         last;
     }

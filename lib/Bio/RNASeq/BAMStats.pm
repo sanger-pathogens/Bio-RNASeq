@@ -6,8 +6,8 @@ BAMStats.pm   - Functionality for Stats files for a BAM
 
 =head1 SYNOPSIS
 
-use Bio::RNASeq::BAM;
-my $bam_container = Bio::RNASeq::BAM->new(
+use Bio::RNASeq::BAMStats;
+my $bam_container = Bio::RNASeq::BAMStats->new(
   filename => '/abc/my_file.bam'
   );
 

@@ -27,10 +27,13 @@ use Bio::RNASeq::Exceptions;
 use Bio::RNASeq::BitWise;
 use Bio::RNASeq::IntergenicRegions;
 use Bio::RNASeq::FeaturesTabFile;
+use Data::Dumper;
+
 
 has 'sequence_filename'       => ( is => 'rw', isa => 'Str', required => 1 );
 has 'annotation_filename'     => ( is => 'rw', isa => 'Str', required => 1 );
 has 'output_base_filename'    => ( is => 'rw', isa => 'Str', required => 1 );
+has 'total_mapped_reads_method' => (is => 'rw', isa => 'Str',required => 1 );
 
 #optional input parameters
 has 'filters'                 => ( is => 'rw', isa => 'Maybe[HashRef]'     );
@@ -51,11 +54,16 @@ has '_alignment_slice_protocol_class'  => ( is => 'rw',                         
 sub _build__sequence_file
 {
   my ($self) = @_;
-  my $validator = Bio::RNASeq::ValidateInputs->new( sequence_filename => $self->sequence_filename, annotation_filename => $self->annotation_filename);
-  if($validator->are_input_files_valid() == 0)
-    {
-      Bio::RNASeq::Exceptions::FailedToOpenAlignmentSlice->throw( error => "Input files invalid: ".$self->sequence_filename." ".$self->annotation_filename."\n" );
-    }
+  my $validator = Bio::RNASeq::ValidateInputs->new( sequence_filename => $self->sequence_filename, annotation_filename => $self->annotation_filename, total_mapped_reads_method => $self->total_mapped_reads_method);
+
+  if($validator->are_input_files_valid() == 0) {
+    Bio::RNASeq::Exceptions::FailedToOpenAlignmentSlice->throw( error => "Input files invalid: ".$self->sequence_filename." ".$self->annotation_filename."\n" );
+  }
+
+  if($validator->is_tmrm_valid() eq 'not valid') {
+    Bio::RNASeq::Exceptions::InvalidTotalMappedReadsMethod->throw( error => "Invalid Total Mapped Reads Method option: ".$self->total_mapped_reads_method."\n" );
+  }
+
   Bio::RNASeq::SequenceFile->new(filename => $self->sequence_filename);
 }
 
@@ -119,7 +127,8 @@ sub _build__expression_results
   {
     $self->_calculate_values_for_intergenic_regions(\@expression_results,$total_mapped_reads );
   }
-  
+  print Dumper(\@expression_results);
+
   return \@expression_results;
 }
 

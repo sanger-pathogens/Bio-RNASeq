@@ -99,6 +99,8 @@ sub _build_rpkm_values
   $rpkm_values{mapped_reads_antisense} = 0;
   $rpkm_values{mapped_reads_forward} = 0;
   $rpkm_values{mapped_reads_reverse} = 0;
+  $rpkm_values{total_rpkm} = 0;
+  $rpkm_values{total_mapped_reads} = 0;
 
   my $file_handle = $self->_slice_file_handle;
   
@@ -130,6 +132,9 @@ sub _build_rpkm_values
   $rpkm_values{rpkm_sense} = $self->_calculate_rpkm($rpkm_values{mapped_reads_sense});
   $rpkm_values{rpkm_antisense} = $self->_calculate_rpkm($rpkm_values{mapped_reads_antisense});
   
+  $rpkm_values{total_rpkm} = $rpkm_values{rpkm_sense} + $rpkm_values{rpkm_antisense};
+  $rpkm_values{total_mapped_reads} = $rpkm_values{mapped_reads_antisense} + $rpkm_values{mapped_reads_sense};
+
   return \%rpkm_values;
 }
 
