@@ -9,25 +9,27 @@ The BAM must be aligned to the same reference that the annotation refers to and 
 SYNOPSIS
 ========
 
-rna_seq_expression -s [filename.bam] -a [filename.gff] -p [standard|nc_protocol|tradis] -o [./foobar]
+rna_seq_expression -s [filename.bam] -a [filename.gff] -p [standard|nc_protocol|tradis] -o [./foobar] -t [a|b]
 
 USAGE
 =====
 
--s|sequence_file           - aligned BAM file
+-s|sequence_file             - aligned BAM file
 
--a|annotation_file         - annotation file (GFF)
+-a|annotation_file           - annotation file (GFF)
 
--p|protocol                - standard|nc_protocol
+-p|protocol                  - standard|nc_protocol
 
--o|output_base_filename    - Optional: base name and location to use for output files
+-o|output_base_filename      - Optional: base name and location to use for output files
 
--q|minimum_mapping_quality - Optional: minimum mapping quality
+-q|minimum_mapping_quality   - Optional: minimum mapping quality
 
--c|no_coverage_plots       - Dont create Artemis coverage plots
+-c|no_coverage_plots         - Optional: Dont create Artemis coverage plots
 
--i|intergenic_regions      - Include intergenic regions
+-i|intergenic_regions        - Optional: Include intergenic regions
 
--b|bitwise_flag            - Only include reads which pass filter
+-b|bitwise_flag              - Optional: Only include reads which pass filter
+
+-t|total_mapped_reads_method - Optional: a|b - If not set, defaults to total reads mapped to the ref sequence in the bam file (no quality filters applied to the reads)
 
 -h|help                    - print this message
