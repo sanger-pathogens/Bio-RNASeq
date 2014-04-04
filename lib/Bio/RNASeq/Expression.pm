@@ -127,7 +127,11 @@ sub _build__expression_results
   {
     $self->_calculate_values_for_intergenic_regions(\@expression_results,$total_mapped_reads );
   }
-  print Dumper(\@expression_results);
+  #print Dumper(\@expression_results);
+  print ($self->total_mapped_reads_method, "\n");
+  if ($self->total_mapped_reads_method eq 'a') {
+    $self->_correct_total_mapped_reads_with_method_a(\@expression_results);
+  }
 
   return \@expression_results;
 }
@@ -171,6 +175,16 @@ sub _calculate_values_for_intergenic_regions
   }
 
   return $expression_results;
+}
+
+sub _correct_total_mapped_reads_with_method_a {
+
+  my($self, $expression_results) = @_;
+  for my $array(@$expression_results) {
+    for my $key(sort keys %{ $array }) {
+      print "${ $array }{$key}\n";
+    }
+  }
 }
 
 
