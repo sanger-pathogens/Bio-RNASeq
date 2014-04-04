@@ -2,11 +2,11 @@
 
 =head1 NAME
 
-ExpressionStatsSpreadsheet.pm   - Builds a spreadsheet of expression results
+InsertionStatsSpreadsheet.pm   - Builds a spreadsheet of insertion results
 
 =head1 SYNOPSIS
 
-use Bio::RNASeq::ExpressionStatsSpreadsheet;
+use Bio::RNASeq::InsertionStatsSpreadsheet;
 my $expression_results = Bio::RNASeq::ExpressionStatsSpreadsheet->new(
   output_filename => '/abc/my_results.csv',
   );

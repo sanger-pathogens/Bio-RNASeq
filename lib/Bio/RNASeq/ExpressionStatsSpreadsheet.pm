@@ -31,12 +31,16 @@ sub _result_rows
       $result_set->{seq_id},
       $result_set->{gene_id},
       $result_set->{locus_tag},
+      $result_set->{feature_type},
       $result_set->{mapped_reads_sense},
       $result_set->{rpkm_sense},
       $result_set->{mapped_reads_antisense},
-      $result_set->{rpkm_antisense}
+      $result_set->{rpkm_antisense},
+      $result_set->{total_mapped_reads},
+      $result_set->{total_rpkm},
       ]);
   }
+  print "Returning from ExpressionStatsSpreadsheet\n";
   return \@denormalised_results;
 }
 
@@ -46,11 +50,11 @@ sub _header
   my @header;
   if($self->protocol ne "StrandSpecificProtocol")
   {
-    @header = ["Seq ID","GeneID","Locus Tag","Sense Reads Mapping", "Sense RPKM", "Antisense Reads Mapping", "Antisense RPKM"];
+    @header = ["Seq ID","GeneID","Locus Tag","Feature Type","Sense Reads Mapping", "Sense RPKM", "Antisense Reads Mapping", "Antisense RPKM", "Total Mapped Reads", "Total RPKM"];
   }
   else
   {
-    @header = ["Seq ID","GeneID","Locus Tag","Antisense Reads Mapping", "Antisense RPKM","Sense Reads Mapping", "Sense RPKM"];
+    @header = ["Seq ID","GeneID","Locus Tag","Feature Type","Antisense Reads Mapping", "Antisense RPKM","Sense Reads Mapping", "Sense RPKM", "Total Mapped Reads", "Total RPKM"];
   }
   return \@header;
 }

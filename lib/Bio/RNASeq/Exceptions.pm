@@ -9,6 +9,7 @@ use Exception::Class (
 				   Bio::RNASeq::Exceptions::FailedToCreateNewBAM => { description => 'Couldnt create a new bam file' },
 				   Bio::RNASeq::Exceptions::FailedToCreateMpileup => { description => 'Couldnt create an mpileup' },
 				   Bio::RNASeq::Exceptions::FailedToOpenFeaturesTabFileForWriting => { description => 'Couldnt write tab file' },
+				   Bio::RNASeq::Exceptions::InvalidTotalMappedReadsMethod => { description => 'Invalid total mapped reads method option' },
 );
 
 1;
