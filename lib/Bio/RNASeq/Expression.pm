@@ -42,6 +42,7 @@ has 'samtools_exec'           => ( is => 'rw', isa => 'Str',  default => "samtoo
 has 'window_margin'           => ( is => 'rw', isa => 'Int',  default => 50 );
 has 'intergenic_regions'      => ( is => 'rw', isa => 'Bool', default => 0 );
 has 'minimum_intergenic_size' => ( is => 'rw', isa => 'Int',  default => 10 );
+has 'corrected_total_mapped_reads' => ( is => 'rw', isa => 'Int',  lazy => 1, default => 0 );
 
 has '_sequence_file'          => ( is => 'rw', isa => 'Bio::RNASeq::SequenceFile',               lazy_build  => 1 );
 has '_annotation_file'        => ( is => 'rw', isa => 'Bio::RNASeq::GFF',                        lazy_build  => 1 );
@@ -127,10 +128,28 @@ sub _build__expression_results
   {
     $self->_calculate_values_for_intergenic_regions(\@expression_results,$total_mapped_reads );
   }
-  #print Dumper(\@expression_results);
-  print ($self->total_mapped_reads_method, "\n");
+
   if ($self->total_mapped_reads_method eq 'a') {
     $self->_correct_total_mapped_reads_with_method_a(\@expression_results);
+
+    @expression_results = ();
+    for my $feature_id (keys %{$self->_annotation_file->features}) {
+      my $alignment_slice = $self->_alignment_slice_protocol_class->new(
+    									filename           => $self->_corrected_sequence_filename,
+    									total_mapped_reads => $self->corrected_total_mapped_reads,
+    									feature            => $self->_annotation_file->features->{$feature_id},
+    									filters            => $self->filters,
+    									protocol           => $self->protocol,
+    									samtools_exec      => $self->samtools_exec,
+    									window_margin      => $self->window_margin
+    								       );
+      my $alignment_slice_results = $alignment_slice->rpkm_values;
+      $alignment_slice_results->{total_mapped_reads} = $self->corrected_total_mapped_reads;
+      $alignment_slice_results->{gene_id} = $feature_id;
+      $alignment_slice_results->{seq_id}  =  $self->_annotation_file->features->{$feature_id}->seq_id;
+      $alignment_slice_results->{locus_tag}  =  $self->_annotation_file->features->{$feature_id}->locus_tag;
+      push(@expression_results, $alignment_slice_results);
+    }
   }
 
   return \@expression_results;
@@ -180,11 +199,16 @@ sub _calculate_values_for_intergenic_regions
 sub _correct_total_mapped_reads_with_method_a {
 
   my($self, $expression_results) = @_;
+
+  my $new_total_mapped_reads = 0;
   for my $array(@$expression_results) {
-    for my $key(sort keys %{ $array }) {
-      print "${ $array }{$key}\n";
-    }
+
+    $new_total_mapped_reads += ${ $array }{total_mapped_reads};
+
   }
+
+  $self->corrected_total_mapped_reads($new_total_mapped_reads);
+
 }
 
 

@@ -84,7 +84,18 @@ sub _slice_stream
 sub _build__read_protocol_class
 {
 	my ($self) = @_;
-	my $read_protocol_class = 'Bio::RNASeq::' . $self->protocol . '::Read';
+	my $read_protocol_class;
+	if ($self->protocol =~ m/^Bio::RNASeq::/) {
+
+	  $read_protocol_class = $self->protocol . '::Read';
+
+	}
+	else {
+
+	  $read_protocol_class = 'Bio::RNASeq::' . $self->protocol . '::Read';
+
+	}
+
 	eval("use $read_protocol_class");
   return $read_protocol_class;
 }
