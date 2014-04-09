@@ -40,7 +40,7 @@ sub _result_rows
       $result_set->{total_rpkm},
       ]);
   }
-  print "Returning from ExpressionStatsSpreadsheet\n";
+
   return \@denormalised_results;
 }
 
