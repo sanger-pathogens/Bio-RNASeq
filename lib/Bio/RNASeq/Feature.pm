@@ -14,6 +14,7 @@ my $file_meta_data_container = Bio::RNASeq::Feature->new(
 =cut
 package Bio::RNASeq::Feature;
 use Moose;
+use Data::Dumper;
 
 has 'raw_feature'   => ( is => 'rw', isa => 'Bio::SeqFeature::Generic', required   => 1 );
 
@@ -26,18 +27,34 @@ has 'exon_length'   => ( is => 'rw', isa => 'Int',                 lazy_build =>
 has 'exons'         => ( is => 'rw', isa => 'ArrayRef',            lazy =>1, builder => '_build_exons' );
 
 has 'locus_tag'     => ( is => 'rw', isa => 'Maybe[Str]',          lazy_build => 1 );
+has 'feature_type'  => ( is => 'rw', isa => 'Maybe[Str]',          lazy_build => 1 );
 
 sub _build_locus_tag
 {
   my ($self) = @_;
   my $locus_tag;
+
   my @junk;
   if($self->raw_feature->has_tag('locus_tag'))
   {
     ($locus_tag, @junk) = $self->raw_feature->get_tag_values('locus_tag');
+
     $locus_tag =~ s!\"!!g;
   }
+
   return $locus_tag;
+}
+
+sub _build_feature_type
+{
+  my ($self) = @_;
+  my $feature_type;
+
+  if($self->raw_feature->has_tag('locus_tag'))
+  {
+    $feature_type = $self->raw_feature->primary_tag();
+  }
+  return $feature_type;
 }
 
 sub _build_exons
