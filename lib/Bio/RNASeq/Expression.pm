@@ -121,6 +121,7 @@ sub _build__expression_results
     $alignment_slice_results->{gene_id} = $feature_id;
     $alignment_slice_results->{seq_id}  =  $self->_annotation_file->features->{$feature_id}->seq_id;
     $alignment_slice_results->{locus_tag}  =  $self->_annotation_file->features->{$feature_id}->locus_tag;
+    $alignment_slice_results->{feature_type}  =  $self->_annotation_file->features->{$feature_id}->feature_type;
     push(@expression_results, $alignment_slice_results);
   }
   
@@ -148,6 +149,8 @@ sub _build__expression_results
       $alignment_slice_results->{gene_id} = $feature_id;
       $alignment_slice_results->{seq_id}  =  $self->_annotation_file->features->{$feature_id}->seq_id;
       $alignment_slice_results->{locus_tag}  =  $self->_annotation_file->features->{$feature_id}->locus_tag;
+      $alignment_slice_results->{feature_type}  =  $self->_annotation_file->features->{$feature_id}->feature_type;
+
       push(@expression_results, $alignment_slice_results);
     }
   }

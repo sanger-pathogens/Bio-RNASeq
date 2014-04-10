@@ -9,7 +9,7 @@ The BAM must be aligned to the same reference that the annotation refers to and 
 SYNOPSIS
 ========
 
-rna_seq_expression -s [filename.bam] -a [filename.gff] -p [standard|nc_protocol|tradis] -o [./foobar] -t [a|b]
+rna_seq_expression -s [filename.bam] -a [filename.gff] -p [standard|strand_specific|tradis] -o [./foobar] -t [a|b]
 
 USAGE
 =====
@@ -18,7 +18,7 @@ USAGE
 
 -a|annotation_file           - annotation file (GFF)
 
--p|protocol                  - standard|nc_protocol
+-p|protocol                  - standard|strand_specific|tradis
 
 -o|output_base_filename      - Optional: base name and location to use for output files
 
