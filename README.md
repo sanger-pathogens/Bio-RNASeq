@@ -9,7 +9,7 @@ The BAM must be aligned to the same reference that the annotation refers to and 
 SYNOPSIS
 ========
 
-rna_seq_expression -s [filename.bam] -a [filename.gff] -p [standard|sttand_specific|tradis] -o [./foobar] -t [a|b]
+rna_seq_expression -s [filename.bam] -a [filename.gff] -p [standard|strand_specific|tradis] -o [./foobar] -t [a|b]
 
 USAGE
 =====
