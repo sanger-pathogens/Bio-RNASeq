@@ -14,7 +14,6 @@ my $file_meta_data_container = Bio::RNASeq::Feature->new(
 =cut
 package Bio::RNASeq::Feature;
 use Moose;
-use Data::Dumper;
 
 has 'raw_feature'   => ( is => 'rw', isa => 'Bio::SeqFeature::Generic', required   => 1 );
 

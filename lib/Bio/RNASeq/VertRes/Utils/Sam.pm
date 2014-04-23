@@ -49,7 +49,6 @@ use Bio::RNASeq::VertRes::Parser::fastqcheck;
 use List::Util qw(min max sum);
 use Test::Deep::NoTest;
 use Bio::RNASeq::VertRes::Utils::Graphs;
-use Data::Dumper;
 
 use base qw(Bio::RNASeq::VertRes::Base);
 
@@ -3091,7 +3090,6 @@ sub bam_exome_qc_stats {
 
         if ($opts{dump_intervals}) {
             open my $fh, '>', $opts{dump_intervals} or self->throw("Error opening file $opts{dump_intervals}");
-            print $fh Dumper($intervals);
             close $fh;
             return %stats;
         }

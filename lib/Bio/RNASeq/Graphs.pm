@@ -6,7 +6,6 @@ use warnings;
 use Utils;
 use Bio::RNASeq::VertRes::Utils::Math;
 use List::Util qw(min max sum);
-use Data::Dumper;
 
 our $R_CMD = 'R';
 

@@ -27,7 +27,6 @@ use Bio::RNASeq::Exceptions;
 use Bio::RNASeq::BitWise;
 use Bio::RNASeq::IntergenicRegions;
 use Bio::RNASeq::FeaturesTabFile;
-use Data::Dumper;
 
 
 has 'sequence_filename'       => ( is => 'rw', isa => 'Str', required => 1 );
