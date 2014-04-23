@@ -1,22 +1,23 @@
-#PODNAME: Bio::RNASeq
+package Bio::RNASeq;
 
-=head1 NAME
 
-Expression.pm   - Find the expression when given an input aligned file and an annotation file
+# ABSTRACT: Find the expression when given an input aligned file and an annotation file
 
 =head1 SYNOPSIS
 
-use Bio::RNASeq::Expression;
-my $expression_results = Bio::RNASeq::Expression->new(
-  sequence_filename => 'my_aligned_sequence.bam',
-  annotation_filename => 'my_annotation_file.gff',
-  output_base_filename => 'my_alignement_basename'
-  );
-
-$expression_results->output_spreadsheet();
+Find the expression when given an input aligned file and an annotation file
+	use Bio::RNASeq;
+	my $expression_results = Bio::RNASeq->new(
+	  sequence_filename => 'my_aligned_sequence.bam',
+	  annotation_filename => 'my_annotation_file.gff',
+	  output_base_filename => 'my_alignement_basename'
+	  );
+	
+	$expression_results->output_spreadsheet();
 
 =cut
-package Bio::RNASeq::Expression;
+
+
 use Moose;
 use Bio::RNASeq::SequenceFile;
 use Bio::RNASeq::GFF;
