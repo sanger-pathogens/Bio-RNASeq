@@ -1,28 +1,28 @@
-#PODNAME: Bio::RNASeq
+package Bio::RNASeq::AlignmentSlice;
 
-=head1 NAME
 
-AlignmentSlice.pm   - Extract a slice of reads for a sequence file within a specific region
+# ABSTRACT: Extract a slice of reads for a sequence file within a specific region
 
 =head1 SYNOPSIS
 
-use Bio::RNASeq::AlignmentSlice;
-my $alignment_slice = Bio::RNASeq::AlignmentSlice->new(
-  filename => '/abc/my_file.bam',
-  window_margin => 10,
-  total_mapped_reads => 1234,
-  );
-  my %rpkm_values = $alignment_slice->rpkm_values;
-  $rpkm_values{rpkm_sense};
-  $rpkm_values{rpkm_antisense};
-  $rpkm_values{mapped_reads_sense};
-  $rpkm_values{mapped_reads_antisense};
-
-  $rpkm_values{mapped_reads_forward};
-  $rpkm_values{mapped_reads_reverse};
+Extract a slice of reads for a sequence file within a specific region
+	use Bio::RNASeq::AlignmentSlice;
+	my $alignment_slice = Bio::RNASeq::AlignmentSlice->new(
+	  filename => '/abc/my_file.bam',
+	  window_margin => 10,
+	  total_mapped_reads => 1234,
+	  );
+	  my %rpkm_values = $alignment_slice->rpkm_values;
+	  $rpkm_values{rpkm_sense};
+	  $rpkm_values{rpkm_antisense};
+	  $rpkm_values{mapped_reads_sense};
+	  $rpkm_values{mapped_reads_antisense};
+	
+	  $rpkm_values{mapped_reads_forward};
+	  $rpkm_values{mapped_reads_reverse};
 
 =cut
-package Bio::RNASeq::AlignmentSlice;
+
 use Moose;
 use Bio::RNASeq::Exceptions;
 use Bio::RNASeq::Read;
@@ -159,6 +159,5 @@ sub _calculate_rpkm
   
   return $rpkm;
 }
-
 
 1;

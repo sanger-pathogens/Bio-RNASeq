@@ -1,19 +1,18 @@
-#PODNAME: Bio::RNASeq
-=head1 NAME
+package Bio::RNASeq::ValidateInputs;
 
-ValidateInputs.pm   - Validate the input sequence file and the annotation file
+# ABSTRACT: Validate the input sequence file and the annotation file
 
 =head1 SYNOPSIS
-
-use Bio::RNASeq::ValidateInputs;
-my $validator = Bio::RNASeq::ValidateInputs->new(
-  sequence_filename => 'my_aligned_sequence.bam',
-  annotation_filename => 'my_annotation_file.gff'
-  );
-$validator->are_input_files_valid();
+Validate the input sequence file and the annotation file
+	use Bio::RNASeq::ValidateInputs;
+	my $validator = Bio::RNASeq::ValidateInputs->new(
+	  sequence_filename => 'my_aligned_sequence.bam',
+	  annotation_filename => 'my_annotation_file.gff'
+	  );
+	$validator->are_input_files_valid();
 
 =cut
-package Bio::RNASeq::ValidateInputs;
+
 use Moose;
 use Bio::RNASeq::VertRes::Parser::bam;
 use Bio::Tools::GFF;
@@ -110,4 +109,6 @@ sub _build__gff_parser
   Bio::Tools::GFF->new(-gff_version => 3, -file => $self->annotation_filename);
 }
 
+no Moose;
+__PACKAGE__->meta->make_immutable;
 1;

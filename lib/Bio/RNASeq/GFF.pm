@@ -1,20 +1,18 @@
-#PODNAME: Bio::RNASeq
+package Bio::RNASeq::GFF;
 
-=head1 NAME
-
-GFF.pm   - Represents a GFF from a GFF file
+# ABSTRACT:  Represents a GFF from a GFF file
 
 =head1 SYNOPSIS
-
-use Bio::RNASeq::GFF;
-my $rna_seq_gff = Bio::RNASeq::GFF->new(
-  filename => 'my_file.gff'
-  );
-  
-$rna_seq_gff->features();
+Represents a GFF from a GFF file
+	use Bio::RNASeq::GFF;
+	my $rna_seq_gff = Bio::RNASeq::GFF->new(
+	  filename => 'my_file.gff'
+	  );
+	  
+	$rna_seq_gff->features();
 
 =cut
-package Bio::RNASeq::GFF;
+
 use Moose;
 use Bio::Tools::NonStandardGFF;
 use Bio::RNASeq::Feature;
@@ -89,4 +87,6 @@ sub _idsort
   $A[0] cmp $B[0] || $A[1] <=> $B[1];
 }
 
+no Moose;
+__PACKAGE__->meta->make_immutable;
 1;

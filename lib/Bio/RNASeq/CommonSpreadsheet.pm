@@ -1,22 +1,21 @@
-#PODNAME: Bio::RNASeq
+package Bio::RNASeq::CommonSpreadsheet;
 
-=head1 NAME
-
-ExpressionStatsSpreadsheet.pm   - Builds a spreadsheet of expression results
+# ABSTRACT:  Builds a spreadsheet of expression results
 
 =head1 SYNOPSIS
 
-use Bio::RNASeq::ExpressionStatsSpreadsheet;
-my $expression_results = Bio::RNASeq::ExpressionStatsSpreadsheet->new(
-  output_filename => '/abc/my_results.csv',
-  );
-$expression_results->add_result($my_rpkm_values);
-$expression_results->add_result($more_rpkm_values);
-$expression_results->build_and_close();
+Builds a spreadsheet of expression results
+	use Bio::RNASeq::CommonSpreadsheet;
+	my $expression_results = Bio::RNASeq::CommonSpreadsheet->new(
+	  output_filename => '/abc/my_results.csv',
+	  );
+	$expression_results->add_result($my_rpkm_values);
+	$expression_results->add_result($more_rpkm_values);
+	$expression_results->build_and_close();
 
 
 =cut
-package Bio::RNASeq::CommonSpreadsheet;
+
 use Moose;
 use Text::CSV;
 
@@ -76,4 +75,7 @@ sub build_and_close
   close($self->_output_file_handle);  
   return 1;
 }
+
+no Moose;
+__PACKAGE__->meta->make_immutable;
 1;

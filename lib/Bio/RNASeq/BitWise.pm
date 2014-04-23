@@ -1,20 +1,19 @@
-#PODNAME: Bio::RNASeq
+package Bio::RNASeq::BitWise;
 
-=head1 NAME
-
-BitWise.pm   - Manipulate the bitwise flags in a BAM file
+# ABSTRACT: Manipulate the bitwise flags in a BAM file
 
 =head1 SYNOPSIS
 
-use Bio::RNASeq::BitWise;
-my $bitwise = Bio::RNASeq::BitWise->new(
-  filename => '/abc/my_file.bam',
-  output_filename => 'output_file.bam'
-  );
-$bitwise->update_bitwise_flags;
+Manipulate the bitwise flags in a BAM file
+	use Bio::RNASeq::BitWise;
+	my $bitwise = Bio::RNASeq::BitWise->new(
+	  filename => '/abc/my_file.bam',
+	  output_filename => 'output_file.bam'
+	  );
+	$bitwise->update_bitwise_flags;
 
 =cut
-package Bio::RNASeq::BitWise;
+
 use Moose;
 use Bio::RNASeq::Exceptions;
 use Bio::RNASeq::VertRes::Wrapper::samtools;
@@ -109,5 +108,7 @@ sub _sequence_data_stream
   }
 }
 
+no Moose;
+__PACKAGE__->meta->make_immutable;
 1;
 

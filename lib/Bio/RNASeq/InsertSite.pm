@@ -1,21 +1,18 @@
-#PODNAME: Bio::RNASeq
+package Bio::RNASeq::InsertSite;
 
-=head1 NAME
-
-InsertSite.pm   - Take in a bam file and plot the start position of each read
+# ABSTRACT: Take in a bam file and plot the start position of each read
 
 =head1 SYNOPSIS
-
-use Bio::RNASeq::InsertSite;
-my $insertsite_plots_from_bam = Bio::RNASeq::InsertSite->new(
-   filename => 'my_file.bam',
-   output_base_filename => 'my_output_file'
-  );
-$insertsite_plots_from_bam->create_plots();
-
+Take in a bam file and plot the start position of each read
+	use Bio::RNASeq::InsertSite;
+	my $insertsite_plots_from_bam = Bio::RNASeq::InsertSite->new(
+	   filename => 'my_file.bam',
+	   output_base_filename => 'my_output_file'
+	  );
+	$insertsite_plots_from_bam->create_plots();
 
 =cut
-package Bio::RNASeq::InsertSite;
+
 use Moose;
 use Bio::RNASeq::VertRes::Parser::bam;
 use Bio::DB::Sam;
@@ -180,5 +177,6 @@ sub create_plots
   return 1;
 }
 
-
+no Moose;
+__PACKAGE__->meta->make_immutable;
 1;

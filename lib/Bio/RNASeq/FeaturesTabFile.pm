@@ -1,20 +1,18 @@
-#PODNAME: Bio::RNASeq
+package Bio::RNASeq::FeaturesTabFile;
 
-=head1 NAME
-
-FeaturesTabFile.pm   - Builds a spreadsheet of expression results
+# ABSTRACT: Builds a features file
 
 =head1 SYNOPSIS
-
-use Bio::RNASeq::FeaturesTabFile;
-my $tab_file_results = Bio::RNASeq::FeaturesTabFile->new(
-  output_filename => '/abc/my_results',
-  features => $features;
-);
-$tab_file_results->create_file;
+Builds a features file
+	use Bio::RNASeq::FeaturesTabFile;
+	my $tab_file_results = Bio::RNASeq::FeaturesTabFile->new(
+	  output_filename => '/abc/my_results',
+	  features => $features;
+	);
+	$tab_file_results->create_file;
 
 =cut
-package Bio::RNASeq::FeaturesTabFile;
+
 use Moose;
 use IO::Compress::Gzip;
 
@@ -67,5 +65,6 @@ sub _close_output_file_handles
   return;
 }
 
-
+no Moose;
+__PACKAGE__->meta->make_immutable;
 1;

@@ -1,23 +1,21 @@
-#PODNAME: Bio::RNASeq
+package Bio::RNASeq::CoveragePlot;
 
-=head1 NAME
 
-CoveragePlot.pm   - Take in a sequencing file, do a pileup and generate a dot plot of the number of reads at each position.Assumes the BAM is sorted.
+# ABSTRACT: Take in a sequencing file, do a pileup and generate a dot plot of the number of reads at each position.Assumes the BAM is sorted.
 
 =head1 SYNOPSIS
-
-use Bio::RNASeq::CoveragePlot;
-my $coverage_plots_from_bam = Bio::RNASeq::CoveragePlot->new(
-   filename => 'my_file.bam',
-   output_base_filename => 'my_output_file',
-   mpileup_cmd   => "samtools mpileup ",
-   mapping_quality => 30
-  );
-$coverage_plots_from_bam->create_plots();
-
-
+Take in a sequencing file, do a pileup and generate a dot plot of the number of reads at each position.Assumes the BAM is sorted.
+	use Bio::RNASeq::CoveragePlot;
+	my $coverage_plots_from_bam = Bio::RNASeq::CoveragePlot->new(
+	   filename => 'my_file.bam',
+	   output_base_filename => 'my_output_file',
+	   mpileup_cmd   => "samtools mpileup ",
+	   mapping_quality => 30
+	  );
+	$coverage_plots_from_bam->create_plots();
 =cut
-package Bio::RNASeq::CoveragePlot;
+
+
 use Moose;
 use Bio::RNASeq::VertRes::Parser::bam;
 
@@ -164,6 +162,6 @@ sub create_plots
   return 1;
 }
 
-
-
+no Moose;
+__PACKAGE__->meta->make_immutable;
 1;

@@ -1,5 +1,7 @@
-#PODNAME: Bio::RNASeq
 package Bio::RNASeq::Graphs;
+
+# ABSTRACT: Create graphs for the given data sets
+
 
 use strict;
 use warnings;
