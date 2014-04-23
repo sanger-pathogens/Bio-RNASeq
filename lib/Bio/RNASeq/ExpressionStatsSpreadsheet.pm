@@ -44,13 +44,15 @@ sub _header
 {
   my ($self) = @_;
   my @header;
-  if($self->protocol ne "StrandSpecificProtocol")
+  
+  if($self->protocol eq "Bio::RNASeq::StandardProtocol")
   {
-    @header = ["Seq ID","GeneID","Locus Tag","Feature Type","Sense Reads Mapping", "Sense RPKM", "Antisense Reads Mapping", "Antisense RPKM", "Total Mapped Reads", "Total RPKM"];
+    @header = ["Seq ID","GeneID","Locus Tag","Feature Type","Sense Reads Mapping","Sense RPKM","Antisense Reads Mapping","Antisense RPKM","Total Mapped Reads","Total RPKM"];
   }
-  else
+  
+  if($self->protocol eq "Bio::RNASeq::StrandSpecificProtocol")
   {
-    @header = ["Seq ID","GeneID","Locus Tag","Feature Type","Antisense Reads Mapping", "Antisense RPKM","Sense Reads Mapping", "Sense RPKM", "Total Mapped Reads", "Total RPKM"];
+    @header = ["Seq ID","GeneID","Locus Tag","Feature Type","Antisense Reads Mapping","Antisense RPKM","Sense Reads Mapping","Sense RPKM","Total Mapped Reads","Total RPKM"];
   }
   return \@header;
 }

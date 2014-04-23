@@ -21,6 +21,4 @@ use Exception::Class (
 				   Bio::RNASeq::Exceptions::InvalidTotalMappedReadsMethod => { description => 'Invalid total mapped reads method option' },
 );
 
-no Moose;
-__PACKAGE__->meta->make_immutable;
 1;
