@@ -1,12 +1,14 @@
-=head1 NAME
+package Bio::RNASeq::StandardProtocol::AlignmentSlice;
 
-AlignmentSlice.pm   - Standard protocol, just inherits from the base class
+# ABSTRACT: Standard protocol, just inherits from the base class
 
 =head1 SYNOPSIS
 
 =cut
-package Bio::RNASeq::StandardProtocol::AlignmentSlice;
+
 use Moose;
 extends 'Bio::RNASeq::AlignmentSlice';
 
+no Moose;
+__PACKAGE__->meta->make_immutable;
 1;

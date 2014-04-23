@@ -1,18 +1,18 @@
-=head1 NAME
+package Bio::RNASeq::StandardProtocol::Read;
 
-Read.pm   - Standard protocol, just inherits from the base read class
+# ABSTRACT:  Standard protocol, just inherits from the base read class
 
 =head1 SYNOPSIS
-
-use Bio::RNASeq::StandardProtocol::Read;
-my $alignment_slice = Bio::RNASeq::StandardProtocol::Read->new(
-  alignment_line => 'xxxxxxx',
-  gene_strand => 1,
-  exons => [[1,3],[4,5]]
-  );
-  my %mapped_reads = $alignment_slice->mapped_reads;
-  $mapped_reads{sense};
-  $mapped_reads{antisense};
+Standard protocol, just inherits from the base read class
+	use Bio::RNASeq::StandardProtocol::Read;
+	my $alignment_slice = Bio::RNASeq::StandardProtocol::Read->new(
+	  alignment_line => 'xxxxxxx',
+	  gene_strand => 1,
+	  exons => [[1,3],[4,5]]
+	  );
+	  my %mapped_reads = $alignment_slice->mapped_reads;
+	  $mapped_reads{sense};
+	  $mapped_reads{antisense};
 
 =cut
 
@@ -34,5 +34,6 @@ sub _calculate_bitwise_flag
   return $flag;
 }
 
-
+no Moose;
+__PACKAGE__->meta->make_immutable;
 1;

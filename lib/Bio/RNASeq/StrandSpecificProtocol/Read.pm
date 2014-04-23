@@ -1,22 +1,22 @@
-=head1 NAME
+package Bio::RNASeq::StrandSpecificProtocol::Read;
 
-Read.pm   - functionality for the strand specific protocol for reads
+# ABSTRACT: Functionality for the strand specific protocol for reads
 
 =head1 SYNOPSIS
-
-use Bio::RNASeq::StrandSpecificProtocol::Read;
-my $alignment_slice = Bio::RNASeq::StrandSpecificProtocol::Read->new(
-  alignment_line => 'xxxxxxx',
-  gene_strand => 1,
-  exons => [[1,3],[4,5]]
-  );
-  my %mapped_reads = $alignment_slice->mapped_reads;
-  $mapped_reads{sense};
-  $mapped_reads{antisense};
+Functionality for the strand specific protocol for reads
+	use Bio::RNASeq::StrandSpecificProtocol::Read;
+	my $alignment_slice = Bio::RNASeq::StrandSpecificProtocol::Read->new(
+	  alignment_line => 'xxxxxxx',
+	  gene_strand => 1,
+	  exons => [[1,3],[4,5]]
+	  );
+	  my %mapped_reads = $alignment_slice->mapped_reads;
+	  $mapped_reads{sense};
+	  $mapped_reads{antisense};
 
 =cut
 
-package Bio::RNASeq::StrandSpecificProtocol::Read;
+
 use Moose;
 extends 'Bio::RNASeq::Read';
 
