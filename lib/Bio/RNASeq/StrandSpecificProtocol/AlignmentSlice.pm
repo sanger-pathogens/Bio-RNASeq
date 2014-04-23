@@ -1,9 +1,9 @@
 package Bio::RNASeq::StrandSpecificProtocol::AlignmentSlice;
 
-# ABSTRACT: Standard protocol, just inherits from the base class
+# ABSTRACT: Strand specific protocol, just inherits from the base class
 
 =head1 SYNOPSIS
-
+Strand specific protocol, just inherits from the base class
 =cut
 
 use Moose;

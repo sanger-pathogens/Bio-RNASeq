@@ -1,9 +1,9 @@
 package Bio::RNASeq::StandardProtocol::Read;
 
-# ABSTRACT:  Standard protocol, just inherits from the base read class
+# ABSTRACT:  Functionality for the standard protocol
 
 =head1 SYNOPSIS
-Standard protocol, just inherits from the base read class
+Functionality for the standard protocol
 	use Bio::RNASeq::StandardProtocol::Read;
 	my $alignment_slice = Bio::RNASeq::StandardProtocol::Read->new(
 	  alignment_line => 'xxxxxxx',
@@ -16,7 +16,6 @@ Standard protocol, just inherits from the base read class
 
 =cut
 
-package Bio::RNASeq::StandardProtocol::Read;
 use Moose;
 extends 'Bio::RNASeq::Read';
 
