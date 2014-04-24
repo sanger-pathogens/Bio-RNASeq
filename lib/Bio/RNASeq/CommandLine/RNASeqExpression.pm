@@ -40,7 +40,7 @@ sub BUILD {
 
 	my ($self) =@_;
 	
-	my($sequence_file, $annotation_file, $protocol_name, $output_base_filename, $mapping_quality, $no_coverage_plots, $intergenic_regions, $bitwise_flag, $help );
+	my($sequence_file, $annotation_file, $protocol_name, $output_base_filename, $minimum_mapping_quality, $no_coverage_plots, $intergenic_regions, $bitwise_flag, $help, $total_mapped_reads_method );
 
 	GetOptions(
 	$self->args,
@@ -48,7 +48,7 @@ sub BUILD {
 	'a|annotation_file=s'                    => \$annotation_file,
 	'p|protocol=s'                           => \$protocol_name,
 	'o|output_base_filename=s'               => \$output_base_filename,
-	'q|minimum_mapping_quality=s'            => \$mapping_quality,
+	'q|minimum_mapping_quality=s'            => \$minimum_mapping_quality,
 	'c|no_coverage_plots'                    => \$no_coverage_plots,
 	'i|intergenic_regions'                   => \$intergenic_regions,
 	'b|bitwise_flag'                         => \$bitwise_flag,
@@ -58,14 +58,13 @@ sub BUILD {
 	
 	$self->sequence_file($sequence_file) if ( defined($sequence_file) );
 	$self->annotation_file($annotation_file) if ( defined($annotation_file) );
-	$self->protocol($protocol) if ( defined($protocol) );
+	$self->protocol($protocol_name) if ( defined($protocol_name) );
 	$self->output_base_filename($output_base_filename) if ( defined($output_base_filename) );
 	$self->minimum_mapping_quality($minimum_mapping_quality) if ( defined($minimum_mapping_quality) );
 	$self->no_coverage_plots($no_coverage_plots) if ( defined($no_coverage_plots) );
 	$self->intergenic_regions($intergenic_regions) if ( defined($intergenic_regions) );
 	$self->bitwise_flag($bitwise_flag) if ( defined($bitwise_flag) );
 	$self->total_mapped_reads_method($total_mapped_reads_method) if ( defined($total_mapped_reads_method) );
-	$self->output_multifasta_files($output_multifasta_files) if ( defined($output_multifasta_files) );
 
 }
 
@@ -97,7 +96,7 @@ USAGE
 	  sequence_filename    => $self->sequence_file,
 	  annotation_filename  => $self->annotation_file,
 	  filters              => $self->_filters,
-	  protocol             => $self->_protocols{$self->protocol_name},
+	  protocol             => $self->_protocols{$self->protocol},
 	  output_base_filename => $self->output_base_filename,
 	  intergenic_regions   => $self->intergenic_regions,
 	  total_mapped_reads_method   => $self->total_mapped_reads_method
@@ -112,7 +111,7 @@ USAGE
 	  Bio::RNASeq::CoveragePlot->new(
 	    filename             => $expression_results->_corrected_sequence_filename,
 	    output_base_filename => $self->output_base_filename,
-	    mapping_quality      => $self->mapping_quality
+	    mapping_quality      => $self->minimum_mapping_quality
 	  )->create_plots();
 	}
 }
@@ -121,7 +120,7 @@ USAGE
 sub _build__filters {
 
 	my ($self) = @_;
-	$self->_filters(mapping_quality => $self->mapping_quality);
+	$self->_filters(mapping_quality => $self->minimum_mapping_quality);
 	if(defined($self->bitwise_flag))
 	{
 	  $self->_filters(bitwise_flag => $self->bitwise_flag) ;
