@@ -203,7 +203,6 @@ sub _correct_total_mapped_reads_with_method_a {
 
   my($self, $expression_results) = @_;
 
-  print "Hello\n";
   my $new_total_mapped_reads = 0;
   for my $array(@$expression_results) {
 
