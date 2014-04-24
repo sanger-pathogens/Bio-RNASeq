@@ -152,6 +152,7 @@ sub _build_rpkm_values
 sub _calculate_rpkm
 {
   my ($self, $mapped_reads) = @_;
+  #print Dumper($self);
   #my $rpkm  = $mapped_reads / ( ($self->feature->exon_length/1000) * ($self->total_mapped_reads/1000000) );
   # same equation, rewritten
   my $rpkm  = ($mapped_reads / $self->feature->exon_length) * (1000000000/$self->total_mapped_reads);

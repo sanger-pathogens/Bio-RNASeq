@@ -38,7 +38,7 @@ for my $total_mapped_reads_method ( @tmrm ) {
 							  output_base_filename => $output_base_filename,
 							  total_mapped_reads_method   => $total_mapped_reads_method
 							 );
-
+							 
     $expression_results->output_spreadsheet();
 
 
