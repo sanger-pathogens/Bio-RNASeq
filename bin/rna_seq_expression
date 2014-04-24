@@ -1,0 +1,20 @@
+#!/usr/bin/env perl
+
+package Bio::RNASeq::Main::RNASeqExpression;
+
+# ABSTRACT: Calculates RNASeq expression values
+# PODNAME: rna_seq_expression
+
+=head1 SYNOPSIS
+
+This script takes in an aligned sequence file (BAM) and a corresponding annotation file (GFF) and creates a spreadsheet with expression values.
+The BAM must be aligned to the same reference that the annotation refers to.
+
+=cut
+
+BEGIN { unshift( @INC, '../lib' ) }
+BEGIN { unshift( @INC, './lib' ) }
+BEGIN { unshift( @INC, '/software/pathogen/internal/prod/lib/' ) }
+use Bio::RNASeq::CommandLine::RNASeqExpression;
+
+Bio::RNASeq::CommandLine::RNASeqExpression->new(args => \@ARGV, script_name => $0)->run;
