@@ -18,7 +18,7 @@ USAGE
 
 -a|annotation_file           - annotation file (GFF)
 
--p|protocol                  - standard|strand_specific|tradis
+-p|protocol                  - standard|strand_specific
 
 -o|output_base_filename      - Optional: base name and location to use for output files
 
