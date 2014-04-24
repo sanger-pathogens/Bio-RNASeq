@@ -15,7 +15,6 @@ use Moose;
 use Getopt::Long qw(GetOptionsFromArray);
 use Bio::RNASeq;
 use Bio::RNASeq::CoveragePlot;
-use Data::Dumper;
 
 
 has 'args' => ( is => 'ro', isa => 'ArrayRef', required => 1 );
@@ -103,8 +102,6 @@ USAGE
 	  intergenic_regions   => $self->intergenic_regions,
 	  total_mapped_reads_method   => $self->total_mapped_reads_method
 	  );
-	
-	  print Dumper($expression_results);
 	
 	$expression_results->output_spreadsheet();
 	
