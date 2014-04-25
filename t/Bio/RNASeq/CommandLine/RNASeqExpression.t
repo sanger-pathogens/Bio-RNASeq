@@ -287,6 +287,8 @@ system('touch empty_file');
 );
 mock_execute_script_and_check_output( $script_name,
     \%scripts_and_expected_files );
+	
+
 cleanup_files();
 done_testing();
 
