@@ -23,7 +23,7 @@ has 'help' => ( is => 'rw', isa => 'Bool', default => 0 );
 
 has 'sequence_file' => ( is => 'rw', isa => 'Str');
 has 'annotation_file' => ( is => 'rw', isa => 'Str');
-has 'protocol' => ( is => 'rw', isa => 'Str');
+has 'protocol' => ( is => 'rw', isa => 'Str', default => 'standard');
 has 'output_base_filename' => ( is => 'rw', isa => 'Str');
 has 'minimum_mapping_quality' => ( is => 'rw', isa => 'Int', default => 1);
 has 'no_coverage_plots' => ( is => 'rw', isa => 'Bool', default => 0);

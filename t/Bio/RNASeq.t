@@ -23,7 +23,7 @@ for my $total_mapped_reads_method ( @tmrm ) {
   my %filters = ( mapping_quality => 1 );
 
 
-  my $tmp_dir = File::Temp->newdir( DIR => File::Spec->curdir() );
+  my $tmp_dir = File::Temp->newdir( DIR => File::Spec->curdir(), CLEANUP => 0 );
   my $output_base_filename = $tmp_dir . '/_test';
 
   my @output_filename_extensions = qw( .corrected.bam .corrected.bam.bai .expression.csv );
@@ -38,9 +38,7 @@ for my $total_mapped_reads_method ( @tmrm ) {
 							  output_base_filename => $output_base_filename,
 							  total_mapped_reads_method   => $total_mapped_reads_method
 							 );
-							 
     $expression_results->output_spreadsheet();
-
 
     my @headers;
     for my $extension ( @output_filename_extensions ) {
