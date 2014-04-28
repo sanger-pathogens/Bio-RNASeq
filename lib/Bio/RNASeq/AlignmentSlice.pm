@@ -190,7 +190,7 @@ sub _calculate_rpkm {
 sub _calculate_rpkm_gene_models {
     my ( $self, $mapped_reads ) = @_;
 
-print Dumper($self);
+#print Dumper($self);
 #my $rpkm  = $mapped_reads / ( ($self->feature->exon_length/1000) * ($self->total_mapped_reads/1000000) );
 # same equation, rewritten
     my $rpkm =
