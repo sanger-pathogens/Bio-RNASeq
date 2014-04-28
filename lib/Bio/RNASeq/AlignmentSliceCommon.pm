@@ -1,4 +1,4 @@
-package Bio::RNASeq::AlignmentSlice;
+package Bio::RNASeq::AlignmentSliceCommon;
 
 # ABSTRACT: Extract a slice of reads for a sequence file within a specific region
 
@@ -31,10 +31,8 @@ use Data::Dumper;
 has 'filename' => ( is => 'rw', isa => 'Str', required => 1 );
 has 'feature' => ( is => 'rw', required => 1 );
 has 'total_mapped_reads' => ( is => 'rw', isa => 'Int', required => 1 );
-has 'turn' => (is => 'rw', isa => 'Int', required => 1);
 
 #optional input
-has 'total_mapped_reads_to_gene_models' => ( is => 'rw', isa => 'Int', default => 0);
 has 'samtools_exec' => ( is => 'rw', isa => 'Str', default => "samtools" );
 has 'protocol' =>
   ( is => 'rw', isa => 'Str', default => 'Bio::RNASeq::StandardProtocol' );
@@ -149,55 +147,18 @@ sub _build_rpkm_values {
     }
 
     $rpkm_values{rpkm_sense} =
-      $self->_calculate_rpkm( $rpkm_values{mapped_reads_sense} );
+      $self->_calculate( $rpkm_values{mapped_reads_sense} );
     $rpkm_values{rpkm_antisense} =
-      $self->_calculate_rpkm( $rpkm_values{mapped_reads_antisense} );
+      $self->_calculate( $rpkm_values{mapped_reads_antisense} );
 
     $rpkm_values{total_rpkm} =
       $rpkm_values{rpkm_sense} + $rpkm_values{rpkm_antisense};
     $rpkm_values{total_mapped_reads} =
       $rpkm_values{mapped_reads_antisense} + $rpkm_values{mapped_reads_sense};
 	  
-	  if ($self->turn == 2) {
-	  
-      $rpkm_values{rpkm_sense} =
-        $self->_calculate_rpkm_gene_models( $rpkm_values{mapped_reads_sense} );
-      $rpkm_values{rpkm_antisense} =
-        $self->_calculate_rpkm_gene_models( $rpkm_values{mapped_reads_antisense} );
 
-      $rpkm_values{total_rpkm_gene_models} =
-        $rpkm_values{rpkm_sense} + $rpkm_values{rpkm_antisense};
-      $rpkm_values{total_mapped_reads_gene_models} =
-        $rpkm_values{mapped_reads_antisense} + $rpkm_values{mapped_reads_sense};
-	}
 
     return \%rpkm_values;
-}
-
-sub _calculate_rpkm {
-    my ( $self, $mapped_reads ) = @_;
-
-#print Dumper($self);
-#my $rpkm  = $mapped_reads / ( ($self->feature->exon_length/1000) * ($self->total_mapped_reads/1000000) );
-# same equation, rewritten
-    my $rpkm =
-      ( $mapped_reads / $self->feature->exon_length ) *
-      ( 1000000000 / $self->total_mapped_reads );
-
-    return $rpkm;
-}
-
-sub _calculate_rpkm_gene_models {
-    my ( $self, $mapped_reads ) = @_;
-
-#print Dumper($self);
-#my $rpkm  = $mapped_reads / ( ($self->feature->exon_length/1000) * ($self->total_mapped_reads/1000000) );
-# same equation, rewritten
-    my $rpkm =
-      ( $mapped_reads / $self->feature->exon_length ) *
-      ( 1000000000 / $self->total_mapped_reads_to_gene_models );
-
-    return $rpkm;
 }
 
 1;
