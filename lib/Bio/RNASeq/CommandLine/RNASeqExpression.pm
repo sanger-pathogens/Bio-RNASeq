@@ -29,7 +29,6 @@ has 'minimum_mapping_quality' => ( is => 'rw', isa => 'Int', default => 1);
 has 'no_coverage_plots' => ( is => 'rw', isa => 'Bool', default => 0);
 has 'intergenic_regions' => ( is => 'rw', isa => 'Bool', default => 0);
 has 'bitwise_flag' => ( is => 'rw', isa => 'Bool', default => 1);
-has 'total_mapped_reads_method' => ( is => 'rw', isa => 'Str', default => 'default');
 
 has '_filters' => ( is => 'rw', isa => 'HashRef', lazy => 1, builder => '_build__filters');
 has '_protocols' => ( is => 'rw', isa => 'HashRef', lazy => 1, builder => '_build__protocols');
@@ -41,7 +40,7 @@ sub BUILD {
 
 	my ($self) =@_;
 	
-	my($sequence_file, $annotation_file, $protocol_name, $output_base_filename, $minimum_mapping_quality, $no_coverage_plots, $intergenic_regions, $bitwise_flag, $help, $total_mapped_reads_method );
+	my($sequence_file, $annotation_file, $protocol_name, $output_base_filename, $minimum_mapping_quality, $no_coverage_plots, $intergenic_regions, $bitwise_flag, $help );
 
 	GetOptionsFromArray(
 	$self->args,
@@ -53,7 +52,6 @@ sub BUILD {
 	'c|no_coverage_plots'                    => \$no_coverage_plots,
 	'i|intergenic_regions'                   => \$intergenic_regions,
 	'b|bitwise_flag'                         => \$bitwise_flag,
-	't|total_mapped_reads_method:s'          => \$total_mapped_reads_method,
 	'h|help'                                 => \$help,
     );
 	
@@ -65,7 +63,6 @@ sub BUILD {
 	$self->no_coverage_plots($no_coverage_plots) if ( defined($no_coverage_plots) );
 	$self->intergenic_regions($intergenic_regions) if ( defined($intergenic_regions) );
 	$self->bitwise_flag($bitwise_flag) if ( defined($bitwise_flag) );
-	$self->total_mapped_reads_method($total_mapped_reads_method) if ( defined($total_mapped_reads_method) );
 
 }
 
@@ -83,7 +80,6 @@ Usage:
   -c|no_coverage_plots     <Dont create Artemis coverage plots>
   -i|intergenic_regions    <Include intergenic regions>
   -b|bitwise_flag        <Only include reads which pass filter>
-  -t|total_mapped_reads_method        <a|b - If not set defaults to total reads mapped to the ref sequence in the bam file, no quality filters applied>
   -h|help                  <print this message>
 
 This script takes in an aligned sequence file (BAM) and a corresponding annotation file (GFF) and creates a spreadsheet with expression values.
@@ -100,7 +96,6 @@ USAGE
 	  protocol             => $self->_protocols->{$self->protocol},
 	  output_base_filename => $self->output_base_filename,
 	  intergenic_regions   => $self->intergenic_regions,
-	  total_mapped_reads_method   => $self->total_mapped_reads_method
 	  );
 	
 	$expression_results->output_spreadsheet();

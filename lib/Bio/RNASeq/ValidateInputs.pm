@@ -19,7 +19,6 @@ use Bio::Tools::GFF;
 
 has 'sequence_filename'           => ( is => 'rw', isa => 'Str',             required   => 1 );
 has 'annotation_filename'         => ( is => 'rw', isa => 'Str',             required   => 1 );
-has 'total_mapped_reads_method'   => ( is => 'rw', isa => 'Str',             required   => 1 );
 
 has '_actual_sequence_details'    => ( is => 'rw', isa => 'HashRef',         lazy_build => 1 );
 has '_annotated_sequence_details' => ( is => 'rw', isa => 'HashRef',         lazy_build => 1 );
@@ -35,17 +34,6 @@ sub are_input_files_valid
 	return 1;
 }
 
-sub is_tmrm_valid {
-
-  my ($self) = @_;
-  my @allowed_tmrm = qw(a b default);
-  if ($self->total_mapped_reads_method ~~ @allowed_tmrm) {
-    return $self->total_mapped_reads_method;
-  }
-  else {
-    return 'not valid';
-  }
-}
 
 sub _sequence_names_match
 {

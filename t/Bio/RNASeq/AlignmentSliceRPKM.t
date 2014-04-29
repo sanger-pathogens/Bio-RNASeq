@@ -20,7 +20,7 @@ $feature->exons(\@exons);
 $feature->exon_length(50);
 
 ok my $alignment_slice = Bio::RNASeq::AlignmentSliceRPKM->new(
-  filename => 't/data/bam',
+  filename => 't/data/rna_seq_bitwise_flags_set.bam',
   window_margin => 10,
   total_mapped_reads => 10000,
   feature => $feature,
@@ -29,7 +29,7 @@ ok my $alignment_slice = Bio::RNASeq::AlignmentSliceRPKM->new(
 is $alignment_slice->_window_start, 156, 'start window';
 is $alignment_slice->_window_end, 241, 'end window';
 ok $alignment_slice->_slice_file_handle, 'file handle initialises okay';
-ok my $rpkm_values = $alignment_slice->rpkm_values;
+ok my $rpkm_values = $alignment_slice->rpkm_values, 'rpkm values';
 is $rpkm_values->{rpkm_sense}, 52000, 'rpkm sense';
 is $rpkm_values->{rpkm_antisense},0, 'rpkm antisense';
 is $rpkm_values->{mapped_reads_sense},26, 'mapped reads sense';
@@ -39,13 +39,15 @@ is $rpkm_values->{mapped_reads_antisense},0, 'mapped reads antisense';
 
 # invalid filehandle
 ok $alignment_slice = Bio::RNASeq::AlignmentSliceRPKM->new(
-  filename => 't/data/bam',
+  filename => 't/data/blah.bam',
   total_mapped_reads => 10000,
   window_margin => 10,
   feature => $feature,
   _input_slice_filename => "file_which_doesnt_exist"
 ), 'initialise invalid alignment slice';
+
 throws_ok  {$alignment_slice->_slice_file_handle} qr/Cant view slice/ , 'invalid file should throw an error';
+
 
 done_testing();
 

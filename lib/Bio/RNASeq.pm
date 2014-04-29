@@ -19,7 +19,8 @@ Find the expression when given an input aligned file and an annotation file
 use Moose;
 use Bio::RNASeq::SequenceFile;
 use Bio::RNASeq::GFF;
-use Bio::RNASeq::AlignmentSlice;
+use Bio::RNASeq::AlignmentSliceRPKM;
+use Bio::RNASeq::AlignmentSliceRPKMGeneModel;
 use Bio::RNASeq::ExpressionStatsSpreadsheet;
 use Bio::RNASeq::ValidateInputs;
 use Bio::RNASeq::Exceptions;
@@ -31,7 +32,6 @@ use Data::Dumper;
 has 'sequence_filename'         => ( is => 'rw', isa => 'Str', required => 1 );
 has 'annotation_filename'       => ( is => 'rw', isa => 'Str', required => 1 );
 has 'output_base_filename'      => ( is => 'rw', isa => 'Str', required => 1 );
-has 'total_mapped_reads_method' => ( is => 'rw', isa => 'Str', required => 1 );
 
 #optional input parameters
 has 'filters' => ( is => 'rw', isa => 'Maybe[HashRef]' );
@@ -41,7 +41,7 @@ has 'samtools_exec' => ( is => 'rw', isa => 'Str', default => "samtools" );
 has 'window_margin' => ( is => 'rw', isa => 'Int', default => 50 );
 has 'intergenic_regions'      => ( is => 'rw', isa => 'Bool', default => 0 );
 has 'minimum_intergenic_size' => ( is => 'rw', isa => 'Int',  default => 10 );
-has 'total_mapped_reads_to_gene_models' =>
+has 'total_mapped_reads_gene_model' =>
   ( is => 'rw', isa => 'Int', lazy => 1, default => 0 );
 
 has '_sequence_file' =>
@@ -54,14 +54,13 @@ has '_results_spreadsheet' => (
     lazy_build => 1
 );
 has '_expression_results' => ( is => 'rw', isa => 'ArrayRef', lazy_build => 1 );
-has '_alignment_slice_protocol_class' => ( is => 'rw', lazy_build => 1 );
+
 
 sub _build__sequence_file {
     my ($self) = @_;
     my $validator = Bio::RNASeq::ValidateInputs->new(
         sequence_filename         => $self->sequence_filename,
         annotation_filename       => $self->annotation_filename,
-        total_mapped_reads_method => $self->total_mapped_reads_method
     );
 
     if ( $validator->are_input_files_valid() == 0 ) {
@@ -69,13 +68,6 @@ sub _build__sequence_file {
                 error => "Input files invalid: "
               . $self->sequence_filename . " "
               . $self->annotation_filename
-              . "\n" );
-    }
-
-    if ( $validator->is_tmrm_valid() eq 'not valid' ) {
-        Bio::RNASeq::Exceptions::InvalidTotalMappedReadsMethod->throw(
-                error => "Invalid Total Mapped Reads Method option: "
-              . $self->total_mapped_reads_method
               . "\n" );
     }
 
@@ -113,19 +105,17 @@ sub _build__expression_results {
     )->update_bitwise_flags();
 
     my @expression_results = ();
-	#my @expression_results_gene_models = ();
+	my @expression_results_gene_model = ();
 
     for my $feature_id ( keys %{ $self->_annotation_file->features } ) {
-        my $alignment_slice1 = $self->_alignment_slice_protocol_class->new(
+        my $alignment_slice1 = Bio::RNASeq::AlignmentSliceRPKM->new(
             filename           => $self->_corrected_sequence_filename,
             total_mapped_reads => $total_mapped_reads,
-			total_mapped_reads_to_gene_models => 0,
             feature       => $self->_annotation_file->features->{$feature_id},
             filters       => $self->filters,
             protocol      => $self->protocol,
             samtools_exec => $self->samtools_exec,
             window_margin => $self->window_margin,
-			turn => 1
         );
         my $alignment_slice_results = $alignment_slice1->rpkm_values;
 
@@ -146,36 +136,39 @@ sub _build__expression_results {
             $total_mapped_reads );
     }
 
-    $self->_total_mapped_reads_to_gene_models_method( \@expression_results );
+	
+    $self->_total_mapped_reads_gene_model_method( \@expression_results );
 
     for my $feature_id ( keys %{ $self->_annotation_file->features } ) {
-        my $alignment_slice = $self->_alignment_slice_protocol_class->new(
+        my $alignment_slice = Bio::RNASeq::AlignmentSliceRPKMGeneModel->new(
             filename           => $self->_corrected_sequence_filename,
             total_mapped_reads => $total_mapped_reads,
-			total_mapped_reads_to_gene_models => $self->total_mapped_reads_to_gene_models,
+			total_mapped_reads_gene_model => $self->total_mapped_reads_gene_model,
             feature       => $self->_annotation_file->features->{$feature_id},
             filters       => $self->filters,
             protocol      => $self->protocol,
             samtools_exec => $self->samtools_exec,
             window_margin => $self->window_margin,
-			turn => 2
         );
-        my $alignment_slice_results_gene_models =
+        my $alignment_slice_results_gene_model =
           $alignment_slice->rpkm_values;
-        $alignment_slice_results_gene_models->{total_mapped_reads_to_gene_models} =
-          $self->total_mapped_reads_to_gene_models;
-        $alignment_slice_results_gene_models->{gene_id} = $feature_id;
-        $alignment_slice_results_gene_models->{seq_id} =
+        $alignment_slice_results_gene_model->{total_mapped_reads_gene_model} =
+          $self->total_mapped_reads_gene_model;
+        $alignment_slice_results_gene_model->{gene_id} = $feature_id;
+        $alignment_slice_results_gene_model->{seq_id} =
           $self->_annotation_file->features->{$feature_id}->seq_id;
-        $alignment_slice_results_gene_models->{locus_tag} =
+        $alignment_slice_results_gene_model->{locus_tag} =
           $self->_annotation_file->features->{$feature_id}->locus_tag;
-        $alignment_slice_results_gene_models->{feature_type} =
+        $alignment_slice_results_gene_model->{feature_type} =
           $self->_annotation_file->features->{$feature_id}->feature_type;
 
-        push( @expression_results, $alignment_slice_results_gene_models );
+        push( @expression_results_gene_model, $alignment_slice_results_gene_model );
     }
-	print Dumper($self);
-	#my $merged_expression_results = $self->_merge_expression_results( \@expression_results, \@expression_results_gene_models );
+	
+	
+	#print Dumper(\@expression_results_gene_model);
+	$self->_merge_expression_results( \@expression_results, \@expression_results_gene_model );
+	#print Dumper(\@expression_results);
 
     return \@expression_results;
 }
@@ -200,7 +193,7 @@ sub _calculate_values_for_intergenic_regions {
     $tab_file_results->create_files;
 
     for my $feature_id ( keys %{ $intergenic_regions->intergenic_features } ) {
-        my $alignment_slice = $self->_alignment_slice_protocol_class->new(
+        my $alignment_slice = Bio::RNASeq::AlignmentSliceRPKM->new(
             filename           => $self->_corrected_sequence_filename,
             total_mapped_reads => $total_mapped_reads,
             feature  => $intergenic_regions->intergenic_features->{$feature_id},
@@ -221,31 +214,37 @@ sub _calculate_values_for_intergenic_regions {
     return $expression_results;
 }
 
-sub _total_mapped_reads_to_gene_models_method {
+sub _total_mapped_reads_gene_model_method {
 
     my ( $self, $expression_results ) = @_;
 
-    my $total_mapped_reads_to_gene_models = 0;
+    my $total_mapped_reads_gene_model = 0;
     for my $array (@$expression_results) {
 
-        $total_mapped_reads_to_gene_models += ${$array}{total_mapped_reads};
+        $total_mapped_reads_gene_model += ${$array}{total_mapped_reads};
 
     }
-
-    $self->total_mapped_reads_to_gene_models(
-        $total_mapped_reads_to_gene_models);
+	#print "$total_mapped_reads_gene_model\n";
+    $self->total_mapped_reads_gene_model(
+        $total_mapped_reads_gene_model);
 
 }
 
 
-sub _build__alignment_slice_protocol_class {
-    my ($self) = @_;
+sub _merge_expression_results {
+	
+	my ($self,$expression_results,$expression_results_gene_model) = @_;
 
-    my $alignment_slice_protocol_class =
-      "Bio::RNASeq::" . $self->protocol . "::AlignmentSlice";
-    eval("use $alignment_slice_protocol_class");
-    return $alignment_slice_protocol_class;
+	for(my $i = 0; $i < scalar @$expression_results; $i++) {
+		$expression_results->[$i]->{rpkm_sense_gene_model} = $expression_results_gene_model->[$i]->{rpkm_sense_gene_model};
+		$expression_results->[$i]->{rpkm_antisense_gene_model} = $expression_results_gene_model->[$i]->{rpkm_antisense_gene_model};
+		$expression_results->[$i]->{total_mapped_reads_gene_model} = $expression_results_gene_model->[$i]->{total_mapped_reads_gene_model};
+		$expression_results->[$i]->{total_rpkm_gene_model} = $expression_results_gene_model->[$i]->{total_rpkm_gene_model};
+	}
+	
 }
+
+
 
 sub output_spreadsheet {
     my ($self) = @_;

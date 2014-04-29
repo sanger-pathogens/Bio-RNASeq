@@ -42,14 +42,20 @@ has '_input_slice_filename' => ( is => 'rw', isa => 'Str' )
   ;    # allow for testing and for using VR samtools view output file
 
 # output variable
-has 'rpkm_values' => ( is => 'rw', isa => 'HashRef', lazy_build => 1 );
-has 'rpkm_values_gene_models' => ( is => 'rw', isa => 'HashRef', lazy_build => 1 );
+has 'rpkm_values' => ( is => 'rw', isa => 'HashRef', builder => '_build_rpkm_values', lazy => 1);
+has 'rpkm_values_gene_model' => ( is => 'rw', isa => 'HashRef', lazy_build => 1 );
 
 # internal variables
 has '_slice_file_handle' => ( is => 'rw', lazy_build => 1 );
 has '_window_start' => ( is => 'rw', isa => 'Int', lazy_build => 1 );
 has '_window_end' => ( is => 'rw', isa => 'Int', lazy_build => 1 );
 has '_read_protocol_class' => ( is => 'rw', lazy_build => 1 );
+
+sub BUILD {
+	my ($self) = @_;
+ 	$self->rpkm_values();
+	$self->_postprocess_rpkm_values();
+ }
 
 sub _build__window_start {
     my ($self) = @_;
@@ -89,6 +95,7 @@ sub _slice_stream {
           . $self->_window_start . "-"
           . $self->_window_end . " |";
     }
+
 }
 
 sub _build__read_protocol_class {
@@ -111,16 +118,22 @@ sub _build__read_protocol_class {
 
 sub _build_rpkm_values {
     my ($self) = @_;
+	
     my %rpkm_values;
 
     $rpkm_values{mapped_reads_sense}     = 0;
     $rpkm_values{mapped_reads_antisense} = 0;
     $rpkm_values{mapped_reads_forward}   = 0;
     $rpkm_values{mapped_reads_reverse}   = 0;
+    $rpkm_values{mapped_reads_forward_gene_model}   = 0;
+    $rpkm_values{mapped_reads_reverse_gene_model}   = 0;
+	$rpkm_values{mapped_reads_antisense_gene_model} = 0;
+	$rpkm_values{mapped_reads_sense_gene_model} = 0;
     $rpkm_values{total_rpkm}             = 0;
     $rpkm_values{total_mapped_reads}     = 0;
-    $rpkm_values{total_rpkm_gene_models}             = 0;
-    $rpkm_values{total_mapped_reads_gene_models}     = 0;
+    $rpkm_values{total_rpkm_gene_model}             = 0;
+    $rpkm_values{total_mapped_reads_gene_model}     = 0;
+
 
     my $file_handle = $self->_slice_file_handle;
 
@@ -135,30 +148,26 @@ sub _build_rpkm_values {
 
         $rpkm_values{mapped_reads_sense}     += $mapped_reads->{sense};
         $rpkm_values{mapped_reads_antisense} += $mapped_reads->{antisense};
+        $rpkm_values{mapped_reads_sense_gene_model}     += $mapped_reads->{sense};
+        $rpkm_values{mapped_reads_antisense_gene_model} += $mapped_reads->{antisense};
 
         if ( $sequence_reads->read_strand == 0 ) {
             $rpkm_values{mapped_reads_forward} += $mapped_reads->{sense};
             $rpkm_values{mapped_reads_reverse} += $mapped_reads->{antisense};
+            $rpkm_values{mapped_reads_forward_gene_model} += $mapped_reads->{sense};
+            $rpkm_values{mapped_reads_reverse_gene_model} += $mapped_reads->{antisense};
         }
         else {
             $rpkm_values{mapped_reads_forward} += $mapped_reads->{antisense};
             $rpkm_values{mapped_reads_reverse} += $mapped_reads->{sense};
+            $rpkm_values{mapped_reads_forward_gene_model} += $mapped_reads->{antisense};
+            $rpkm_values{mapped_reads_reverse_gene_model} += $mapped_reads->{sense};
         }
-    }
-
-    $rpkm_values{rpkm_sense} =
-      $self->_calculate( $rpkm_values{mapped_reads_sense} );
-    $rpkm_values{rpkm_antisense} =
-      $self->_calculate( $rpkm_values{mapped_reads_antisense} );
-
-    $rpkm_values{total_rpkm} =
-      $rpkm_values{rpkm_sense} + $rpkm_values{rpkm_antisense};
-    $rpkm_values{total_mapped_reads} =
-      $rpkm_values{mapped_reads_antisense} + $rpkm_values{mapped_reads_sense};
-	  
-
+    } 
 
     return \%rpkm_values;
 }
+
+
 
 1;

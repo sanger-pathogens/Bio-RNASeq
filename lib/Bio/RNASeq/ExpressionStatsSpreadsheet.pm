@@ -15,6 +15,7 @@ Builds a spreadsheet of expression results
 
 use Moose;
 extends 'Bio::RNASeq::CommonSpreadsheet';
+use Data::Dumper;
 
 sub _result_rows {
     my ($self) = @_;
@@ -33,12 +34,17 @@ sub _result_rows {
                 $result_set->{rpkm_antisense},
                 $result_set->{total_mapped_reads},
                 $result_set->{total_rpkm},
-                $result_set->{total_mapped_reads_to_gene_models},
-                $result_set->{total_rpkm_gene_models},
+				$result_set->{mapped_reads_sense_gene_model},
+				$result_set->{rpkm_sense_gene_model},
+				$result_set->{mapped_reads_antisense_gene_model},
+				$result_set->{rpkm_antisense_gene_model},
+                $result_set->{total_mapped_reads_gene_model},
+                $result_set->{total_rpkm_gene_model},
             ]
         );
     }
 
+	#print Dumper(\@denormalised_results);
     return \@denormalised_results;
 }
 
@@ -58,6 +64,10 @@ sub _header {
             "Sense RPKM",
             "Total Mapped Reads",
             "Total RPKM",
+            "Antisense Reads Mapping to gene models",
+            "Antisense RPKM to gene models",
+            "Sense Reads Mapping to gene models",
+            "Sense RPKM to gene models",			
             "Total Mapped Reads to gene models",
             "Total RPKM to gene models"
         ];
@@ -74,6 +84,10 @@ sub _header {
             "Antisense RPKM",
             "Total Mapped Reads",
             "Total RPKM",
+            "Sense Reads Mapping to gene models",
+            "Sense RPKM to gene models",
+            "Antisense Reads Mapping to gene models",
+            "Antisense RPKM to gene models",
             "Total Mapped Reads to gene models",
             "Total RPKM to gene models",
         ];
