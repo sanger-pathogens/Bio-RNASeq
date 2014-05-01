@@ -35,8 +35,6 @@ use Bio::RNASeq::VertRes::Utils::FileSystem;
 use Bio::RNASeq::VertRes::Wrapper::samtools;
 use Bio::RNASeq::VertRes::Parser::sam;
 use Bio::RNASeq::VertRes::Parser::bam;
-use Bio::RNASeq::VertRes::Parser::fasta;
-use Bio::RNASeq::VertRes::Utils::Math;
 use Digest::MD5;
 use List::Util qw(min max sum);
 use Test::Deep::NoTest;

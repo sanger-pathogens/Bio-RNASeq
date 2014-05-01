@@ -197,7 +197,6 @@ my %SKIPPED_TAGS = map { $_ => 1 } qw(score);
 sub new {
   my ($class, @args) = @_;
   my $self = $class->SUPER::new(@args);
-  print "Hello\n";
   
   my ($gff_version, $noparse) = $self->_rearrange([qw(GFF_VERSION NOPARSE)],@args);
 
