@@ -4,12 +4,16 @@ use warnings;
 use Data::Dumper;
 
 BEGIN { unshift(@INC, './lib') }
+
 BEGIN {
+	use Bio::RNASeq::GFF;
+	use Bio::RNASeq::IntergenicRegions;
     use Test::Most;
     use_ok('Bio::RNASeq::FeaturesTabFile');
 }
-use Bio::RNASeq::GFF;
-use Bio::RNASeq::IntergenicRegions;
+
+
+ok ( -e 't/data/Citrobacter_rodentium_ICC168_v1_test.gff', 'gff file exists');
 
 my $rna_seq_gff = Bio::RNASeq::GFF->new(filename => 't/data/Citrobacter_rodentium_ICC168_v1_test.gff');
 
