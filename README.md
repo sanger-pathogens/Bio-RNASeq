@@ -7,9 +7,9 @@ The BAM must be aligned to the same reference that the annotation refers to and 
 
 The RPKM values are calculated according to two different methodologies:
 
-	RPKM values based on the total number of reads on the bam file that mapped to the reference;
+RPKM values based on the total number of reads on the bam file that mapped to the reference;
 
-	RPKM values based on the total number of reads on the bam file that mapped to gene models in the reference genome.
+RPKM values based on the total number of reads on the bam file that mapped to gene models in the reference genome.
 
 The *expression.csv file will contain both datasets. 
   
