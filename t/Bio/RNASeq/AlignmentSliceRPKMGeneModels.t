@@ -39,6 +39,8 @@ is $rpkm_values->{rpkm_antisense_gene_model},         0,     'rpkm antisense gen
 is $rpkm_values->{mapped_reads_sense_gene_model},     26,    'mapped reads sense gene model';
 is $rpkm_values->{mapped_reads_antisense_gene_model}, 0,     'mapped reads antisense gene model';
 
+=head
+
 # invalid filehandle
 ok $alignment_slice = Bio::RNASeq::AlignmentSliceRPKMGeneModel->new(
     filename                       => 't/data/bam',
@@ -51,6 +53,8 @@ ok $alignment_slice = Bio::RNASeq::AlignmentSliceRPKMGeneModel->new(
   'initialise invalid alignment slice';
 throws_ok { $alignment_slice->_slice_file_handle } qr/Cant view slice/,
   'invalid file should throw an error';
+
+=cut
 
 done_testing();
 

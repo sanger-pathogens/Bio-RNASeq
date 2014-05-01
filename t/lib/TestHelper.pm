@@ -34,13 +34,15 @@ sub mock_execute_script_and_check_output {
             ok( -e $actual_output_file_name,
                 "Actual output file exists $actual_output_file_name" );
 
+=head
+
 				if ($script_name eq 'Bio::RNASeq::CommandLine::RNASeqExpression') {
 					if ($actual_ouput_file_name ~= m/.csv$
 					
 					
 					
 				}
-=head
+
 				
             is(
                 read_file($actual_output_file_name),

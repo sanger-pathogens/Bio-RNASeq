@@ -36,6 +36,7 @@ is $rpkm_values->{mapped_reads_sense},26, 'mapped reads sense';
 is $rpkm_values->{mapped_reads_antisense},0, 'mapped reads antisense';
 
 
+=head
 
 # invalid filehandle
 ok $alignment_slice = Bio::RNASeq::AlignmentSliceRPKM->new(
@@ -48,6 +49,7 @@ ok $alignment_slice = Bio::RNASeq::AlignmentSliceRPKM->new(
 
 throws_ok  {$alignment_slice->_slice_file_handle} qr/Cant view slice/ , 'invalid file should throw an error';
 
+=cut
 
 done_testing();
 

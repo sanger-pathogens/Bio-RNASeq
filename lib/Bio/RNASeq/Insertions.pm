@@ -18,7 +18,8 @@ Find the expression when given an input aligned file and an annotation file
 use Moose;
 use Bio::RNASeq::SequenceFile;
 use Bio::RNASeq::GFF;
-use Bio::RNASeq::AlignmentSlice;
+use Bio::RNASeq::AlignmentSliceRPKM;
+use Bio::RNASeq::AlignmentSliceRPKMGeneModel;
 use Bio::RNASeq::InsertionStatsSpreadsheet;
 use Bio::RNASeq::ValidateInputs;
 use Bio::RNASeq::Exceptions;

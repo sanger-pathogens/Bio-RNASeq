@@ -30,35 +30,7 @@ system('touch empty_file');
         '_test.expression.csv',
         '_test.CD630_updated_171212.embl.coverageplot.gz'
       ],
-' -s t/data/647029.pe.markdup.bam -a t/data/CD630_updated_171212.embl.34.gff  -o ./_test -t default '
-      => [
-        '_test.corrected.bam',
-        '_test.corrected.bam.bai',
-        '_test.expression.csv',
-        '_test.CD630_updated_171212.embl.coverageplot.gz'
-      ],
-' -s t/data/647029.pe.markdup.bam -a t/data/CD630_updated_171212.embl.34.gff  -o ./_test -t a '
-      => [
-        '_test.corrected.bam',
-        '_test.corrected.bam.bai',
-        '_test.expression.csv',
-        '_test.CD630_updated_171212.embl.coverageplot.gz'
-      ],
 ' -s t/data/647029.pe.markdup.bam -a t/data/CD630_updated_171212.embl.34.gff  -q 10 -o ./_test '
-      => [
-        '_test.corrected.bam',
-        '_test.corrected.bam.bai',
-        '_test.expression.csv',
-        '_test.CD630_updated_171212.embl.coverageplot.gz'
-      ],
-' -s t/data/647029.pe.markdup.bam -a t/data/CD630_updated_171212.embl.34.gff  -q 10 -o ./_test -t default '
-      => [
-        '_test.corrected.bam',
-        '_test.corrected.bam.bai',
-        '_test.expression.csv',
-        '_test.CD630_updated_171212.embl.coverageplot.gz'
-      ],
-' -s t/data/647029.pe.markdup.bam -a t/data/CD630_updated_171212.embl.34.gff  -q 10 -o ./_test -t a '
       => [
         '_test.corrected.bam',
         '_test.corrected.bam.bai',
@@ -72,20 +44,6 @@ system('touch empty_file');
         '_test.expression.csv',
         '_test.CD630_updated_171212.embl.coverageplot.gz'
       ],
-' -s t/data/647029.pe.markdup.bam -a t/data/CD630_updated_171212.embl.34.gff  -b -o ./_test -t default '
-      => [
-        '_test.corrected.bam',
-        '_test.corrected.bam.bai',
-        '_test.expression.csv',
-        '_test.CD630_updated_171212.embl.coverageplot.gz'
-      ],
-' -s t/data/647029.pe.markdup.bam -a t/data/CD630_updated_171212.embl.34.gff  -b -o ./_test -t a '
-      => [
-        '_test.corrected.bam',
-        '_test.corrected.bam.bai',
-        '_test.expression.csv',
-        '_test.CD630_updated_171212.embl.coverageplot.gz'
-      ],
 ' -s t/data/647029.pe.markdup.bam -a t/data/CD630_updated_171212.embl.34.gff  -q 10 -b -o ./_test '
       => [
         '_test.corrected.bam',
@@ -93,38 +51,9 @@ system('touch empty_file');
         '_test.expression.csv',
         '_test.CD630_updated_171212.embl.coverageplot.gz'
       ],
-' -s t/data/647029.pe.markdup.bam -a t/data/CD630_updated_171212.embl.34.gff  -q 10 -b -o ./_test -t default '
-      => [
-        '_test.corrected.bam',
-        '_test.corrected.bam.bai',
-        '_test.expression.csv',
-        '_test.CD630_updated_171212.embl.coverageplot.gz'
-      ],
-' -s t/data/647029.pe.markdup.bam -a t/data/CD630_updated_171212.embl.34.gff  -q 10 -b -o ./_test -t a '
-      => [
-        '_test.corrected.bam',
-        '_test.corrected.bam.bai',
-        '_test.expression.csv',
-        '_test.CD630_updated_171212.embl.coverageplot.gz'
-      ],
-
 
 #Standard protocol tests
 ' -s t/data/647029.pe.markdup.bam -a t/data/CD630_updated_171212.embl.34.gff -p standard -o ./_test '
-      => [
-        '_test.corrected.bam',
-        '_test.corrected.bam.bai',
-        '_test.expression.csv',
-        '_test.CD630_updated_171212.embl.coverageplot.gz'
-      ],
-' -s t/data/647029.pe.markdup.bam -a t/data/CD630_updated_171212.embl.34.gff -p standard -o ./_test -t default '
-      => [
-        '_test.corrected.bam',
-        '_test.corrected.bam.bai',
-        '_test.expression.csv',
-        '_test.CD630_updated_171212.embl.coverageplot.gz'
-      ],
-' -s t/data/647029.pe.markdup.bam -a t/data/CD630_updated_171212.embl.34.gff -p standard -o ./_test -t a '
       => [
         '_test.corrected.bam',
         '_test.corrected.bam.bai',
@@ -138,20 +67,6 @@ system('touch empty_file');
         '_test.expression.csv',
         '_test.CD630_updated_171212.embl.coverageplot.gz'
       ],
-' -s t/data/647029.pe.markdup.bam -a t/data/CD630_updated_171212.embl.34.gff -p standard -q 10 -o ./_test -t default '
-      => [
-        '_test.corrected.bam',
-        '_test.corrected.bam.bai',
-        '_test.expression.csv',
-        '_test.CD630_updated_171212.embl.coverageplot.gz'
-      ],
-' -s t/data/647029.pe.markdup.bam -a t/data/CD630_updated_171212.embl.34.gff -p standard -q 10 -o ./_test -t a '
-      => [
-        '_test.corrected.bam',
-        '_test.corrected.bam.bai',
-        '_test.expression.csv',
-        '_test.CD630_updated_171212.embl.coverageplot.gz'
-      ],
 ' -s t/data/647029.pe.markdup.bam -a t/data/CD630_updated_171212.embl.34.gff -p standard -b -o ./_test '
       => [
         '_test.corrected.bam',
@@ -159,35 +74,7 @@ system('touch empty_file');
         '_test.expression.csv',
         '_test.CD630_updated_171212.embl.coverageplot.gz'
       ],
-' -s t/data/647029.pe.markdup.bam -a t/data/CD630_updated_171212.embl.34.gff -p standard -b -o ./_test -t default '
-      => [
-        '_test.corrected.bam',
-        '_test.corrected.bam.bai',
-        '_test.expression.csv',
-        '_test.CD630_updated_171212.embl.coverageplot.gz'
-      ],
-' -s t/data/647029.pe.markdup.bam -a t/data/CD630_updated_171212.embl.34.gff -p standard -b -o ./_test -t a '
-      => [
-        '_test.corrected.bam',
-        '_test.corrected.bam.bai',
-        '_test.expression.csv',
-        '_test.CD630_updated_171212.embl.coverageplot.gz'
-      ],
 ' -s t/data/647029.pe.markdup.bam -a t/data/CD630_updated_171212.embl.34.gff -p standard -q 10 -b -o ./_test '
-      => [
-        '_test.corrected.bam',
-        '_test.corrected.bam.bai',
-        '_test.expression.csv',
-        '_test.CD630_updated_171212.embl.coverageplot.gz'
-      ],
-' -s t/data/647029.pe.markdup.bam -a t/data/CD630_updated_171212.embl.34.gff -p standard -q 10 -b -o ./_test -t default '
-      => [
-        '_test.corrected.bam',
-        '_test.corrected.bam.bai',
-        '_test.expression.csv',
-        '_test.CD630_updated_171212.embl.coverageplot.gz'
-      ],
-' -s t/data/647029.pe.markdup.bam -a t/data/CD630_updated_171212.embl.34.gff -p standard -q 10 -b -o ./_test -t a '
       => [
         '_test.corrected.bam',
         '_test.corrected.bam.bai',
@@ -203,35 +90,7 @@ system('touch empty_file');
             '_test.expression.csv',
             '_test.CD630_updated_171212.embl.coverageplot.gz'
           ],
-' -s t/data/647029.pe.markdup.bam -a t/data/CD630_updated_171212.embl.34.gff -p strand_specific -o ./_test -t default '
-          => [
-            '_test.corrected.bam',
-            '_test.corrected.bam.bai',
-            '_test.expression.csv',
-            '_test.CD630_updated_171212.embl.coverageplot.gz'
-          ],
-' -s t/data/647029.pe.markdup.bam -a t/data/CD630_updated_171212.embl.34.gff -p strand_specific -o ./_test -t a '
-          => [
-            '_test.corrected.bam',
-            '_test.corrected.bam.bai',
-            '_test.expression.csv',
-            '_test.CD630_updated_171212.embl.coverageplot.gz'
-          ],
 ' -s t/data/647029.pe.markdup.bam -a t/data/CD630_updated_171212.embl.34.gff -p strand_specific -q 10 -o ./_test '
-          => [
-            '_test.corrected.bam',
-            '_test.corrected.bam.bai',
-            '_test.expression.csv',
-            '_test.CD630_updated_171212.embl.coverageplot.gz'
-          ],
-' -s t/data/647029.pe.markdup.bam -a t/data/CD630_updated_171212.embl.34.gff -p strand_specific -q 10 -o ./_test -t default '
-          => [
-            '_test.corrected.bam',
-            '_test.corrected.bam.bai',
-            '_test.expression.csv',
-            '_test.CD630_updated_171212.embl.coverageplot.gz'
-          ],
-' -s t/data/647029.pe.markdup.bam -a t/data/CD630_updated_171212.embl.34.gff -p strand_specific -q 10 -o ./_test -t a '
           => [
             '_test.corrected.bam',
             '_test.corrected.bam.bai',
@@ -245,43 +104,13 @@ system('touch empty_file');
             '_test.expression.csv',
             '_test.CD630_updated_171212.embl.coverageplot.gz'
           ],
-' -s t/data/647029.pe.markdup.bam -a t/data/CD630_updated_171212.embl.34.gff -p strand_specific -b -o ./_test -t default '
-          => [
-            '_test.corrected.bam',
-            '_test.corrected.bam.bai',
-            '_test.expression.csv',
-            '_test.CD630_updated_171212.embl.coverageplot.gz'
-          ],
-' -s t/data/647029.pe.markdup.bam -a t/data/CD630_updated_171212.embl.34.gff -p strand_specific -b -o ./_test -t a '
-          => [
-            '_test.corrected.bam',
-            '_test.corrected.bam.bai',
-            '_test.expression.csv',
-            '_test.CD630_updated_171212.embl.coverageplot.gz'
-          ],
 ' -s t/data/647029.pe.markdup.bam -a t/data/CD630_updated_171212.embl.34.gff -p strand_specific -q 10 -b -o ./_test '
           => [
             '_test.corrected.bam',
             '_test.corrected.bam.bai',
             '_test.expression.csv',
             '_test.CD630_updated_171212.embl.coverageplot.gz'
-          ],
-' -s t/data/647029.pe.markdup.bam -a t/data/CD630_updated_171212.embl.34.gff -p strand_specific -q 10 -b -o ./_test -t default '
-          => [
-            '_test.corrected.bam',
-            '_test.corrected.bam.bai',
-            '_test.expression.csv',
-            '_test.CD630_updated_171212.embl.coverageplot.gz'
-          ],
-' -s t/data/647029.pe.markdup.bam -a t/data/CD630_updated_171212.embl.34.gff -p strand_specific -q 10 -b -o ./_test -t a '
-          => [
-            '_test.corrected.bam',
-            '_test.corrected.bam.bai',
-            '_test.expression.csv',
-            '_test.CD630_updated_171212.embl.coverageplot.gz'
-          ],
- 
-	  
+          ],	  
 
     '-h' => [ 'empty_file', 't/data/empty_file' ],
 );

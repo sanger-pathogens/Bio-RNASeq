@@ -68,7 +68,7 @@ for my $protocol ( keys %protocols ) {
 
                     #print "PROTOCOL: $protocol\t LINE: $counter\n ROW: @row\n";
 
-                   test_standard_file( \@row, \@headers, $protocol, $counter );
+                    test_standard_file( \@row, \@headers, $protocol, $counter );
 
                 }
 
@@ -76,9 +76,10 @@ for my $protocol ( keys %protocols ) {
                     && $protocol eq 'strand_specific' )
                 {
 
-                    print "PROTOCOL: $protocol\t LINE: $counter\n ROW: @row\n";
+                    #print "PROTOCOL: $protocol\t LINE: $counter\n ROW: @row\n";
 
-            #test_strand_specific_file( \@row, \@headers, $protocol, $counter );
+                    test_strand_specific_file( \@row, \@headers, $protocol,
+                        $counter );
 
                 }
 
@@ -100,27 +101,27 @@ sub test_standard_file {
 
         ok( $row->[4] == 2,
             "Protocol: $protocol - $headers->[4] - line $counter" );
-        ok( $row->[5] == 153.0250567,
+        ok( $row->[5] == 153.025056705348,
             "Protocol: $protocol - $headers->[5] - line $counter" );
         ok( $row->[6] == 2,
             "Protocol: $protocol - $headers->[6] - line $counter" );
-        ok( $row->[7] == 153.0250567,
+        ok( $row->[7] == 153.025056705348,
             "Protocol: $protocol - $headers->[7] - line $counter" );
         ok( $row->[8] == 4,
             "Protocol: $protocol - $headers->[8] - line $counter" );
-        ok( $row->[9] == 306.050113,
+        ok( $row->[9] == 306.050113410695,
             "Protocol: $protocol - $headers->[9] - line $counter" );
         ok( $row->[10] == 2,
             "Protocol: $protocol - $headers->[10] - line $counter" );
-        ok( $row->[11] == 65167.8071,
+        ok( $row->[11] == 65167.807103291,
             "Protocol: $protocol - $headers->[11] - line $counter" );
         ok( $row->[12] == 2,
             "Protocol: $protocol - $headers->[12] - line $counter" );
-        ok( $row->[13] == 65167.8071,
+        ok( $row->[13] == 65167.807103291,
             "Protocol: $protocol - $headers->[13] - line $counter" );
         ok( $row->[14] == 22,
             "Protocol: $protocol - $headers->[14] - line $counter" );
-        ok( $row->[15] == 130335.6142,
+        ok( $row->[15] == 130335.614206582,
             "Protocol: $protocol - $headers->[15] - line $counter" );
 
     }
@@ -139,7 +140,7 @@ sub test_standard_file {
             "Protocol: $protocol - $headers->[8] - line $counter" );
         ok( $row->[9] == 0,
             "Protocol: $protocol - $headers->[9] - line $counter" );
-        ok( $row->[10] == 22,
+        ok( $row->[10] == 0,
             "Protocol: $protocol - $headers->[10] - line $counter" );
         ok( $row->[11] == 0,
             "Protocol: $protocol - $headers->[11] - line $counter" );
@@ -147,7 +148,7 @@ sub test_standard_file {
             "Protocol: $protocol - $headers->[12] - line $counter" );
         ok( $row->[13] == 0,
             "Protocol: $protocol - $headers->[13] - line $counter" );
-        ok( $row->[14] == 0,
+        ok( $row->[14] == 22,
             "Protocol: $protocol - $headers->[14] - line $counter" );
         ok( $row->[15] == 0,
             "Protocol: $protocol - $headers->[15] - line $counter" );
@@ -158,27 +159,27 @@ sub test_standard_file {
 
         ok( $row->[4] == 1,
             "Protocol: $protocol - $headers->[4] - line $counter" );
-        ok( $row->[5] == 130.802668,
+        ok( $row->[5] == 130.802667955858,
             "Protocol: $protocol - $headers->[5] - line $counter" );
         ok( $row->[6] == 2,
             "Protocol: $protocol - $headers->[6] - line $counter" );
-        ok( $row->[7] == 261.6053359,
+        ok( $row->[7] == 261.605335911716,
             "Protocol: $protocol - $headers->[7] - line $counter" );
         ok( $row->[8] == 3,
             "Protocol: $protocol - $headers->[8] - line $counter" );
-        ok( $row->[9] == 392.408004,
+        ok( $row->[9] == 392.408003867573,
             "Protocol: $protocol - $headers->[9] - line $counter" );
         ok( $row->[10] == 1,
             "Protocol: $protocol - $headers->[10] - line $counter" );
-        ok( $row->[11] == 55704.09982,
+        ok( $row->[11] == 55704.0998217469,
             "Protocol: $protocol - $headers->[11] - line $counter" );
         ok( $row->[12] == 2,
             "Protocol: $protocol - $headers->[12] - line $counter" );
-        ok( $row->[13] == 111408.1996,
+        ok( $row->[13] == 111408.199643494,
             "Protocol: $protocol - $headers->[13] - line $counter" );
         ok( $row->[14] == 22,
             "Protocol: $protocol - $headers->[14] - line $counter" );
-        ok( $row->[15] == 167112.2995,
+        ok( $row->[15] == 167112.299465241,
             "Protocol: $protocol - $headers->[15] - line $counter" );
 
     }
@@ -187,27 +188,27 @@ sub test_standard_file {
 
         ok( $row->[4] == 2,
             "Protocol: $protocol - $headers->[4] - line $counter" );
-        ok( $row->[5] == 635.327244,
+        ok( $row->[5] == 635.327244357023,
             "Protocol: $protocol - $headers->[5] - line $counter" );
         ok( $row->[6] == 4,
             "Protocol: $protocol - $headers->[6] - line $counter" );
-        ok( $row->[7] == 1270.654489,
+        ok( $row->[7] == 1270.65448871405,
             "Protocol: $protocol - $headers->[7] - line $counter" );
         ok( $row->[8] == 6,
             "Protocol: $protocol - $headers->[8] - line $counter" );
-        ok( $row->[9] == 1905.98173,
+        ok( $row->[9] == 1905.98173307107,
             "Protocol: $protocol - $headers->[9] - line $counter" );
         ok( $row->[10] == 2,
             "Protocol: $protocol - $headers->[10] - line $counter" );
-        ok( $row->[11] == 270562.7706,
+        ok( $row->[11] == 270562.770562771,
             "Protocol: $protocol - $headers->[11] - line $counter" );
         ok( $row->[12] == 4,
             "Protocol: $protocol - $headers->[12] - line $counter" );
-        ok( $row->[13] == 541125.5411,
+        ok( $row->[13] == 541125.541125541,
             "Protocol: $protocol - $headers->[13] - line $counter" );
         ok( $row->[14] == 22,
             "Protocol: $protocol - $headers->[14] - line $counter" );
-        ok( $row->[15] == 811688.3117,
+        ok( $row->[15] == 811688.311688312,
             "Protocol: $protocol - $headers->[15] - line $counter" );
 
     }
@@ -216,7 +217,7 @@ sub test_standard_file {
 
         ok( $row->[4] == 2,
             "Protocol: $protocol - $headers->[4] - line $counter" );
-        ok( $row->[5] == 1016.52359,
+        ok( $row->[5] == 1016.52359097124,
             "Protocol: $protocol - $headers->[5] - line $counter" );
         ok( $row->[6] == 0,
             "Protocol: $protocol - $headers->[6] - line $counter" );
@@ -224,11 +225,11 @@ sub test_standard_file {
             "Protocol: $protocol - $headers->[7] - line $counter" );
         ok( $row->[8] == 2,
             "Protocol: $protocol - $headers->[8] - line $counter" );
-        ok( $row->[9] == 1016.52359,
+        ok( $row->[9] == 1016.52359097124,
             "Protocol: $protocol - $headers->[9] - line $counter" );
         ok( $row->[10] == 2,
             "Protocol: $protocol - $headers->[10] - line $counter" );
-        ok( $row->[11] == 432900.4329,
+        ok( $row->[11] == 432900.432900433,
             "Protocol: $protocol - $headers->[11] - line $counter" );
         ok( $row->[12] == 0,
             "Protocol: $protocol - $headers->[12] - line $counter" );
@@ -236,7 +237,7 @@ sub test_standard_file {
             "Protocol: $protocol - $headers->[13] - line $counter" );
         ok( $row->[14] == 22,
             "Protocol: $protocol - $headers->[14] - line $counter" );
-        ok( $row->[15] == 432900.4329,
+        ok( $row->[15] == 432900.432900433,
             "Protocol: $protocol - $headers->[15] - line $counter" );
 
     }
@@ -245,7 +246,7 @@ sub test_standard_file {
 
         ok( $row->[4] == 1,
             "Protocol: $protocol - $headers->[4] - line $counter" );
-        ok( $row->[5] == 90.300319,
+        ok( $row->[5] == 90.3003189949069,
             "Protocol: $protocol - $headers->[5] - line $counter" );
         ok( $row->[6] == 0,
             "Protocol: $protocol - $headers->[6] - line $counter" );
@@ -253,11 +254,11 @@ sub test_standard_file {
             "Protocol: $protocol - $headers->[7] - line $counter" );
         ok( $row->[8] == 1,
             "Protocol: $protocol - $headers->[8] - line $counter" );
-        ok( $row->[9] == 90.300319,
+        ok( $row->[9] == 90.3003189949069,
             "Protocol: $protocol - $headers->[9] - line $counter" );
         ok( $row->[10] == 1,
             "Protocol: $protocol - $headers->[10] - line $counter" );
-        ok( $row->[11] == 38455.62221,
+        ok( $row->[11] == 38455.6222119674,
             "Protocol: $protocol - $headers->[11] - line $counter" );
         ok( $row->[12] == 0,
             "Protocol: $protocol - $headers->[12] - line $counter" );
@@ -265,7 +266,7 @@ sub test_standard_file {
             "Protocol: $protocol - $headers->[13] - line $counter" );
         ok( $row->[14] == 22,
             "Protocol: $protocol - $headers->[14] - line $counter" );
-        ok( $row->[15] == 38455.62221,
+        ok( $row->[15] == 38455.6222119674,
             "Protocol: $protocol - $headers->[15] - line $counter" );
 
     }
@@ -274,7 +275,7 @@ sub test_standard_file {
 
         ok( $row->[4] == 1,
             "Protocol: $protocol - $headers->[4] - line $counter" );
-        ok( $row->[5] == 408.946272,
+        ok( $row->[5] == 408.946272229808,
             "Protocol: $protocol - $headers->[5] - line $counter" );
         ok( $row->[6] == 0,
             "Protocol: $protocol - $headers->[6] - line $counter" );
@@ -282,11 +283,11 @@ sub test_standard_file {
             "Protocol: $protocol - $headers->[7] - line $counter" );
         ok( $row->[8] == 1,
             "Protocol: $protocol - $headers->[8] - line $counter" );
-        ok( $row->[9] == 408.946272,
+        ok( $row->[9] == 408.946272229808,
             "Protocol: $protocol - $headers->[9] - line $counter" );
         ok( $row->[10] == 1,
             "Protocol: $protocol - $headers->[10] - line $counter" );
-        ok( $row->[11] == 174155.3466,
+        ok( $row->[11] == 174155.34656914,
             "Protocol: $protocol - $headers->[11] - line $counter" );
         ok( $row->[12] == 0,
             "Protocol: $protocol - $headers->[12] - line $counter" );
@@ -294,10 +295,8 @@ sub test_standard_file {
             "Protocol: $protocol - $headers->[13] - line $counter" );
         ok( $row->[14] == 22,
             "Protocol: $protocol - $headers->[14] - line $counter" );
-        ok( $row->[15] == 174155.3466,
+        ok( $row->[15] == 174155.34656914,
             "Protocol: $protocol - $headers->[15] - line $counter" );
-			
-			#1	408.9462722	0	0	1	408.9462722	1	174155.3466	0	0	22	174155.3466
 
     }
 
@@ -305,27 +304,27 @@ sub test_standard_file {
 
         ok( $row->[4] == 2,
             "Protocol: $protocol - $headers->[4] - line $counter" );
-        ok( $row->[5] == 494.143412,
+        ok( $row->[5] == 494.143412277685,
             "Protocol: $protocol - $headers->[5] - line $counter" );
         ok( $row->[6] == 2,
             "Protocol: $protocol - $headers->[6] - line $counter" );
-        ok( $row->[7] == 494.143412,
+        ok( $row->[7] == 494.143412277685,
             "Protocol: $protocol - $headers->[7] - line $counter" );
         ok( $row->[8] == 4,
             "Protocol: $protocol - $headers->[8] - line $counter" );
-        ok( $row->[9] == 988.286825,
+        ok( $row->[9] == 988.28682455537,
             "Protocol: $protocol - $headers->[9] - line $counter" );
         ok( $row->[10] == 2,
             "Protocol: $protocol - $headers->[10] - line $counter" );
-        ok( $row->[11] == 210437.7104,
+        ok( $row->[11] == 210437.71043771,
             "Protocol: $protocol - $headers->[11] - line $counter" );
         ok( $row->[12] == 2,
             "Protocol: $protocol - $headers->[12] - line $counter" );
-        ok( $row->[13] == 210437.7104,
+        ok( $row->[13] == 210437.71043771,
             "Protocol: $protocol - $headers->[13] - line $counter" );
         ok( $row->[14] == 22,
             "Protocol: $protocol - $headers->[14] - line $counter" );
-        ok( $row->[15] == 420875.4209,
+        ok( $row->[15] == 420875.420875421,
             "Protocol: $protocol - $headers->[15] - line $counter" );
 
     }
@@ -350,10 +349,18 @@ sub test_strand_specific_file {
             "Protocol: $protocol - $headers->[8] - line $counter" );
         ok( $row->[9] == 306.050113410695,
             "Protocol: $protocol - $headers->[9] - line $counter" );
-        ok( $row->[10] == 22,
+        ok( $row->[10] == 0,
             "Protocol: $protocol - $headers->[10] - line $counter" );
-        ok( $row->[11] == 130335.614206582,
+        ok( $row->[11] == 0,
             "Protocol: $protocol - $headers->[11] - line $counter" );
+        ok( $row->[12] == 4,
+            "Protocol: $protocol - $headers->[12] - line $counter" );
+        ok( $row->[13] == 130335.614206582,
+            "Protocol: $protocol - $headers->[13] - line $counter" );
+        ok( $row->[14] == 22,
+            "Protocol: $protocol - $headers->[14] - line $counter" );
+        ok( $row->[15] == 130335.614206582,
+            "Protocol: $protocol - $headers->[15] - line $counter" );
 
     }
 
@@ -371,10 +378,18 @@ sub test_strand_specific_file {
             "Protocol: $protocol - $headers->[8] - line $counter" );
         ok( $row->[9] == 0,
             "Protocol: $protocol - $headers->[9] - line $counter" );
-        ok( $row->[10] == 22,
+        ok( $row->[10] == 0,
             "Protocol: $protocol - $headers->[10] - line $counter" );
         ok( $row->[11] == 0,
             "Protocol: $protocol - $headers->[11] - line $counter" );
+        ok( $row->[12] == 0,
+            "Protocol: $protocol - $headers->[12] - line $counter" );
+        ok( $row->[13] == 0,
+            "Protocol: $protocol - $headers->[13] - line $counter" );
+        ok( $row->[14] == 22,
+            "Protocol: $protocol - $headers->[14] - line $counter" );
+        ok( $row->[15] == 0,
+            "Protocol: $protocol - $headers->[15] - line $counter" );
 
     }
 
@@ -392,10 +407,18 @@ sub test_strand_specific_file {
             "Protocol: $protocol - $headers->[8] - line $counter" );
         ok( $row->[9] == 392.408003867573,
             "Protocol: $protocol - $headers->[9] - line $counter" );
-        ok( $row->[10] == 22,
+        ok( $row->[10] == 0,
             "Protocol: $protocol - $headers->[10] - line $counter" );
-        ok( $row->[11] == 167112.299465241,
+        ok( $row->[11] == 0,
             "Protocol: $protocol - $headers->[11] - line $counter" );
+        ok( $row->[12] == 3,
+            "Protocol: $protocol - $headers->[12] - line $counter" );
+        ok( $row->[13] == 167112.299465241,
+            "Protocol: $protocol - $headers->[13] - line $counter" );
+        ok( $row->[14] == 22,
+            "Protocol: $protocol - $headers->[14] - line $counter" );
+        ok( $row->[15] == 167112.299465241,
+            "Protocol: $protocol - $headers->[15] - line $counter" );
 
     }
 
@@ -413,10 +436,18 @@ sub test_strand_specific_file {
             "Protocol: $protocol - $headers->[8] - line $counter" );
         ok( $row->[9] == 1905.98173307107,
             "Protocol: $protocol - $headers->[9] - line $counter" );
-        ok( $row->[10] == 22,
+        ok( $row->[10] == 0,
             "Protocol: $protocol - $headers->[10] - line $counter" );
-        ok( $row->[11] == 811688.311688312,
+        ok( $row->[11] == 0,
             "Protocol: $protocol - $headers->[11] - line $counter" );
+        ok( $row->[12] == 6,
+            "Protocol: $protocol - $headers->[12] - line $counter" );
+        ok( $row->[13] == 811688.311688312,
+            "Protocol: $protocol - $headers->[13] - line $counter" );
+        ok( $row->[14] == 22,
+            "Protocol: $protocol - $headers->[14] - line $counter" );
+        ok( $row->[15] == 811688.311688312,
+            "Protocol: $protocol - $headers->[15] - line $counter" );
 
     }
 
@@ -434,10 +465,18 @@ sub test_strand_specific_file {
             "Protocol: $protocol - $headers->[8] - line $counter" );
         ok( $row->[9] == 1016.52359097124,
             "Protocol: $protocol - $headers->[9] - line $counter" );
-        ok( $row->[10] == 22,
+        ok( $row->[10] == 0,
             "Protocol: $protocol - $headers->[10] - line $counter" );
-        ok( $row->[11] == 432900.432900433,
+        ok( $row->[11] == 0,
             "Protocol: $protocol - $headers->[11] - line $counter" );
+        ok( $row->[12] == 2,
+            "Protocol: $protocol - $headers->[12] - line $counter" );
+        ok( $row->[13] == 432900.432900433,
+            "Protocol: $protocol - $headers->[13] - line $counter" );
+        ok( $row->[14] == 22,
+            "Protocol: $protocol - $headers->[14] - line $counter" );
+        ok( $row->[15] == 432900.432900433,
+            "Protocol: $protocol - $headers->[15] - line $counter" );
 
     }
 
@@ -455,10 +494,18 @@ sub test_strand_specific_file {
             "Protocol: $protocol - $headers->[8] - line $counter" );
         ok( $row->[9] == 90.3003189949069,
             "Protocol: $protocol - $headers->[9] - line $counter" );
-        ok( $row->[10] == 22,
+        ok( $row->[10] == 1,
             "Protocol: $protocol - $headers->[10] - line $counter" );
         ok( $row->[11] == 38455.6222119674,
             "Protocol: $protocol - $headers->[11] - line $counter" );
+        ok( $row->[12] == 0,
+            "Protocol: $protocol - $headers->[12] - line $counter" );
+        ok( $row->[13] == 0,
+            "Protocol: $protocol - $headers->[13] - line $counter" );
+        ok( $row->[14] == 22,
+            "Protocol: $protocol - $headers->[14] - line $counter" );
+        ok( $row->[15] == 38455.6222119674,
+            "Protocol: $protocol - $headers->[15] - line $counter" );
 
     }
 
@@ -476,10 +523,18 @@ sub test_strand_specific_file {
             "Protocol: $protocol - $headers->[8] - line $counter" );
         ok( $row->[9] == 408.946272229808,
             "Protocol: $protocol - $headers->[9] - line $counter" );
-        ok( $row->[10] == 22,
+        ok( $row->[10] == 0,
             "Protocol: $protocol - $headers->[10] - line $counter" );
-        ok( $row->[11] == 174155.34656914,
+        ok( $row->[11] == 0,
             "Protocol: $protocol - $headers->[11] - line $counter" );
+        ok( $row->[12] == 1,
+            "Protocol: $protocol - $headers->[12] - line $counter" );
+        ok( $row->[13] == 174155.34656914,
+            "Protocol: $protocol - $headers->[13] - line $counter" );
+        ok( $row->[14] == 22,
+            "Protocol: $protocol - $headers->[14] - line $counter" );
+        ok( $row->[15] == 174155.34656914,
+            "Protocol: $protocol - $headers->[15] - line $counter" );
 
     }
 
@@ -497,10 +552,18 @@ sub test_strand_specific_file {
             "Protocol: $protocol - $headers->[8] - line $counter" );
         ok( $row->[9] == 988.28682455537,
             "Protocol: $protocol - $headers->[9] - line $counter" );
-        ok( $row->[10] == 22,
+        ok( $row->[10] == 0,
             "Protocol: $protocol - $headers->[10] - line $counter" );
-        ok( $row->[11] == 420875.420875421,
+        ok( $row->[11] == 0,
             "Protocol: $protocol - $headers->[11] - line $counter" );
+        ok( $row->[12] == 4,
+            "Protocol: $protocol - $headers->[12] - line $counter" );
+        ok( $row->[13] == 420875.420875421,
+            "Protocol: $protocol - $headers->[13] - line $counter" );
+        ok( $row->[14] == 22,
+            "Protocol: $protocol - $headers->[14] - line $counter" );
+        ok( $row->[15] == 420875.420875421,
+            "Protocol: $protocol - $headers->[15] - line $counter" );
 
     }
 
