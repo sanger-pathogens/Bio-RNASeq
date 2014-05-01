@@ -1,15 +1,21 @@
 Bio-RNASeq
 ==========
 
-Bio-RNASeq calculates expression values from any given BAM file.  
+Bio-RNASeq calculates expression values (RPKM) from any given BAM file.  
 This application takes in an aligned sequence file (BAM) and a corresponding annotation file (GFF) and creates a spreadsheet with expression values.
 The BAM must be aligned to the same reference that the annotation refers to and must be sorted.
 
+The RPKM values are calculated according to two different methodologies:
+	RPKM values based on the total number of reads on the bam file that mapped to the reference;
+	RPKM values based on the total number of reads on the bam file that mapped to gene models in the reference genome.
+
+The *expression.csv file will contain both datasets. 
+  
 
 SYNOPSIS
 ========
 
-rna_seq_expression -s [filename.bam] -a [filename.gff] -p [standard|strand_specific|tradis] -o [./foobar] -t [a|b]
+rna_seq_expression -s [filename.bam] -a [filename.gff] -p [standard|strand_specific] -o [./foobar]
 
 USAGE
 =====
@@ -29,7 +35,5 @@ USAGE
 -i|intergenic_regions        - Optional: Include intergenic regions
 
 -b|bitwise_flag              - Optional: Only include reads which pass filter
-
--t|total_mapped_reads_method - Optional: a|b - If not set, defaults to total reads mapped to the ref sequence in the bam file (no quality filters applied to the reads)
 
 -h|help                    - print this message
