@@ -33,22 +33,13 @@ use File::Spec;
 use Bio::RNASeq::VertRes::IO;
 use Bio::RNASeq::VertRes::Utils::FileSystem;
 use Bio::RNASeq::VertRes::Wrapper::samtools;
-use Bio::RNASeq::VertRes::Wrapper::picard;
-use Bio::RNASeq::VertRes::Wrapper::fastqcheck;
-use Bio::RNASeq::VertRes::Parser::dict;
-use Bio::RNASeq::VertRes::Parser::sequence_index;
 use Bio::RNASeq::VertRes::Parser::sam;
 use Bio::RNASeq::VertRes::Parser::bam;
-use Bio::RNASeq::VertRes::Parser::dict;
 use Bio::RNASeq::VertRes::Parser::fasta;
-use Bio::RNASeq::VertRes::Utils::FastQ;
 use Bio::RNASeq::VertRes::Utils::Math;
 use Digest::MD5;
-use Bio::RNASeq::VertRes::Parser::bamcheck;
-use Bio::RNASeq::VertRes::Parser::fastqcheck;
 use List::Util qw(min max sum);
 use Test::Deep::NoTest;
-use Bio::RNASeq::VertRes::Utils::Graphs;
 
 use base qw(Bio::RNASeq::VertRes::Base);
 
