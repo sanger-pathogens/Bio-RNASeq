@@ -60,7 +60,7 @@ Once you've downloaded this, in a bash terminal in the samtools v0.1.18 director
 
 	~$ make
 
-NOTE: Don't run 'make install'. You don't need to install the older version of samtools on your system.
+__NOTE:__ Don't run `make install`. You don't need to install the older version of samtools on your system.
 
 When `make` finishes, you will need to set a couple of environment variables
 
