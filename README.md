@@ -11,7 +11,10 @@ The RPKM values are calculated according to two different methodologies:
 
 2) total number of reads on the bam file that mapped to gene models in the reference genome.
 
-The *expression.csv file will contain both datasets. 
+The *expression.csv file will contains both datasets. It also produces coverage plots that you can visualise with Artemis
+
+http://www.sanger.ac.uk/resources/software/artemis/
+ 
   
 
 SYNOPSIS
@@ -39,3 +42,17 @@ USAGE
 -b|bitwise_flag              - Optional: Only include reads which pass filter
 
 -h|help                    - print this message
+
+
+REQUIRES
+========
+
+The samtools executable must be set in your path as there are direct calls to this program.
+
+You can get it here:
+
+https://github.com/samtools
+
+You will also need to download samtools v0.1.18 and build it in your system. Bio-RNASeq makes use of the Samtools v0.1.18 C API. You can get this here:
+
+https://github.com/samtools/samtools/tree/0.1.18

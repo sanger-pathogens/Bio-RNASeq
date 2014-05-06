@@ -25,7 +25,6 @@ Extract a slice of reads for a sequence file within a specific region
 use Moose;
 use Bio::RNASeq::Exceptions;
 use Bio::RNASeq::Read;
-use Data::Dumper;
 
 # required inputs
 has 'filename' => ( is => 'rw', isa => 'Str', required => 1 );

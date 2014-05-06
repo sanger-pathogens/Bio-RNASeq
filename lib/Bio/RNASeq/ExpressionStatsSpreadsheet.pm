@@ -15,7 +15,6 @@ Builds a spreadsheet of expression results
 
 use Moose;
 extends 'Bio::RNASeq::CommonSpreadsheet';
-use Data::Dumper;
 
 sub _result_rows {
     my ($self) = @_;
@@ -44,7 +43,6 @@ sub _result_rows {
         );
     }
 
-	#print Dumper(\@denormalised_results);
     return \@denormalised_results;
 }
 
