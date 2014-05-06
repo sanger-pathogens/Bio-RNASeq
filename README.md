@@ -47,12 +47,47 @@ USAGE
 REQUIRES
 ========
 
-The samtools executable must be set in your path as there are direct calls to this program.
-
-You can get it here:
+The samtools executable must be set in your path. You can get it here:
 
 https://github.com/samtools
 
-You will also need to download samtools v0.1.18 and build it in your system. Bio-RNASeq makes use of the Samtools v0.1.18 C API. You can get this here:
+
+You will also need to download samtools v0.1.18 and build it on your system. Bio-RNASeq makes use of the Samtools v0.1.18 C API. You can get it here:
 
 https://github.com/samtools/samtools/tree/0.1.18
+
+Once you've downloaded this, on command line prompt, run
+
+	~$ make
+
+When make finishes, you will need to set a couple of environment variables
+
+	export PATH=[path_to]/Bio-RNASeq/bin:$PATH
+	export PERL5LIB=[path_to]/Bio-RNASeq/lib:$PERL5LIB
+	
+Now set the $SAMTOOLS environment variable to point to the directory where you built samtools v0.1.18
+
+	export SAMTOOLS=[path_to]/samtools_0.1.18/
+
+
+Create a directory called - _Inline - wherever you want. And set $PERL\_INLINE\_DIRECTORY
+
+	export PERL_INLINE_DIRECTORY=[path_to]/_Inline
+	
+You can easily put all these export statements into a .sh which you will need to source before you can run Bio-RNASeq.
+As an example, I have created the file
+
+	bio_rnaseq_environment_setup.sh	
+
+This is what it looks like
+
+	export PATH=/Users/js21/work/Bio-RNASeq/bin:$PATH
+	export PERL5LIB=/Users/js21/work/Bio-RNASeq/lib:$PERL5LIB
+	export PERL_INLINE_DIRECTORY=/Users/js21/test_RNASeq/_Inline
+	export SAMTOOLS=/Users/js21/work/samtools/
+
+Whenever I'm running RNA Seq analysis with Bio-RNASeq, I source this bash script
+
+	~$ source bio_rnaseq_environment_setup.sh
+
+Now you can run this application in your bash terminal from wherever you are.
