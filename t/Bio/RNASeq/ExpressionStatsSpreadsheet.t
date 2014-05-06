@@ -46,9 +46,9 @@ $header =~ s/[\r\n]//g;
 $output_result_1 =~ s/[\r\n]//g;
 $output_result_2 =~ s/[\r\n]//g;
 
-is $header, '"Seq ID",GeneID,"Locus Tag","Sense Reads Mapping","Sense RPKM","Antisense Reads Mapping","Antisense RPKM"', 'header okay';
-is $output_result_1, 'some_name,abc123,,2000,15.3245,10,1.34324', 'result set 1';
-is $output_result_2, 'some_name,efg456,some_locus_tag,10,0,200,780.34242543543', 'result set 2';
+is $header, '"Seq ID",GeneID,"Locus Tag","Feature Type","Sense Reads Mapping","Sense RPKM","Antisense Reads Mapping","Antisense RPKM","Total Mapped Reads","Total RPKM","Sense Reads Mapping to gene models","Sense RPKM to gene models","Antisense Reads Mapping to gene models","Antisense RPKM to gene models","Total Mapped Reads to gene models","Total RPKM to gene models"', 'header okay';
+is $output_result_1, 'some_name,abc123,,,2000,15.3245,10,1.34324,,,,,,,,', 'result set 1';
+is $output_result_2, 'some_name,efg456,some_locus_tag,,10,0,200,780.34242543543,,,,,,,,', 'result set 2';
 close(IN);
 unlink('my_result_file.csv');
 
@@ -74,38 +74,11 @@ $header_standard =~ s/[\r\n]//g;
 $output_result_1_standard =~ s/[\r\n]//g;
 $output_result_2_standard =~ s/[\r\n]//g;
 
-is $header_standard, '"Seq ID",GeneID,"Locus Tag","Sense Reads Mapping","Sense RPKM","Antisense Reads Mapping","Antisense RPKM"', 'header okay';
-is $output_result_1_standard, 'some_name,abc123,,2000,15.3245,10,1.34324', 'result set 1';
-is $output_result_2_standard, 'some_name,efg456,some_locus_tag,10,0,200,780.34242543543', 'result set 2';
+is $header_standard, '"Seq ID",GeneID,"Locus Tag","Feature Type","Sense Reads Mapping","Sense RPKM","Antisense Reads Mapping","Antisense RPKM","Total Mapped Reads","Total RPKM","Sense Reads Mapping to gene models","Sense RPKM to gene models","Antisense Reads Mapping to gene models","Antisense RPKM to gene models","Total Mapped Reads to gene models","Total RPKM to gene models"', 'header okay';
+is $output_result_1_standard, 'some_name,abc123,,,2000,15.3245,10,1.34324,,,,,,,,', 'result set 1';
+is $output_result_2_standard, 'some_name,efg456,some_locus_tag,,10,0,200,780.34242543543,,,,,,,,', 'result set 2';
 close(IN_STANDARD);
 unlink('my_result_file_standard.csv');
 
-
-#####################
-## Another new protocol
-#####################
-
-ok my $expression_results_tradis = Bio::RNASeq::ExpressionStatsSpreadsheet->new(
-  output_filename => 'my_result_file_tradis.csv',
-  protocol => 'Bio::RNASeq::TradisProtocol'
-  ), 'initialise';
-
-ok $expression_results_tradis->add_result(\%result_1), 'add first result set';
-ok $expression_results_tradis->add_result(\%result_2), 'add second result set';
-ok $expression_results_tradis->build_and_close(), 'build the csv file and close';
-
-open(IN_TRADIS, 'my_result_file_tradis.csv') or die "Couldnt open input file";
-my $header_tradis = <IN_TRADIS>;
-my $output_result_1_tradis = <IN_TRADIS>;
-my $output_result_2_tradis = <IN_TRADIS>;
-$header_tradis =~ s/[\r\n]//g;
-$output_result_1_tradis =~ s/[\r\n]//g;
-$output_result_2_tradis =~ s/[\r\n]//g;
-
-is $header_tradis,  '"Seq ID",GeneID,"Locus Tag","Sense Reads Mapping","Sense RPKM","Antisense Reads Mapping","Antisense RPKM"', 'header okay';
-is $output_result_1_tradis, 'some_name,abc123,,2000,15.3245,10,1.34324', 'result set 1';
-is $output_result_2_tradis, 'some_name,efg456,some_locus_tag,10,0,200,780.34242543543', 'result set 2';
-close(IN_TRADIS);
-unlink('my_result_file_tradis.csv');
 
 done_testing();

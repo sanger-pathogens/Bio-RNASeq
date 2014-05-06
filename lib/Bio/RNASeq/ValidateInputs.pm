@@ -1,26 +1,24 @@
-#PODNAME: Bio::RNASeq
-=head1 NAME
+package Bio::RNASeq::ValidateInputs;
 
-ValidateInputs.pm   - Validate the input sequence file and the annotation file
+# ABSTRACT: Validate the input sequence file and the annotation file
 
 =head1 SYNOPSIS
-
-use Bio::RNASeq::ValidateInputs;
-my $validator = Bio::RNASeq::ValidateInputs->new(
-  sequence_filename => 'my_aligned_sequence.bam',
-  annotation_filename => 'my_annotation_file.gff'
-  );
-$validator->are_input_files_valid();
+Validate the input sequence file and the annotation file
+	use Bio::RNASeq::ValidateInputs;
+	my $validator = Bio::RNASeq::ValidateInputs->new(
+	  sequence_filename => 'my_aligned_sequence.bam',
+	  annotation_filename => 'my_annotation_file.gff'
+	  );
+	$validator->are_input_files_valid();
 
 =cut
-package Bio::RNASeq::ValidateInputs;
+
 use Moose;
 use Bio::RNASeq::VertRes::Parser::bam;
 use Bio::Tools::GFF;
 
 has 'sequence_filename'           => ( is => 'rw', isa => 'Str',             required   => 1 );
 has 'annotation_filename'         => ( is => 'rw', isa => 'Str',             required   => 1 );
-has 'total_mapped_reads_method'   => ( is => 'rw', isa => 'Str',             required   => 1 );
 
 has '_actual_sequence_details'    => ( is => 'rw', isa => 'HashRef',         lazy_build => 1 );
 has '_annotated_sequence_details' => ( is => 'rw', isa => 'HashRef',         lazy_build => 1 );
@@ -36,17 +34,6 @@ sub are_input_files_valid
 	return 1;
 }
 
-sub is_tmrm_valid {
-
-  my ($self) = @_;
-  my @allowed_tmrm = qw(a b default);
-  if ($self->total_mapped_reads_method ~~ @allowed_tmrm) {
-    return $self->total_mapped_reads_method;
-  }
-  else {
-    return 'not valid';
-  }
-}
 
 sub _sequence_names_match
 {
@@ -110,4 +97,6 @@ sub _build__gff_parser
   Bio::Tools::GFF->new(-gff_version => 3, -file => $self->annotation_filename);
 }
 
+no Moose;
+__PACKAGE__->meta->make_immutable;
 1;

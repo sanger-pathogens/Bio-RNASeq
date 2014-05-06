@@ -1,22 +1,19 @@
-#PODNAME: Bio::RNASeq
+package Bio::RNASeq::InsertionStatsSpreadsheet;
 
-=head1 NAME
-
-InsertionStatsSpreadsheet.pm   - Builds a spreadsheet of insertion results
+# ABSTRACT: Builds a spreadsheet of insertion results
 
 =head1 SYNOPSIS
-
-use Bio::RNASeq::InsertionStatsSpreadsheet;
-my $expression_results = Bio::RNASeq::ExpressionStatsSpreadsheet->new(
-  output_filename => '/abc/my_results.csv',
-  );
-$expression_results->add_result($my_rpkm_values);
-$expression_results->add_result($more_rpkm_values);
-$expression_results->build_and_close();
-
+Builds a spreadsheet of insertion results
+	use Bio::RNASeq::InsertionStatsSpreadsheet;
+	my $expression_results = Bio::RNASeq::ExpressionStatsSpreadsheet->new(
+	  output_filename => '/abc/my_results.csv',
+	  );
+	$expression_results->add_result($my_rpkm_values);
+	$expression_results->add_result($more_rpkm_values);
+	$expression_results->build_and_close();
 
 =cut
-package Bio::RNASeq::InsertionStatsSpreadsheet;
+
 use Moose;
 extends 'Bio::RNASeq::CommonSpreadsheet';
 
@@ -69,5 +66,6 @@ sub _header
   return \@header;
 }
 
-
+no Moose;
+__PACKAGE__->meta->make_immutable;
 1;

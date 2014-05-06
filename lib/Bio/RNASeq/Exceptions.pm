@@ -1,6 +1,15 @@
-#PODNAME: Bio::RNASeq
-
 package Bio::RNASeq::Exceptions;
+
+# ABSTRACT: Exception handler for the Bio:RNASeq application
+
+=head1 SYNOPSIS
+Exception handler for the Bio:RNASeq application
+my $a_slice = '';
+if( $a_slice == 0) {
+	Bio::RNASeq::Exceptions::FailedToOpenAlignmentSlice->throw( error => "Input files invalid: ".$self->sequence_filename." ".$self->annotation_filename."\n" );
+}
+=cut
+
 
 use Exception::Class (
 				   Bio::RNASeq::Exceptions::FailedToOpenAlignmentSlice => { description => 'Couldnt get reads from alignment slice. Error with Samtools or BAM' },

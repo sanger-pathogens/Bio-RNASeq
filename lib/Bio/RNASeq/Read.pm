@@ -1,24 +1,21 @@
-#PODNAME: Bio::RNASeq
+package Bio::RNASeq::Read;
 
-=head1 NAME
-
-Read.pm   - Extract a slice of reads for a sequence file within a specific region
+# ABSTRACT: Extract a slice of reads for a sequence file within a specific region
 
 =head1 SYNOPSIS
-
-use Bio::RNASeq::Read;
-my $alignment_slice = Bio::RNASeq::Read->new(
-  alignment_line => 'xxxxxxx',
-  gene_strand => 1,
-  exons => [[1,3],[4,5]]
-  );
-  my %mapped_reads = $alignment_slice->mapped_reads;
-  $mapped_reads{sense};
-  $mapped_reads{antisense};
+Extract a slice of reads for a sequence file within a specific region
+	use Bio::RNASeq::Read;
+	my $alignment_slice = Bio::RNASeq::Read->new(
+	  alignment_line => 'xxxxxxx',
+	  gene_strand => 1,
+	  exons => [[1,3],[4,5]]
+	  );
+	  my %mapped_reads = $alignment_slice->mapped_reads;
+	  $mapped_reads{sense};
+	  $mapped_reads{antisense};
 
 =cut
 
-package Bio::RNASeq::Read;
 use Moose;
 use Bio::RNASeq::Exceptions;
 
@@ -153,4 +150,6 @@ sub _calculate_bitwise_flag
 	return $flag;
 }
 
+no Moose;
+__PACKAGE__->meta->make_immutable;
 1;

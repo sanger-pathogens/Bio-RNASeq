@@ -1,20 +1,16 @@
-#PODNAME: Bio::RNASeq
+package Bio::RNASeq::Feature;
 
-=head1 NAME
-
-Feature.pm   - Represents a Feature from a GFF file
+# ABSTRACT:  Represents a Feature from a GFF file
 
 =head1 SYNOPSIS
-
-use Bio::RNASeq::Feature;
-my $file_meta_data_container = Bio::RNASeq::Feature->new(
-  raw_feature => $feature
-  );
-
+Represents a Feature from a GFF file
+	use Bio::RNASeq::Feature;
+	my $file_meta_data_container = Bio::RNASeq::Feature->new(
+	  raw_feature => $feature
+	  );
 =cut
-package Bio::RNASeq::Feature;
+
 use Moose;
-use Data::Dumper;
 
 has 'raw_feature'   => ( is => 'rw', isa => 'Bio::SeqFeature::Generic', required   => 1 );
 
@@ -179,5 +175,8 @@ sub add_discontinuous_feature
   
   return;
 }
+
+no Moose;
+__PACKAGE__->meta->make_immutable;
 1;
 

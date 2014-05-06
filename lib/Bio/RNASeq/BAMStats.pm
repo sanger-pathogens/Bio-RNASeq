@@ -1,18 +1,17 @@
-#PODNAME: Bio::RNASeq
+package Bio::RNASeq::BAMStats;
 
-=head1 NAME
-
-BAMStats.pm   - Functionality for Stats files for a BAM
+# ABSTRACT:  Functionality for Stats files for a BAM
 
 =head1 SYNOPSIS
 
-use Bio::RNASeq::BAMStats;
-my $bam_container = Bio::RNASeq::BAMStats->new(
-  filename => '/abc/my_file.bam'
-  );
+Functionality for Stats files for a BAM
+	use Bio::RNASeq::BAMStats;
+	my $bam_container = Bio::RNASeq::BAMStats->new(
+	  filename => '/abc/my_file.bam'
+	  );
 
 =cut
-package Bio::RNASeq::BAMStats;
+
 use Moose;
 use Bio::RNASeq::VertRes::Parser::bas;
 use Time::Format;
@@ -38,4 +37,7 @@ sub _build_total_mapped_reads
   $self->_parser->mapped_reads;
 }
 
+
+no Moose;
+__PACKAGE__->meta->make_immutable;
 1;

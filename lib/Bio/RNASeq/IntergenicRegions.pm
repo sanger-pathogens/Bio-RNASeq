@@ -1,20 +1,18 @@
-#PODNAME: Bio::RNASeq
+package Bio::RNASeq::IntergenicRegions;
 
-=head1 NAME
-
-IntergenicRegions.pm   - Represents a IntergenicRegions from a GFF file
+#ABSTRACT: Represents a IntergenicRegions from a GFF file
 
 =head1 SYNOPSIS
-
-use Bio::RNASeq::IntergenicRegions;
-my $intergenic_regions = Bio::RNASeq::IntergenicRegions->new(
-  features => $features,
-  window_margin => 50,
-  );
-$intergenic_regions->intergenic_features;
+Represents a IntergenicRegions from a GFF file
+	use Bio::RNASeq::IntergenicRegions;
+	my $intergenic_regions = Bio::RNASeq::IntergenicRegions->new(
+	  features => $features,
+	  window_margin => 50,
+	  );
+	$intergenic_regions->intergenic_features;
 
 =cut
-package Bio::RNASeq::IntergenicRegions;
+
 use Moose;
 use Bio::RNASeq::IntergenicFeature;
 
@@ -112,4 +110,6 @@ sub calculate_intergenic_end
   return $start_of_next_feature - ( $self->window_margin + 1);
 }
 
+no Moose;
+__PACKAGE__->meta->make_immutable;
 1;

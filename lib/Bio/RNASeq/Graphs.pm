@@ -1,12 +1,13 @@
-#PODNAME: Bio::RNASeq
 package Bio::RNASeq::Graphs;
+
+# ABSTRACT: Create graphs for the given data sets
+
 
 use strict;
 use warnings;
 use Utils;
 use Bio::RNASeq::VertRes::Utils::Math;
 use List::Util qw(min max sum);
-use Data::Dumper;
 
 our $R_CMD = 'R';
 

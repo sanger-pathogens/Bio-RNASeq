@@ -1,20 +1,18 @@
-#PODNAME: Bio::RNASeq
+package Bio::RNASeq::IntergenicFeature;
 
-=head1 NAME
-
-IntergenicFeature.pm   - Represents a IntergenicFeature from a GFF file
+# ABSTRACT:  Represents a IntergenicFeature from a GFF file
 
 =head1 SYNOPSIS
-
-use Bio::RNASeq::IntergenicFeature;
-my $intergenicfeature = Bio::RNASeq::IntergenicFeature->new(
-  gene_start => 10,
-  gene_end => 20,
-  seq_id => "ABC"
-  );
+Represents a IntergenicFeature from a GFF file
+	use Bio::RNASeq::IntergenicFeature;
+	my $intergenicfeature = Bio::RNASeq::IntergenicFeature->new(
+	  gene_start => 10,
+	  gene_end => 20,
+	  seq_id => "ABC"
+	  );
 
 =cut
-package Bio::RNASeq::IntergenicFeature;
+
 use Moose;
 
 has 'gene_start'    => ( is => 'rw', isa => 'Int',      required => 1 );
@@ -46,4 +44,6 @@ sub _build_exons
   return \@exons;
 }
 
+no Moose;
+__PACKAGE__->meta->make_immutable;
 1;

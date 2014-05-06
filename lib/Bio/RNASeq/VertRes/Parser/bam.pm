@@ -96,6 +96,8 @@ use Inline C => Config => FILTERS => 'Strip_POD' =>
 
 use base qw(Bio::RNASeq::VertRes::Parser::ParserI);
 
+#           INC => "-I$ENV{SAMTOOLS}" =>
+
 our %flags = (paired_tech    => 0x0001,
               paired_map     => 0x0002,
               self_unmapped  => 0x0004,
