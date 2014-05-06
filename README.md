@@ -93,4 +93,4 @@ Whenever I'm running RNA Seq analysis with Bio-RNASeq, I source this bash script
 
 	~$ source bio_rnaseq_environment_setup.sh
 
-Now you can run this application in your bash terminal from wherever you are.
+Now I can run this application in my bash terminal from wherever I am.
