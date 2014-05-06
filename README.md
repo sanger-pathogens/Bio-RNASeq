@@ -56,9 +56,11 @@ You will also need to download samtools v0.1.18 and build it on your system. Bio
 
 https://github.com/samtools/samtools/tree/0.1.18
 
-Once you've downloaded this, on command line prompt, run
+Once you've downloaded this, in a bash terminal in the samtools v0.1.18 directory, run
 
 	~$ make
+
+NOTE: Don't run 'make install'. You don't need to install the older version of samtools on your system.
 
 When make finishes, you will need to set a couple of environment variables
 
@@ -75,6 +77,7 @@ Create a directory called - _Inline - wherever you want. And set $PERL\_INLINE\_
 	export PERL_INLINE_DIRECTORY=[path_to]/_Inline
 	
 You can easily put all these export statements into a .sh which you will need to source before you can run Bio-RNASeq.
+
 As an example, I have created the file
 
 	bio_rnaseq_environment_setup.sh	
