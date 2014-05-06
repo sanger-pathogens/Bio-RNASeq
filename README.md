@@ -62,21 +62,21 @@ Once you've downloaded this, in a bash terminal in the samtools v0.1.18 director
 
 NOTE: Don't run 'make install'. You don't need to install the older version of samtools on your system.
 
-When make finishes, you will need to set a couple of environment variables
+When `make` finishes, you will need to set a couple of environment variables
 
 	export PATH=[path_to]/Bio-RNASeq/bin:$PATH
 	export PERL5LIB=[path_to]/Bio-RNASeq/lib:$PERL5LIB
 	
-Now set the $SAMTOOLS environment variable to point to the directory where you built samtools v0.1.18
+Now set the `$SAMTOOLS` environment variable to point to the directory where you built samtools v0.1.18
 
 	export SAMTOOLS=[path_to]/samtools_0.1.18/
 
 
-Create a directory called - _Inline - wherever you want. And set $PERL\_INLINE\_DIRECTORY
+Create a directory called  `_Inline` wherever you want. And set `$PERL_INLINE_DIRECTORY`
 
 	export PERL_INLINE_DIRECTORY=[path_to]/_Inline
 	
-You can easily put all these export statements into a .sh which you will need to source before you can run Bio-RNASeq.
+You can easily put all these export statements into a bash script. You will need to source it before you can run Bio-RNASeq.
 
 As an example, I have created the file
 
