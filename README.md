@@ -7,11 +7,13 @@ The BAM must be aligned to the same reference that the annotation refers to and 
 
 The RPKM values are calculated according to two different methodologies:
 
-1) total number of reads on the bam file that mapped to the reference;
+1) total number of reads on the bam file that mapped to the reference genome;
 
 2) total number of reads on the bam file that mapped to gene models in the reference genome.
 
-The *expression.csv file will contains both datasets. It also produces coverage plots that you can visualise with Artemis
+The *expression.csv file will contain both datasets. 
+
+Coverage plots compatible with Artemis will also be produced. You can download Artemis here:
 
 http://www.sanger.ac.uk/resources/software/artemis/
  
@@ -47,7 +49,7 @@ USAGE
 REQUIRES
 ========
 
-The samtools executable must be set in your path. You can get it here:
+The samtools executable must be set in your path. You can download samtools here:
 
 https://github.com/samtools
 
@@ -56,11 +58,11 @@ You will also need to download samtools v0.1.18 and build it on your system. Bio
 
 https://github.com/samtools/samtools/tree/0.1.18
 
-Once you've downloaded this, in a bash terminal in the samtools v0.1.18 directory, run
+Once you've downloaded this, in a bash terminal, in the samtools v0.1.18 directory, run
 
 	~$ make
 
-__NOTE:__ Don't run `make install`. You don't need to install the older version of samtools on your system.
+__NOTE:__ You don't need to run `make install`. You don't need to install the older version of samtools on your system.
 
 When `make` finishes, you will need to set a couple of environment variables
 
@@ -75,22 +77,27 @@ Now set the `$SAMTOOLS` environment variable to point to the directory where you
 Create a directory called  `_Inline` wherever you want. And set `$PERL_INLINE_DIRECTORY`
 
 	export PERL_INLINE_DIRECTORY=[path_to]/_Inline
-	
-You can easily put all these export statements into a bash script. You will need to source it before you can run Bio-RNASeq.
 
-As an example, I have created the file
+You're now ready to run your RNA Seq analysis using Bio-RNASeq.
+
+
+__NOTE:__
+
+You can easily put all the above export statements into a bash script. You will need to source it before you can run Bio-RNASeq.
+
+As an example, the file
 
 	bio_rnaseq_environment_setup.sh	
 
-This is what it looks like
+Looks like this
 
-	export PATH=/Users/js21/work/Bio-RNASeq/bin:$PATH
-	export PERL5LIB=/Users/js21/work/Bio-RNASeq/lib:$PERL5LIB
-	export PERL_INLINE_DIRECTORY=/Users/js21/test_RNASeq/_Inline
-	export SAMTOOLS=/Users/js21/work/samtools/
+	export PATH=/Users/user/work/Bio-RNASeq/bin:$PATH
+	export PERL5LIB=/Users/user/work/Bio-RNASeq/lib:$PERL5LIB
+	export PERL_INLINE_DIRECTORY=/Users/user/test_RNASeq/_Inline
+	export SAMTOOLS=/Users/user/work/samtools/
 
-Whenever I'm running RNA Seq analysis with Bio-RNASeq, I source this bash script
+Whenever `user` needs to run an RNA Seq analysis with Bio-RNASeq, this bash script will need to be sourced
 
 	~$ source bio_rnaseq_environment_setup.sh
 
-Now I can run this application in my bash terminal from wherever I am.
+Now `user` can run this application in a bash terminal from wherever he is.
