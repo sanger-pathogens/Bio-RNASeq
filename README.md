@@ -11,7 +11,9 @@ The RPKM values are calculated according to two different methodologies:
 
 2) total number of reads on the bam file that mapped to gene models in the reference genome.
 
-The *expression.csv file will contain both datasets. It also produces coverage plots compatible with Artemis
+The *expression.csv file will contain both datasets. 
+
+Coverage plots compatible with Artemis will also be produced. You can download Artemis here:
 
 http://www.sanger.ac.uk/resources/software/artemis/
  
@@ -56,11 +58,11 @@ You will also need to download samtools v0.1.18 and build it on your system. Bio
 
 https://github.com/samtools/samtools/tree/0.1.18
 
-Once you've downloaded this, in a bash terminal in the samtools v0.1.18 directory, run
+Once you've downloaded this, in a bash terminal, in the samtools v0.1.18 directory, run
 
 	~$ make
 
-__NOTE:__ Don't run `make install`. You don't need to install the older version of samtools on your system.
+__NOTE:__ You don't need to run `make install`. You don't need to install the older version of samtools on your system.
 
 When `make` finishes, you will need to set a couple of environment variables
 
@@ -75,8 +77,13 @@ Now set the `$SAMTOOLS` environment variable to point to the directory where you
 Create a directory called  `_Inline` wherever you want. And set `$PERL_INLINE_DIRECTORY`
 
 	export PERL_INLINE_DIRECTORY=[path_to]/_Inline
-	
-You can easily put all these export statements into a bash script. You will need to source it before you can run Bio-RNASeq.
+
+You're now ready to run your RNA Seq analysis using Bio-RNASeq.
+
+
+__NOTE:__
+
+You can easily put all the above export statements into a bash script. You will need to source it before you can run Bio-RNASeq.
 
 As an example, the file
 
