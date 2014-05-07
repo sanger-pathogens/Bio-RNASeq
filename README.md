@@ -96,7 +96,7 @@ Looks like this
 	export PERL_INLINE_DIRECTORY=/Users/user/test_RNASeq/_Inline
 	export SAMTOOLS=/Users/user/work/samtools/
 
-Whenever `user` needs to run an RNA Seq analysis with Bio-RNASeq,  this bash script needs to be sourced once
+Whenever `user` needs to run an RNA Seq analysis with Bio-RNASeq, this bash script will need to be sourced
 
 	~$ source bio_rnaseq_environment_setup.sh
 
