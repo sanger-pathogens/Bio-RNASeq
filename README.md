@@ -7,7 +7,7 @@ The BAM must be aligned to the same reference that the annotation refers to and 
 
 The RPKM values are calculated according to two different methodologies:
 
-1) total number of reads on the bam file that mapped to the reference;
+1) total number of reads on the bam file that mapped to the reference genome;
 
 2) total number of reads on the bam file that mapped to gene models in the reference genome.
 
