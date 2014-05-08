@@ -1,12 +1,12 @@
 =head1 NAME
 
-Bio::RNASeq::VertRes::Utils::FileSystem - do filesystem manipulations
+VertRes::Utils::FileSystem - do filesystem manipulations
 
 =head1 SYNOPSIS
 
-use Bio::RNASeq::VertRes::Utils::FileSystem;
+use VertRes::Utils::FileSystem;
 
-my $fsu = Bio::RNASeq::VertRes::Utils::FileSystem->new();
+my $fsu = VertRes::Utils::FileSystem->new();
 
 # ...
 
@@ -48,6 +48,7 @@ use Digest::MD5;
 use Filesys::DfPortable;
 use Filesys::DiskUsage qw/du/;
 use File::Rsync;
+#use Bio::RNASeq::VertRes::Utils::VRTrackFactory;
 
 use base qw(Bio::RNASeq::VertRes::Base);
 
@@ -55,18 +56,19 @@ use base qw(Bio::RNASeq::VertRes::Base);
 
  Title   : new
  Usage   : my $self = $class->SUPER::new(@args);
- Function: Instantiate a new Bio::RNASeq::VertRes::Utils::FileSystem object.
+ Function: Instantiate a new VertRes::Utils::FileSystem object.
  Returns : $self hash-ref blessed into your class
  Args    : n/a
 
 =cut
 
 sub new {
-  my ($class, @args) = @_;
-  my $self = $class->SUPER::new(@args);
-  return $self;
+    my ($class, @args) = @_;
+    
+    my $self = $class->SUPER::new(@args);
+    
+    return $self;
 }
-
 
 =head2 get_filepaths
 
@@ -90,10 +92,9 @@ sub new {
 
 =cut
 
-
 sub get_filepaths {
     my ($self, $dir, %args) = @_;
-
+    
     $dir = abs_path($dir);
     my $wanted_dir = $args{dir};
     opendir(my $dir_handle, $dir) || $self->throw("Couldn't open dir '$dir': $!");
@@ -163,8 +164,6 @@ sub get_filepaths {
     return @filepaths;
 }
 
-
-
 =head2 tempfile
 
  Title   : tempfile
@@ -178,15 +177,12 @@ sub get_filepaths {
 
 sub tempfile {
     my $self = shift;
-
+    
     my $ft = File::Temp->new(@_);
     push(@{$self->{_fts}}, $ft);
     
     return ($ft, $ft->filename);
 }
-
-
-
 
 =head2 tempdir
 
@@ -208,9 +204,6 @@ sub tempdir {
     return $ft->dirname;
 }
 
-
-
-
 =head2 catfile
 
  Title   : catfile
@@ -224,12 +217,8 @@ sub tempdir {
 
 sub catfile {
     my $self = shift;
-
     return File::Spec->catfile(@_);
 }
-
-
-
 
 =head2 rmtree
 
@@ -247,8 +236,168 @@ sub rmtree {
     return File::Path::rmtree(@_);
 }
 
+=head2 copy
 
+ Title   : copy
+ Usage   : $obj->copy('source.file', 'dest.file');
+           $obj->copy('source_dir', 'dest_dir');
+ Function: Copy a file and check that the copy is identical to the source
+           afterwards. If given a directory as the first argument, copies all
+           all the files and subdirectories (recursively), again ensuring
+           copies are perfect.
+ Returns : boolean (true on success; on failure the destination path won't
+           exist)
+ Args    : source file/dir path, output file/dir path. Optionally, the number of
+           times to retry the copy if the copy isn't identical, before giving up
+           (default 3).
 
+=cut
+
+sub copy {
+    my ($self, $source, $dest, $max_retries) = @_;
+    unless (defined $max_retries) {
+        $max_retries = 3;
+    }
+    
+    my $tmp_dest = $dest.'_copy_tmp';
+    my $dest_dir_exists = 0;
+    if (-d $source && -e $dest) {
+        $dest_dir_exists = 1;
+        $tmp_dest = $dest;
+    }
+    elsif (-e $dest) {
+        $self->warn("destination '$dest' already exists, won't attempt to copy");
+        return 0;
+    }
+    
+    my $rsync = File::Rsync->new({archive => 1, compress => 1, checksum => 1, 'copy-unsafe-links' => 1});
+    
+    if (-d $source) {
+        unless (-d $tmp_dest) {
+            File::Path::make_path($tmp_dest) || $self->throw("Could not make destination directory '$tmp_dest'");
+        }
+        
+        unless ($self->can_be_copied($source, $tmp_dest)) {
+            $self->warn("There isn't enough disk space at '$dest' to copy '$source' there");
+            #$self->rmtree($tmp_dest);
+            return 0;
+        }
+        
+        my $ok = $rsync->exec({src => $source.'/', dest => $tmp_dest});
+        # Run it again, sometimes it fails.
+        $ok = $rsync->exec({src => $source.'/', dest => $tmp_dest});
+        if ($ok) {
+            # we run it again; with the checksum option this should hopefully
+            # ensure the copy is perfect
+            $ok = $rsync->exec({src => $source.'/', dest => $tmp_dest});
+        }
+        else {
+            $self->warn("rsync copy of $source to $tmp_dest failed");
+            return 0;
+        }
+        
+        if ($ok) {
+            unless ($dest_dir_exists) {
+                File::Copy::move($tmp_dest, $dest) || $self->throw("Failed to rename successfully copied directory '$tmp_dest' to '$dest'");
+            }
+            return 1;
+        }
+        else {
+            $self->warn("rsync copy of $source to $tmp_dest failed");
+            return 0;
+        }
+    }
+    else {
+        open(my $fh, '>', $tmp_dest);
+        close($fh);
+        unless ($self->can_be_copied($source, $tmp_dest)) {
+            $self->warn("There isn't enough disk space at '$dest' to copy '$source' there");
+            unlink($tmp_dest);
+            return 0;
+        }
+        
+        for (1..$max_retries) {
+            my $success = $rsync->exec({src => $source, dest => $tmp_dest});
+            if ($success) {
+                my $diff = `diff $source $tmp_dest`;
+                unless ($diff) {
+                    File::Copy::move($tmp_dest, $dest) || $self->throw("Failed to rename successfully copied file '$tmp_dest' to '$dest'");
+                    return 1;
+                }
+            }
+        }
+        
+        unlink($tmp_dest);
+        return 0;
+    }
+}
+
+=head2 move
+
+ Title   : move
+ Usage   : $obj->move('source.file', 'dest.file');
+           $obj->move('source_dir', 'dest_dir');
+ Function: Does a VertRes::Utils::FileSystem->copy on the source to the
+           destination, and on success deletes the source. If the source was a
+           directory in which new files were added between the start and finish
+           of the copy, the destination will be deleted (unless the destination
+           existed before the move was requested) and source left untouched.
+ Returns : boolean (true on success; on failure the destination path won't
+           exist)
+ Args    : source file/dir path, output file/dir path. Optionally, the number of
+           times to retry the copy if the copy isn't identical, before giving up
+           (default 3).
+
+=cut
+
+sub move {
+    my ($self, $source, $dest, $max_retries) = @_;
+    my $tmp_dest = $dest.'_move_tmp';
+    my $dest_dir_exists = 0;
+    if (-d $source && -e $dest) {
+        $dest_dir_exists = 1;
+        $tmp_dest = $dest;
+    }
+    
+    $self->copy($source, $tmp_dest, $max_retries) || return 0;
+    
+    if (-d $source) {
+        unless ($self->directory_structure_same($source, $tmp_dest, consider_files => 1)) {
+            unless ($dest_dir_exists) {
+                #$self->rmtree($tmp_dest) unless $dest_dir_exists;
+                $self->warn("Source directory '$source' was updated before the move completed, so the temporary destination '$tmp_dest' should be deleted and the source will be left untouched");
+            }
+            else {
+                $self->warn("Source directory '$source' was updated before the move completed, so the destination is now in an unknown state!");
+            }
+            return 0;
+        }
+    }
+    
+    unless ($dest_dir_exists) {
+        File::Copy::move($tmp_dest, $dest) || $self->throw("Failed to rename successfully moved source '$tmp_dest' to '$dest'");
+    }
+    
+    if (-d $source && ! $self->directory_structure_same($source, $dest, consider_files => 1)) {
+        $self->throw("I thought I moved $source to $dest, but the contents aren't the same!");
+    }
+    
+    if (-d $source) {
+        # we might be in the source directory, which will prevent us removing
+        # it; chdir to parent if that's the case
+        my $cwd = cwd();
+        if (abs_path($cwd) eq abs_path($source)) {
+            my $parent = File::Spec->updir();
+            chdir($parent);
+        }
+        $self->rmtree($source);
+    }
+    else {
+        unlink($source);
+    }
+    
+    return 1;
+}
 
 =head2 verify_md5
 
@@ -263,13 +412,9 @@ sub rmtree {
 
 sub verify_md5 {
     my ($self, $file, $md5) = @_;
-
     my $new_md5 = $self->calculate_md5($file);
     return $new_md5 eq $md5;
 }
-
-
-
 
 =head2 calculate_md5
 
@@ -283,7 +428,7 @@ sub verify_md5 {
 
 sub calculate_md5 {
     my ($self, $file, $md5_file) = @_;
-
+    
     open(my $fh, $file) || $self->throw("Could not open file $file");
     binmode($fh);
     my $dmd5 = Digest::MD5->new();
@@ -300,9 +445,6 @@ sub calculate_md5 {
     return $md5;
 }
 
-
-
-
 =head2 md5_from_file
 
  Title   : md5_from_file
@@ -314,22 +456,14 @@ sub calculate_md5 {
 
 =cut
 
-
-
-
-
 sub md5_from_file {
     my ($self, $file) = @_;
-
     open my $fh, "<$file" || $self->throw("Could not open $file to read md5");
     my ($md5) = <$fh> =~ m/^([0-9a-z]{32})\s/;
     close $fh;
     $md5 || $self->throw("Could not read md5 from $file");
     return $md5;
 }
-
-
-
 
 =head2 directory_structure_same
 
@@ -354,10 +488,8 @@ sub md5_from_file {
 
 =cut
 
-
 sub directory_structure_same {
     my ($self, $root1, $root2, %opts) = @_;
-
     my $orig_path = delete $opts{orig_path};
     $orig_path ||= $root1;
     
@@ -457,7 +589,6 @@ sub directory_structure_same {
     return 1;
 }
 
-
 =head2 hashed_path
 
  Title   : hashed_path
@@ -471,10 +602,8 @@ sub directory_structure_same {
 
 =cut
 
-
 sub hashed_path {
     my ($self, $path) = @_;
-
     my $dmd5 = Digest::MD5->new();
     $dmd5->add($path);
     my $md5 = $dmd5->hexdigest;
@@ -482,7 +611,6 @@ sub hashed_path {
     my $basename = basename($path);
     return $self->catfile(@chars[0..3], $basename);
 }
-
 
 =head2 can_be_copied
 
@@ -495,15 +623,12 @@ sub hashed_path {
 
 =cut
 
-
 sub can_be_copied {
     my ($self, $source, $destination) = @_;
-
     my $usage = $self->disk_usage($source) || 0;
     my $available = $self->disk_available($destination) || return 0;
     return $available > $usage;
 }
-
 
 =head2 disk_available
 
@@ -519,11 +644,9 @@ sub can_be_copied {
 
 sub disk_available {
     my ($self, $path) = @_;
-
     my $ref = dfportable($path) || (return 0);
     return $ref->{bavail};
 }
-
 
 =head2 disk_usage
 
@@ -535,17 +658,11 @@ sub disk_available {
 
 =cut
 
-
-
-
-
 sub disk_usage {
     my ($self, $path) = @_;
-
     my $total = du($path);
     return $total || 0;
 }
-
 
 =head2 set_stripe_dir
 
@@ -559,7 +676,7 @@ sub disk_usage {
 
 sub set_stripe_dir {
     my ($self, $path, $stripe_value) = @_;
-
+    
     if ($stripe_value < -1 || $stripe_value > 10) {
         $self->throw("Invalid stripe value: $stripe_value");
     }
@@ -572,7 +689,6 @@ sub set_stripe_dir {
     return 1;
 }
 
-
 =head2 set_stripe_dir_tree
 
  Title   : set_stripe_dir_tree
@@ -583,10 +699,9 @@ sub set_stripe_dir {
 
 =cut
 
-
 sub set_stripe_dir_tree {
     my ($self, $root, $stripe_value) = @_;
-
+    
     if ($stripe_value < -1 || $stripe_value > 10) {
         $self->throw("Invalid stripe value: $stripe_value");
     }
@@ -604,6 +719,164 @@ sub set_stripe_dir_tree {
         chdir( ".." )
     }
     closedir($dfh);
+}
+
+=head2 file_exists
+
+ Title   : file_exists
+ Usage   : if ($obj->file_exists('/abs/.../file')) { ... }
+ Function: Find out if a file exists on disc, avoiding where possible actually
+           doing a stat, which can be very slow on "high performance" systems
+           like lustre. By default, really checks the disk only when a file was
+           previously found not to exist, or when a file has not been previously
+           checked with file_exists(). Otherwise it will return the answer
+           stored in a database (which may be out of date).
+ Returns : boolean
+ Args    : absolute path to file
+           Optionally, these hash args:
+           empty => boolean (empty the db of all past results before doing
+                             anything else)
+           force_check => boolean (really check the disk and update the db,
+                                   regardless of anything else)
+           no_check => boolean (do not check the disk if the file had previously
+                                been found not to exist; still checks the disk
+                                if the file isn't in the database at all)
+           recurse => boolean (works with wipe_out, removes all subdirectory 
+                               records as well)
+           wipe_out => boolean (remove the file from the db, don't check anything
+                                and return 0)
+
+=cut
+
+sub file_exists {
+    my ($self, $file, %opts) = @_;
+
+    # Strip multiple and trailing slashes (/path//xx/ to /path/xx)
+    $file =~ s{/+}{/}g;
+    $file =~ s{/$}{};
+    if ( $file =~ m{^$} ) { $file='/'; }    # we never expect the root directory, but just in case..
+
+    my $dmd5 = Digest::MD5->new();
+    $dmd5->add($file);
+    my $md5 = $dmd5->hexdigest;
+
+    # Check if the DB is responsive. If not, do not attempt to reconnect 300 times (5mins).
+    #   Works, but always stats, the DB not good.
+    #   Another change: always disconnect and reconnect if reconnect_db option is set. This works like charm!!
+    #
+    my $file_exists_dbh;
+    if ( !$$self{_dbh_failed} )
+    {
+        eval { $file_exists_dbh = $self->_get_dbh; };
+    }
+    if ( !$file_exists_dbh )
+    {
+        if ( ! $$self{_dbh_failed} ) 
+        { 
+            print STDERR "The file_exists DB not responding. For 5 mins will now stat instead, with 1s sleeps...\n";
+            $$self{_dbh_failed} = 300; 
+        }
+        else { $$self{_dbh_failed}--; }
+
+        sleep(1);
+        return -e $file ? 1 : 0;
+    }
+    
+    if ($opts{wipe_out}) {
+        if ($opts{recurse}) {
+            $file_exists_dbh->do(qq{DELETE FROM file_status WHERE path REGEXP '^$file/.*'});
+            $file_exists_dbh->do(qq{DELETE FROM file_status WHERE path REGEXP '^$file/?\$'});
+        }
+        else {
+            $file_exists_dbh->do(qq{DELETE FROM file_status WHERE hash=? AND path=?},undef,$md5,$file);
+        }
+        if ( $$self{reconnect_db} )
+        {
+            $self->{_dbh}->disconnect; 
+            delete($$self{_dbh});
+        }
+        return 0;
+    }
+    
+    # empty db if asked
+    if ($opts{empty}) {
+        my $sql = qq{truncate table file_status};
+    }
+    
+    # check the db
+    unless ($opts{force_check}) {
+        my $sql = qq{select * from `file_status` where `hash` = ?};
+        my @row = $file_exists_dbh->selectrow_array($sql, undef, $md5);
+        if (@row) {
+            if ($row[2] && $row[2] == 1) {
+                if ( $$self{reconnect_db} )
+                {
+                    $self->{_dbh}->disconnect; 
+                    delete($$self{_dbh});
+                }
+                return 1;
+            }
+            else {
+                if ($opts{no_check}) {
+                    if ( $$self{reconnect_db} )
+                    {
+                        $self->{_dbh}->disconnect; 
+                        delete($$self{_dbh});
+                    }
+                    return 0;
+                }
+            }
+        }
+    }
+    
+    # check the disk
+    my $exists = -e $file ? 1 : 0;
+    
+    # store result in db
+    my $sql = qq{insert into `file_status` (hash,path,status) values (?,?,?) ON DUPLICATE KEY UPDATE `status`=?};
+    $file_exists_dbh->do($sql, undef, $md5, $file, $exists, $exists) || $self->throw($file_exists_dbh->errstr);
+
+    if ( $$self{reconnect_db} )
+    {
+        $self->{_dbh}->disconnect; 
+        delete($$self{_dbh});
+    }
+    
+    return $exists;
+}
+
+sub _get_dbh {
+    my $self = shift;
+    
+    unless (defined $self->{_dbh}) {
+        my %cd = VertRes::Utils::VRTrackFactory->connection_details('rw');
+
+        my $dbname = VertRes::Utils::VRTrackFactory->fsu_file_exists_db_name();
+
+        $self->{_dbh} = DBI->connect("dbi:mysql:$dbname;host=$cd{host};port=$cd{port}", $cd{user}, $cd{password}, { RaiseError => 0 });
+        
+        unless ($self->{_dbh}) {
+            $self->warn("Could not connect to database $dbname; will try to create it...\n");
+            
+            #*** need a better way of doing this...
+            open(my $mysqlfh, "| mysql -h$cd{host} --port $cd{port} -u$cd{user} -p$cd{password}") || $self->throw("Could not connect to mysql server $cd{host}");
+            print $mysqlfh "create database $dbname;\n";
+            print $mysqlfh "use $dbname;\n";
+            print $mysqlfh "CREATE TABLE `file_status` (`hash` char(32) NOT NULL, `path` varchar(1000) NOT NULL, `status` enum('0','1') not null, PRIMARY KEY (`hash`)) ENGINE=InnoDB DEFAULT CHARSET=latin1;\n";
+            close($mysqlfh);
+            
+            $self->{_dbh} = DBI->connect("dbi:mysql:$dbname;host=$cd{host};port=$cd{port}", $cd{user}, $cd{password}, { RaiseError => 0 }) || $self->throw("Still couldn't connect to database $dbname; giving up");
+        }
+    }
+    
+    return $self->{_dbh};
+}
+
+sub DESTROY {
+    my $self = shift;
+    if (defined $self->{_dbh}) {
+        $self->{_dbh}->disconnect;
+    }
 }
 
 1;
