@@ -14,6 +14,7 @@ Functionality for Stats files for a BAM
 
 use Moose;
 use Bio::RNASeq::VertRes::Parser::bas;
+use Bio::RNASeq::VertRes::Utils::Sam;
 use Time::Format;
 
 has 'total_mapped_reads' => ( is => 'rw', isa => 'Str', lazy_build   => 1 );
@@ -35,6 +36,13 @@ sub _build_total_mapped_reads
 {
   my ($self) = @_;
   $self->_parser->mapped_reads;
+}
+
+sub _create_stats_files
+{
+   my ($self) = @_;
+   my $sam = Bio::RNASeq::VertRes::Utils::Sam->new();
+   $sam->stats("$time{'yyyymmdd'}", $self->filename);
 }
 
 

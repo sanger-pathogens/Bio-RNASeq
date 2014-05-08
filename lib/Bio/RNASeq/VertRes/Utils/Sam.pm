@@ -1,12 +1,12 @@
 =head1 NAME
 
-Bio::RNASeq::VertRes::Utils::Sam - sam utility functions
+VertRes::Utils::Sam - sam utility functions
 
 =head1 SYNOPSIS
 
-use Bio::RNASeq::VertRes::Utils::Sam;
+use VertRes::Utils::Sam;
 
-my $sam_util = Bio::RNASeq::VertRes::Utils::Sam->new();
+my $sam_util = VertRes::Utils::Sam->new();
 
 # use any of the utility functions described here, eg.
 my $are_similar = $sam_util->bams_are_similar(@bam_files);
@@ -23,25 +23,39 @@ Martin Hunt: mh12@sanger.ac.uk
 
 =cut
 
-package Bio::RNASeq::VertRes::Utils::Sam;
+package VertRes::Utils::Sam;
 
 use strict;
 use warnings;
 use File::Copy;
 use File::Basename;
 use File::Spec;
-use Bio::RNASeq::VertRes::IO;
-use Bio::RNASeq::VertRes::Utils::FileSystem;
-use Bio::RNASeq::VertRes::Wrapper::samtools;
-use Bio::RNASeq::VertRes::Parser::sam;
-use Bio::RNASeq::VertRes::Parser::bam;
+use VertRes::IO;
+use VertRes::Utils::FileSystem;
+use VertRes::Wrapper::samtools;
+use VertRes::Wrapper::picard;
+use VertRes::Wrapper::fastqcheck;
+use HierarchyUtilities;
+use VertRes::Parser::dict;
+use VertRes::Parser::sequence_index;
+use VertRes::Parser::sam;
+use VertRes::Parser::bam;
+use VertRes::Parser::dict;
+use VertRes::Parser::fasta;
+use VertRes::Utils::FastQ;
+use VertRes::Utils::Math;
+use VertRes::Utils::Hierarchy;
 use Digest::MD5;
+use VertRes::Parser::bamcheck;
+use VertRes::Parser::fastqcheck;
 use List::Util qw(min max sum);
 use Test::Deep::NoTest;
+use Graphs;
+use Data::Dumper;
 
-use base qw(Bio::RNASeq::VertRes::Base);
+use base qw(VertRes::Base);
 
-use Bio::RNASeq::VertRes::Parser::sam;
+use VertRes::Parser::sam;
 our %flags = (paired_tech    => '0x0001',
               paired_map     => '0x0002',
               self_unmapped  => '0x0004',
@@ -64,9 +78,9 @@ my %tech_to_platform = (SLX => 'ILLUMINA',
 =head2 new
 
  Title   : new
- Usage   : my $obj = Bio::RNASeq::VertRes::Utils::Sam->new();
- Function: Create a new Bio::RNASeq::VertRes::Utils::Sam object.
- Returns : Bio::RNASeq::VertRes::Utils::Sam object
+ Usage   : my $obj = VertRes::Utils::Sam->new();
+ Function: Create a new VertRes::Utils::Sam object.
+ Returns : VertRes::Utils::Sam object
  Args    : java_memory => int (for methods that call picard, this will be passed
                                on to the picard wrapper, which has a default)
 
@@ -96,9 +110,9 @@ sub bams_are_similar {
     
     @files >= 2 or $self->throw("At least 2 bam files are needed");
     
-    my $sw = Bio::RNASeq::VertRes::Wrapper::samtools->new(verbose => $self->verbose,
-							  run_method => 'open',
-							  quiet => 1);
+    my $sw = VertRes::Wrapper::samtools->new(verbose => $self->verbose,
+                                             run_method => 'open',
+                                             quiet => 1);
     
     # open
     my @in_fhs;
@@ -173,7 +187,7 @@ sub bams_are_similar {
 
 sub num_bam_records {
     my ($self, $bam_file, %opts) = @_;
-    my $pars = Bio::RNASeq::VertRes::Parser::bam->new(file => $bam_file);
+    my $pars = VertRes::Parser::bam->new(file => $bam_file);
     my $rh = $pars->result_holder;
     my $rname_regex;
     if ($opts{only}) {
@@ -209,7 +223,7 @@ sub bam_refnames {
     my ($self, $bam_file) = @_;
     
     my @names;
-    my $st = Bio::RNASeq::VertRes::Wrapper::samtools->new(quiet => 1, run_method => 'open');
+    my $st = VertRes::Wrapper::samtools->new(quiet => 1, run_method => 'open');
     my $fh = $st->view($bam_file, undef, H => 1);
     while (<$fh>){
         if (/^\@SQ\t.*SN:(\w+)/) {
@@ -234,7 +248,7 @@ sub bam_refnames {
 sub num_bam_header_lines {
     my ($self, $bam_file) = @_;
     
-    my $st = Bio::RNASeq::VertRes::Wrapper::samtools->new(quiet => 1, run_method => 'open');
+    my $st = VertRes::Wrapper::samtools->new(quiet => 1, run_method => 'open');
     my $fh = $st->view($bam_file, undef, H => 1);
     my $header_lines = 0;
     while (<$fh>) {
@@ -244,7 +258,6 @@ sub num_bam_header_lines {
     
     return $header_lines;
 }
-
 =head2 num_bam_lines
 
  Title   : num_bam_lines
@@ -332,7 +345,7 @@ sub split_bam_by_sequence {
     }
     
     # find out what sequences there are
-    my $pb = Bio::RNASeq::VertRes::Parser::bam->new(file => $bam);
+    my $pb = VertRes::Parser::bam->new(file => $bam);
     my %all_sequences = $pb->sequence_info();
     
     # work out the output filenames for each sequence
@@ -419,7 +432,7 @@ sub split_bam_by_sequence {
         # header, so we might not have created all the bams expected. Create
         # a header-only bam in that case:
         unless (-s $unchecked) {
-            $pb = Bio::RNASeq::VertRes::Parser::bam->new(file => $bam);
+            $pb = VertRes::Parser::bam->new(file => $bam);
             $pb->next_result;
             $pb->_create_no_record_output_bam($unchecked);
             $pb->close;
@@ -485,8 +498,6 @@ sub split_bam_by_sequence {
 
 =cut
 
-#Jorge Comment
-
 sub add_sam_header {
     my ($self, $raw_sam_file, %args) = @_;
     -s $raw_sam_file || $self->throw("sam file '$raw_sam_file' doesn't exist, can't add header to it!");
@@ -500,7 +511,7 @@ sub add_sam_header {
     my $ref_name = $args{ref_name} || $lane_info{ref_name} || $self->throw("the reference assembly name must be supplied");
     
     my $seq_index = $args{sequence_index} || '';
-    my $parser = Bio::RNASeq::VertRes::Parser::sequence_index->new(file => $seq_index) if $seq_index;
+    my $parser = VertRes::Parser::sequence_index->new(file => $seq_index) if $seq_index;
     my $individual = $args{sample_name} || $parser->lane_info($lane, 'sample_name') || $lane_info{sample} || $self->throw("Unable to get sample_name for $lane from sequence index '$seq_index' or other supplied args");
     my $library = $args{library} || $parser->lane_info($lane, 'LIBRARY_NAME') || $lane_info{library};
     my $insert_size = $args{insert_size};
@@ -532,7 +543,7 @@ sub add_sam_header {
     # md5 in the sam spec is supposed to be of the sequence in the uppercase
     # with no spaces, which can be found with my sequence_dicter.pl script,
     # which was used to generate the .dict files for our references
-    my $dict_parser = Bio::RNASeq::VertRes::Parser::dict->new(file => $ref_dict);
+    my $dict_parser = VertRes::Parser::dict->new(file => $ref_dict);
     my $rh = $dict_parser->result_holder;
     while ($dict_parser->next_result) {
         my $sp = $rh->{SP} || '';
@@ -601,7 +612,7 @@ sub add_sam_header {
     close($shfh);
     
     # check and mv
-    my $io = Bio::RNASeq::VertRes::IO->new(file => $raw_sam_file);
+    my $io = VertRes::IO->new(file => $raw_sam_file);
     my $raw_lines = $io->num_lines();
     $expected_lines += $header_lines;
     $io->file($headed_sam);
@@ -636,13 +647,13 @@ sub add_sam_header {
 sub sam_to_fixed_sorted_bam {
     my ($self, $in_sam, $out_bam, $ref_fa, @args) = @_;
     
-    my $io = Bio::RNASeq::VertRes::IO->new();
-    my $fsu = Bio::RNASeq::VertRes::Utils::FileSystem->new();
+    my $io = VertRes::IO->new();
+    my $fsu = VertRes::Utils::FileSystem->new();
     my $temp_dir = $fsu->tempdir();
     my $tmp_bam = $fsu->catfile($temp_dir, 'fixed_sorted.bam');
     
     # sam -> fixed, sorted bam
-    my $wrapper = Bio::RNASeq::VertRes::Wrapper::samtools->new(verbose => $self->verbose, @args);
+    my $wrapper = VertRes::Wrapper::samtools->new(verbose => $self->verbose, @args);
     $wrapper->sam_to_fixed_sorted_bam($in_sam, $tmp_bam);
     unless ($wrapper->run_status() >= 1) {
         $self->warn("Failed the initial sam->bam step");
@@ -713,7 +724,7 @@ sub rmdup {
         @args = (s => 1);
     }
     
-    my $wrapper = Bio::RNASeq::VertRes::Wrapper::samtools->new(verbose => $self->verbose, %args);
+    my $wrapper = VertRes::Wrapper::samtools->new(verbose => $self->verbose, %args);
     $wrapper->rmdup($in_bam, $out_bam, @args);
     
     return $wrapper->run_status() >= 1;
@@ -741,10 +752,10 @@ sub markdup {
     # picard needs a tmp dir, but we don't use /tmp because it's likely to fill
     # up
     my (undef, $path) = fileparse($out_bam);
-    my $fsu = Bio::RNASeq::VertRes::Utils::FileSystem->new();
+    my $fsu = VertRes::Utils::FileSystem->new();
     my $tmp_dir = $fsu->tempdir('_markdup_tmp_XXXXXX', DIR => $path);
     
-    my $wrapper = Bio::RNASeq::VertRes::Wrapper::picard->new(verbose => $verbose,
+    my $wrapper = VertRes::Wrapper::picard->new(verbose => $verbose,
                                                 quiet => $verbose ? 0 : 1,
                                                 $self->{java_memory} ? (java_memory => $self->{java_memory}) : (),
                                                 tmp_dir => $tmp_dir,
@@ -782,11 +793,11 @@ sub merge {
     
     # picard needs a tmp dir for merging, but we don't use /tmp because it's
     # likely to fill up
-    my $fsu = Bio::RNASeq::VertRes::Utils::FileSystem->new();
+    my $fsu = VertRes::Utils::FileSystem->new();
     my $tmp_dir = $fsu->tempdir('_merge_tmp_XXXXXX', DIR => $path);
     
     my $verbose = $self->verbose();
-    my $wrapper = Bio::RNASeq::VertRes::Wrapper::picard->new(verbose => $verbose,
+    my $wrapper = VertRes::Wrapper::picard->new(verbose => $verbose,
                                                 quiet => $verbose ? 0 : 1,
                                                 $self->{java_memory} ? (java_memory => $self->{java_memory}) : (),
                                                 validation_stringency => 'silent',
@@ -812,7 +823,7 @@ sub stats {
     my ($self, $release_date, @in_bams) = @_;
     $release_date =~ /^\d{8}$/ || $self->throw("bad release date '$release_date'");
     
-    my $wrapper = Bio::RNASeq::VertRes::Wrapper::samtools->new(verbose => $self->verbose);
+    my $wrapper = VertRes::Wrapper::samtools->new(verbose => $self->verbose);
     my $all_ok = 1;
     foreach my $in_bam (@in_bams) {
         my $flagstat = $in_bam.'.flagstat';
@@ -865,7 +876,7 @@ sub index_bams
         }
         close($fh);
     }
-    my $samtools = Bio::RNASeq::VertRes::Wrapper::samtools->new(verbose => $self->verbose, quiet => 1);
+    my $samtools = VertRes::Wrapper::samtools->new(verbose => $self->verbose, quiet => 1);
     for my $bam (@bams)
     {
         $samtools->run_method('system');
@@ -940,9 +951,9 @@ sub bas {
         $md5 = $dmd5->hexdigest;
     }
     
-    my $sip = Bio::RNASeq::VertRes::Parser::sequence_index->new(file => $seq_index) if $seq_index;
+    my $sip = VertRes::Parser::sequence_index->new(file => $seq_index) if $seq_index;
     
-    my $pb = Bio::RNASeq::VertRes::Parser::bam->new(file => $in_bam);
+    my $pb = VertRes::Parser::bam->new(file => $in_bam);
     
     # if necessary, convert from arbitrary RG ids to the lane identifier stored
     # in PU
@@ -1016,7 +1027,7 @@ sub bas {
     }
     close($bas_fh);
     
-    my $io = Bio::RNASeq::VertRes::IO->new(file => $working_bas);
+    my $io = VertRes::IO->new(file => $working_bas);
     my $actual_lines = $io->num_lines;
     if ($actual_lines == $expected_lines) {
         move($working_bas, $out_bas) || $self->throw("Could not move $working_bas to $out_bas");
@@ -1049,11 +1060,11 @@ sub bam_statistics {
     my ($self, $bam) = @_;
     
     # go through the bam and accumulate all the raw stats in little memory
-    my $pb = Bio::RNASeq::VertRes::Parser::bam->new(file => $bam);
+    my $pb = VertRes::Parser::bam->new(file => $bam);
     $pb->get_fields('SEQ_LENGTH', 'MAPPED_SEQ_LENGTH', 'FLAG', 'QUAL', 'MAPQ', 'ISIZE', 'RG', 'NM');
     my $rh = $pb->result_holder;
     
-    my $fqu = Bio::RNASeq::VertRes::Utils::FastQ->new();
+    my $fqu = VertRes::Utils::FastQ->new();
     
     my %readgroup_data;
     my $previous_rg = 'unknown_readgroup';
@@ -1135,7 +1146,7 @@ sub bam_statistics {
     
     # calculate the means etc.
     my %stats;
-    my $math_util = Bio::RNASeq::VertRes::Utils::Math->new();
+    my $math_util = VertRes::Utils::Math->new();
     foreach my $rg (sort keys %readgroup_data) {
         my @data = @{$readgroup_data{$rg}};
         
@@ -1195,7 +1206,7 @@ sub bam_statistics {
 sub make_unmapped_bam {
     my ($self, $in_bam, $out_bam, $skip_mate_mapped) = @_;
     
-    my $pb = Bio::RNASeq::VertRes::Parser::bam->new(file => $in_bam);
+    my $pb = VertRes::Parser::bam->new(file => $in_bam);
     $pb->flag_selector(self_unmapped => 1);
     if ($skip_mate_mapped) {
         $pb->get_fields('FLAG');
@@ -1263,7 +1274,7 @@ sub add_unmapped {
                 unless (-s $snames_file) {
                     open(my $rfh, '>', $snames_file) || $self->throw("Could not write to $snames_file");
                     open(my $sfh, $sam) || $self->throw("Could not open $sam");
-                    my $sp = Bio::RNASeq::VertRes::Parser::sam->new();
+                    my $sp = VertRes::Parser::sam->new();
                     while (<$sfh>) {
                         next if /^@/;
                         my ($qname, $flag) = split;
@@ -1294,17 +1305,17 @@ sub add_unmapped {
                     close($rfh);
                     
                     # check rnames file isn't truncated
-                    my $actual_count = Bio::RNASeq::VertRes::IO->new(file => $snames_file)->num_lines;
+                    my $actual_count = VertRes::IO->new(file => $snames_file)->num_lines;
                     unless ($actual_count == $s_lines) {
                         unlink($snames_file);
                         $self->throw("made an rnames file but it was truncated!");
                     }
                 }
                 
-                $s_lines ||= Bio::RNASeq::VertRes::IO->new(file => $snames_file)->num_lines;
+                $s_lines ||= VertRes::IO->new(file => $snames_file)->num_lines;
                 
                 system("sort $snames_file > $snames_sorted_file");
-                my $actual_count = Bio::RNASeq::VertRes::IO->new(file => $snames_sorted_file)->num_lines;
+                my $actual_count = VertRes::IO->new(file => $snames_sorted_file)->num_lines;
                 unless ($actual_count == $s_lines) {
                     unlink($snames_sorted_file);
                     $self->throw("made an rnames_sorted_file file but it was truncated!");
@@ -1340,7 +1351,7 @@ sub add_unmapped {
                 close($ifh);
                 
                 # check rnames_sorted_fixed_file file isn't truncated
-                my $actual_count = Bio::RNASeq::VertRes::IO->new(file => $snames_sorted_fixed_file)->num_lines;
+                my $actual_count = VertRes::IO->new(file => $snames_sorted_fixed_file)->num_lines;
                 unless ($actual_count == $s_lines) {
                     unlink($snames_sorted_fixed_file);
                     $self->throw("made an rnames_sorted_fixed_file file but it was truncated!");
@@ -1363,7 +1374,7 @@ sub add_unmapped {
         }
         unlink($snames_sorted_fixed_file);
     }
-    $s_lines = Bio::RNASeq::VertRes::IO->new(file => $snames_uniq_file)->num_lines;
+    $s_lines = VertRes::IO->new(file => $snames_uniq_file)->num_lines;
     
     # now list out to another file all the read names in the fastqs
     my $qnames_file = $sam.'.qnames';
@@ -1371,7 +1382,7 @@ sub add_unmapped {
     unless (-s $qnames_file) {
         open(my $qfh, '>', $qnames_file) || $self->throw("Could not write to $qnames_file");
         foreach my $fq (@fqs) {
-            my $fqp = Bio::RNASeq::VertRes::Parser::fastq->new(file => $fq);
+            my $fqp = VertRes::Parser::fastq->new(file => $fq);
             my $rh = $fqp->result_holder();
             
             # loop through all the sequences in the fastq (without indexing
@@ -1384,13 +1395,13 @@ sub add_unmapped {
         close($qfh);
         
         # check it's not truncated
-        my $actual_count = Bio::RNASeq::VertRes::IO->new(file => $qnames_file)->num_lines;
+        my $actual_count = VertRes::IO->new(file => $qnames_file)->num_lines;
         unless ($actual_count == $q_lines) {
             unlink($qnames_file);
             $self->throw("made a qnames_file file but it was truncated!");
         }
     }
-    $q_lines ||= Bio::RNASeq::VertRes::IO->new(file => $qnames_file)->num_lines;
+    $q_lines ||= VertRes::IO->new(file => $qnames_file)->num_lines;
     
     my $unmapped = $q_lines - $s_lines;
     unless ($unmapped) {
@@ -1411,7 +1422,7 @@ sub add_unmapped {
             my $total_lines = $s_lines + $q_lines;
             unless (-s $sq_file) {
                 system("cat $snames_uniq_file $qnames_file > $sq_file");
-                my $actual_count = Bio::RNASeq::VertRes::IO->new(file => $sq_file)->num_lines;
+                my $actual_count = VertRes::IO->new(file => $sq_file)->num_lines;
                 unless ($actual_count == $total_lines) {
                     unlink($sq_file);
                     $self->throw("made an sq_file file but it was truncated!");
@@ -1419,7 +1430,7 @@ sub add_unmapped {
             }
             
             system("sort $sq_file > $sq_sorted_file");
-            my $actual_count = Bio::RNASeq::VertRes::IO->new(file => $sq_sorted_file)->num_lines;
+            my $actual_count = VertRes::IO->new(file => $sq_sorted_file)->num_lines;
             unless ($actual_count == $total_lines) {
                 unlink($sq_sorted_file);
                 $self->throw("made an sq_sorted_file file but it was truncated!");
@@ -1434,7 +1445,7 @@ sub add_unmapped {
             $self->throw("failed to uniq $snames_sorted_fixed_file");
         }
         
-        my $actual_count = Bio::RNASeq::VertRes::IO->new(file => $sq_uniq_file)->num_lines;
+        my $actual_count = VertRes::IO->new(file => $sq_uniq_file)->num_lines;
         unless ($actual_count == $unmapped) {
             unlink($sq_uniq_file);
             $self->throw("made a sq_uniq_file file but it was truncated! ($actual_count lines vs $unmapped unmapped, from $q_lines q - $s_lines s");
@@ -1446,7 +1457,7 @@ sub add_unmapped {
     # now for all the reads we're missing, append to original sam
     my @fqps;
     foreach my $fq (@fqs) {
-        my $fqp = Bio::RNASeq::VertRes::Parser::fastq->new(file => $fq);
+        my $fqp = VertRes::Parser::fastq->new(file => $fq);
         my $rh = $fqp->result_holder();
         push(@fqps, [$fqp, $rh]);
     }
@@ -1574,7 +1585,7 @@ sub add_unmapped {
     unlink($qnames_file);
     unlink($sq_uniq_file);
     
-    my $lines_now = Bio::RNASeq::VertRes::IO->new(file => $sam)->num_lines;
+    my $lines_now = VertRes::IO->new(file => $sam)->num_lines;
     unless ($lines_now >= $q_lines) {
         $self->warn("Tried appending $unmapped unmapped records to the $s_lines mapped records sam file, but ended up with only $lines_now lines!");
         return 0;
@@ -1676,7 +1687,7 @@ sub header_rewrite_required {
                         species => 'SP',
                         uri => 'UR'});
 
-    my $stin = Bio::RNASeq::VertRes::Wrapper::samtools->new(quiet => 1, run_method => 'open');
+    my $stin = VertRes::Wrapper::samtools->new(quiet => 1, run_method => 'open');
 
     my $remove_unique = 0;
     if (exists $changes{'PG'}{'remove_unique'}) {
@@ -1723,7 +1734,7 @@ sub header_rewrite_required {
     # Parse original header and grab the lane id
     my $lane;
     if ($remove_unique) {
-        my $pars = Bio::RNASeq::VertRes::Parser::sam->new(file => $bam);
+        my $pars = VertRes::Parser::sam->new(file => $bam);
         my %read_info = $pars->readgroup_info();
         my @lane_ids = keys %read_info;
         $self->throw("$bam does not have a single lane id.") unless (scalar @lane_ids == 1);
@@ -1808,7 +1819,7 @@ sub replace_bam_header {
     $self->register_for_unlinking($temp_bam);
     
     # Run samtools reheader
-    my $sw = Bio::RNASeq::VertRes::Wrapper::samtools->new(run_method => 'system');
+    my $sw = VertRes::Wrapper::samtools->new(run_method => 'system');
     $sw->reheader($new_header, $bam, $temp_bam);
         
     # Check for trunction in the number of bam records (headers may have different number of lines)
@@ -1898,7 +1909,7 @@ sub change_header_lines {
                         species => 'SP',
                         uri => 'UR'});
 
-    my $stin = Bio::RNASeq::Bio::RNASeq::VertRes::Wrapper::samtools->new(quiet => 1, run_method => 'open');
+    my $stin = VertRes::Wrapper::samtools->new(quiet => 1, run_method => 'open');
 
     my $remove_unique = 0;
     if (exists $changes{'PG'}{'remove_unique'}) {
@@ -1949,7 +1960,7 @@ sub change_header_lines {
     # Parse original header and grab the lane id
     my $lane;
     if ($remove_unique) {
-        my $pars = Bio::RNASeq::VertRes::Parser::sam->new(file => $bam);
+        my $pars = VertRes::Parser::sam->new(file => $bam);
         my %read_info = $pars->readgroup_info();
         my @lane_ids = keys %read_info;
         $self->throw("$bam does not have a single lane id.") unless (scalar @lane_ids == 1);
@@ -2088,7 +2099,7 @@ sub check_bam_header {
         $rg_changes{platform} = $tech_to_platform{$rg_changes{platform}} || $self->throw("Bad platform '$rg_changes{platform}'");
     }
     
-    my $stin = Bio::RNASeq::VertRes::Wrapper::samtools->new(quiet => 1, run_method => 'open');
+    my $stin = VertRes::Wrapper::samtools->new(quiet => 1, run_method => 'open');
     my $bamfh = $stin->view($bam, undef, H => 1);
     my $made_changes = 0;
     while (<$bamfh>) {
@@ -2156,8 +2167,8 @@ sub rewrite_bam_header {
         $rg_changes{platform} = $tech_to_platform{$rg_changes{platform}} || $self->throw("Bad platform '$rg_changes{platform}'");
     }
     
-    my $stin = Bio::RNASeq::VertRes::Wrapper::samtools->new(quiet => 1, run_method => 'open');
-    my $stout = Bio::RNASeq::VertRes::Wrapper::samtools->new(quiet => 1, run_method => 'write_to');
+    my $stin = VertRes::Wrapper::samtools->new(quiet => 1, run_method => 'open');
+    my $stout = VertRes::Wrapper::samtools->new(quiet => 1, run_method => 'write_to');
     
     # output to bam
     my $temp_bam = $bam.'.rewrite_header.tmp.bam';
@@ -2249,8 +2260,8 @@ sub standardise_pg_header_lines {
     
     keys %pg_changes || return 1;
     
-    my $stin = Bio::RNASeq::VertRes::Wrapper::samtools->new(quiet => 1, run_method => 'open');
-    my $stout = Bio::RNASeq::VertRes::Wrapper::samtools->new(quiet => 1, run_method => 'write_to');
+    my $stin = VertRes::Wrapper::samtools->new(quiet => 1, run_method => 'open');
+    my $stout = VertRes::Wrapper::samtools->new(quiet => 1, run_method => 'write_to');
     
     # output to bam
     my $temp_bam = $bam.'.rewrite_header.tmp.bam';
@@ -2381,7 +2392,7 @@ sub rewrite_bas_meta {
         if (exists $rg_changes{$rg}) {
             while (my ($arg, $value) = each %{$rg_changes{$rg}}) {
                 if ($arg eq 'filename' && ref($value) && ref($value) eq 'ARRAY') {
-                    $value = Bio::RNASeq::VertRes::Utils::Hierarchy->new->dcc_filename(@{$value});
+                    $value = VertRes::Utils::Hierarchy->new->dcc_filename(@{$value});
                 }
                 
                 my $col = $arg_to_col{$arg};
@@ -2416,7 +2427,7 @@ sub rewrite_bas_meta {
     }
     
     # check the new bas for truncation
-    my $new_bas_lines = Bio::RNASeq::VertRes::IO->new(file => $temp_bas)->num_lines;
+    my $new_bas_lines = VertRes::IO->new(file => $temp_bas)->num_lines;
     
     if ($new_bas_lines == $expected_lines) {
         unlink($bas);
@@ -2459,8 +2470,8 @@ sub extract_intervals_from_bam {
     my $tmp_out = $bam_out . ".tmp";
     my %intervals;  # chromosome => [[start1,end1], [start2, end2], ...]
     my $lines_out_counter = 0;  # number of lines written to output file
-    my $samtools = Bio::RNASeq::VertRes::Wrapper::samtools->new(verbose => $self->verbose, quiet => 1);
-    my $bam_parser = Bio::RNASeq::VertRes::Parser::bam->new(file => $bam_in);
+    my $samtools = VertRes::Wrapper::samtools->new(verbose => $self->verbose, quiet => 1);
+    my $bam_parser = VertRes::Parser::bam->new(file => $bam_in);
     my $result_holder = $bam_parser->result_holder();
     $bam_parser->flag_selector(self_unmapped => 0);
     $bam_parser->get_fields('CIGAR', 'QNAME', 'FLAG');
@@ -2480,7 +2491,7 @@ sub extract_intervals_from_bam {
     # to keep the order of the output bam the same as the input, we need to
     # order the reference sequence names from intervals file to be
     # same as in the input bam header
-    $samtools = Bio::RNASeq::VertResWrapper::samtools->new(verbose => $self->verbose, quiet => 1, run_method => 'open');
+    $samtools = VertRes::Wrapper::samtools->new(verbose => $self->verbose, quiet => 1, run_method => 'open');
     my $fh = $samtools->view($bam_in, undef, H => 1);
     my @ordered_ref_seqs;
 
@@ -2525,7 +2536,7 @@ sub extract_intervals_from_bam {
     $samtools->index($tmp_out, $tmp_bai);
     $samtools->run_status >= 1 || $self->throw("Failed to create $tmp_bai");
     my $final_chr = $ordered_ref_seqs[-1];
-    my $tmp_parser = Bio::RNASeq::VertRes::Parser::bam->new(file => $tmp_out);
+    my $tmp_parser = VertRes::Parser::bam->new(file => $tmp_out);
     $tmp_parser->region($final_chr);
     unless ($tmp_parser->next_result()) {
         $self->warn("$tmp_out is bad, deleting it -- no reads written for chrom $final_chr");
@@ -2565,7 +2576,7 @@ sub tag_strip {
     my ($self, $in_bam, $out_bam, @to_strip) = @_;
     @to_strip > 0 || $self->throw("You must supply tags to strip");
     
-    my $pb = Bio::RNASeq::VertRes::Parser::bam->new(file => $in_bam);
+    my $pb = VertRes::Parser::bam->new(file => $in_bam);
     $pb->ignore_tags_on_write(@to_strip);
     my $tmp_out = $out_bam.'.running';
     
@@ -2612,13 +2623,13 @@ sub bam2fastq {
         Utils::CMD(qq[bamcheck $bam > $bamcheck.tmp]);
         move("$bamcheck.tmp", $bamcheck) || $self->throw("Could not rename '$bamcheck.tmp' to '$bamcheck'\n");
     }
-    my $bc_parser = Bio::RNASeq::VertRes::Parser::bamcheck->new(file => $bamcheck);
+    my $bc_parser = VertRes::Parser::bamcheck->new(file => $bamcheck);
     my $total_reads = $bc_parser->get('sequences');
     my $total_bases = $bc_parser->get('total_length');
     my $is_paired = $bc_parser->get('is_paired');
     $self->throw("failed to parse $bamcheck\n") unless ($total_reads && $total_bases);
     
-    my $fsu = Bio::RNASeq::VertRes::Utils::FileSystem->new();
+    my $fsu = VertRes::Utils::FileSystem->new();
     my (undef, $path) = fileparse($bam);
     $path = $outdir if ($outdir);
     my @out_fastq;
@@ -2635,7 +2646,7 @@ sub bam2fastq {
     my $tmp_dir = $fsu->tempdir('_bam2fastq_tmp_XXXXXX', DIR => $path);
     
     my $verbose = $self->verbose();
-    my $picard = Bio::RNASeq::VertRes::Wrapper::picard->new(verbose => $verbose,
+    my $picard = VertRes::Wrapper::picard->new(verbose => $verbose,
                                                 quiet => $verbose ? 0 : 1,
                                                 $self->{java_memory} ? (java_memory => $self->{java_memory}) : (),
                                                 validation_stringency => 'silent',
@@ -2652,13 +2663,13 @@ sub bam2fastq {
         $fqc_file =~ s/\.tmp\.fastq$/.fastqcheck/;
         unless (-s $fqc_file) {
             # make the fqc file
-            my $fqc = Bio::RNASeq::VertRes::Wrapper::fastqcheck->new();
+            my $fqc = VertRes::Wrapper::fastqcheck->new();
             $fqc->run($precheck_fq, $fqc_file.'.temp');
             $self->throw("fastqcheck on $precheck_fq failed - try again?") unless $fqc->run_status >= 1;
             $self->throw("fastqcheck failed to make the file $fqc_file.temp") unless -s $fqc_file.'.temp';
         
             # check it is parsable
-            my $parser = Bio::RNASeq::VertRes::Parser::fastqcheck->new(file => $fqc_file.'.temp');
+            my $parser = VertRes::Parser::fastqcheck->new(file => $fqc_file.'.temp');
             my $num_seq = $parser->num_sequences();
             if ($num_seq) {
                 move($fqc_file.'.temp', $fqc_file) || $self->throw("failed to rename '$fqc_file.temp' to '$fqc_file'");
@@ -2670,7 +2681,7 @@ sub bam2fastq {
         }
         
         if (-s $fqc_file) {
-            my $parser = Bio::RNASeq::VertRes::Parser::fastqcheck->new(file => $fqc_file);
+            my $parser = VertRes::Parser::fastqcheck->new(file => $fqc_file);
             $num_sequences += $parser->num_sequences();
             $num_bases += $parser->total_length();          
         }
@@ -2725,7 +2736,7 @@ sub filter_readgroups
     if ( !exists($opts{include}) && !exists($opts{exclude}) ) { $self->throw("Must supply 'include' and/or 'exclude' parameter.\n"); }
     if ( ! -e $in_bam ) { $self->throw("No such file: $in_bam\n"); }
 
-    my $pars = Bio::RNASeq::VertRes::Parser::bam->new(file=>$in_bam);
+    my $pars = VertRes::Parser::bam->new(file=>$in_bam);
     my $tmp  = $out_bam.'.part';
 
     # Init the read groups: loop through all RG records of the BAM file and see if they pass
@@ -2811,7 +2822,7 @@ sub replace_readgroup_id {
     
     $self->throw(qq['$rgid' is not a valid id tag]) unless ($rgid =~ /^[ !-~]+$/);
     
-    my $bp = Bio::RNASeq::VertRes::Parser::bam->new(file => $bam);
+    my $bp = VertRes::Parser::bam->new(file => $bam);
     my %rg_info = $bp->readgroup_info();
     my $count = 0;
     while ($bp->next_result()) {
@@ -2838,12 +2849,12 @@ sub replace_readgroup_id {
     
     my $tmp_bam = qq[$bam.working];
     
-    my $fsu = Bio::RNASeq::VertRes::Utils::FileSystem->new();
+    my $fsu = VertRes::Utils::FileSystem->new();
     # picard needs a tmp dir, but we don't use /tmp because it's likely to fill up
     my $tmp_dir = $fsu->tempdir('_changeReadGroupID_tmp_XXXXXX', DIR => dirname($bam));
     
     my $verbose = $self->verbose();
-    my $picard = Bio::RNASeq::VertRes::Wrapper::picard->new( verbose => $verbose,
+    my $picard = VertRes::Wrapper::picard->new( verbose => $verbose,
                                                 quiet => $verbose ? 0 : 1,
                                                 $self->{java_memory} ? (java_memory => $self->{java_memory}) : (),
                                                 validation_stringency => 'silent',
@@ -2853,7 +2864,7 @@ sub replace_readgroup_id {
     $self->throw(qq[AddOrReplaceReadGroups failed for '$bam']) unless ($picard->run_status >= 1);
     
     # check for truncation
-    my $tmp_bp = Bio::RNASeq::VertRes::Parser::bam->new(file => $tmp_bam);
+    my $tmp_bp = VertRes::Parser::bam->new(file => $tmp_bam);
     my $tmp_count = 0;
     while ($tmp_bp->next_result()) {
         $tmp_count++;
@@ -3003,7 +3014,7 @@ sub bam_exome_qc_stats {
 
     if ($opts{fake_it}) {  # top-secret(!) option for quick pipeline debugging
         my $s = do $opts{fake_it} or $self->throw("Error loading data from file $opts{fake_it}");
-        print STDERR "Bio::RNASeq::VertRes::Utils::Sam->bam_exome_qc_stats using fake file $opts{fake_it}\n";
+        print STDERR "VertRes::Utils::Sam->bam_exome_qc_stats using fake file $opts{fake_it}\n";
         return $s;
     }
 
@@ -3060,7 +3071,7 @@ sub bam_exome_qc_stats {
         
 
         foreach my $bait_or_target (qw(bait target)) {
-            my $pars = Bio::RNASeq::VertRes::Parser::fasta->new(file => $opts{ref_fa});
+            my $pars = VertRes::Parser::fasta->new(file => $opts{ref_fa});
             my $result_holder = $pars->result_holder();
 
             while ($pars->next_result(1)) {
@@ -3079,6 +3090,7 @@ sub bam_exome_qc_stats {
 
         if ($opts{dump_intervals}) {
             open my $fh, '>', $opts{dump_intervals} or self->throw("Error opening file $opts{dump_intervals}");
+            print $fh Dumper($intervals);
             close $fh;
             return %stats;
         }
@@ -3116,7 +3128,7 @@ sub bam_exome_qc_stats {
     print STDERR "Intervals etc sorted. Parse BAM file...\n" if $opts{verbose};
 
     # Everything is initialised.  It's time to parse the bam file to get the stats
-    my $bam_parser = Bio::RNASeq::VertRes::Parser::bam->new(file => $opts{bam});
+    my $bam_parser = VertRes::Parser::bam->new(file => $opts{bam});
     my $result_holder = $bam_parser->result_holder();
     $bam_parser->get_fields('FLAG', 'RNAME', 'POS', 'CIGAR', 'ISIZE', 'SEQ', 'QUAL', 'SEQ_LENGTH', 'MAPPED_SEQ_LENGTH', 'NM');
 
@@ -3193,7 +3205,7 @@ sub bam_exome_qc_stats {
         # update quality scores arrays
         $qual_array = $stats{qual_scores_1} if $bam_parser->is_first($flag);
         $qual_array = $stats{qual_scores_2} if $bam_parser->is_second($flag);
-        my @qual_ints = Bio::RNASeq::VertRes::Utils::FastQ->qual_to_ints($qual); 
+        my @qual_ints = VertRes::Utils::FastQ->qual_to_ints($qual); 
         @qual_ints = reverse @qual_ints if $bam_parser->is_reverse_strand($flag);
         foreach my $i (0 .. $#qual_ints){
             $qual_array->[$i]{$qual_ints[$i]}++;
@@ -3321,7 +3333,7 @@ sub bam_exome_qc_stats {
     # sort out other global stats
     $stats{bait_design_efficiency} = $stats{bait_bases} != 0 ? $stats{target_bases} / $stats{bait_bases} : 'NA';
     $stats{pct_mismatches} = 100 * $stats{num_mismatches} / $stats{bases_mapped_reads};
-    my %qual_stats = Bio::RNASeq::VertRes::Utils::Math->new()->histogram_stats($stats{insert_size_hist});
+    my %qual_stats = VertRes::Utils::Math->new()->histogram_stats($stats{insert_size_hist});
     $stats{median_insert_size} = $qual_stats{q2};
     $stats{mean_insert_size} = $qual_stats{mean};
     $stats{insert_size_sd} = $qual_stats{standard_deviation};
@@ -3330,7 +3342,7 @@ sub bam_exome_qc_stats {
 
     # calculate cumulative coverage of baits and targets
     foreach my $bait_or_target (qw(bait target)) {
-        my %cov_stats = Bio::RNASeq::VertRes::Utils::Math->new()->histogram_stats($stats{$bait_or_target . '_cvg_hist'});
+        my %cov_stats = VertRes::Utils::Math->new()->histogram_stats($stats{$bait_or_target . '_cvg_hist'});
         $stats{$bait_or_target . '_coverage_sd'} = $cov_stats{standard_deviation};
 
         my $base_count = 0;
@@ -3388,7 +3400,7 @@ sub bam_exome_qc_make_plots {
                 $coverage{$bait_or_target}{$cov} += $freq;
             }
         }
-        my %cov_stats = Bio::RNASeq::VertRes::Utils::Math->new()->histogram_stats($coverage{$bait_or_target});
+        my %cov_stats = VertRes::Utils::Math->new()->histogram_stats($coverage{$bait_or_target});
         
         # plot 4 standard devations away from the mean
         my $xmin = max (0, $cov_stats{mean} - 4 * $cov_stats{standard_deviation});
@@ -3407,7 +3419,7 @@ sub bam_exome_qc_make_plots {
     my @data = ({xvals => $plot_data{bait}{x}, yvals => $plot_data{bait}{y}, legend => 'baits'},
                 {xvals => $plot_data{target}{x}, yvals => $plot_data{target}{y}, legend => 'targets'},);
 
-    Bio::RNASeq::VertRes::Utils::Graphs::plot_stats({outfile=>"$outfiles_prefix.mean_coverage.$plot_type",
+    Graphs::plot_stats({outfile=>"$outfiles_prefix.mean_coverage.$plot_type",
                         title => "Mean coverage distribution of baits and targets",
                         desc_xvals => 'Mean coverage',
                         desc_yvals => 'Frequency',
@@ -3417,7 +3429,7 @@ sub bam_exome_qc_make_plots {
     %plot_data = ();
 
     foreach my $bait_or_target (qw(bait target)) {
-        my %cov_stats = Bio::RNASeq::VertRes::Utils::Math->new()->histogram_stats($stats->{$bait_or_target . '_cvg_hist'});
+        my %cov_stats = VertRes::Utils::Math->new()->histogram_stats($stats->{$bait_or_target . '_cvg_hist'});
         my $xmin = max (0, $cov_stats{mean} - 4 * $cov_stats{standard_deviation});
         my $xmax = $cov_stats{mean} + 4 * $cov_stats{standard_deviation};
 
@@ -3455,7 +3467,7 @@ sub bam_exome_qc_make_plots {
     @data = ({xvals => $plot_data{bait}{x_per_base}, yvals => $plot_data{bait}{y_per_base}, legend => 'baits'},
                 {xvals => $plot_data{target}{x_per_base}, yvals => $plot_data{target}{y_per_base}, legend => 'targets'},);
 
-    Bio::RNASeq::VertRes::Utils::Graphs::plot_stats({outfile=>"$outfiles_prefix.coverage_per_base.$plot_type",
+    Graphs::plot_stats({outfile=>"$outfiles_prefix.coverage_per_base.$plot_type",
                         title => "Bait and target coverage per base",
                         desc_xvals => 'Coverage',
                         desc_yvals => 'Frequency',
@@ -3464,7 +3476,7 @@ sub bam_exome_qc_make_plots {
     @data = ({xvals => $plot_data{bait}{x_norm}, yvals => $plot_data{bait}{y_norm}, legend => 'baits'},
                 {xvals => $plot_data{target}{x_norm}, yvals => $plot_data{target}{y_norm}, legend => 'targets'},);
 
-    Bio::RNASeq::VertRes::Utils::Graphs::plot_stats({outfile=>"$outfiles_prefix.normalised_coverage.$plot_type",
+    Graphs::plot_stats({outfile=>"$outfiles_prefix.normalised_coverage.$plot_type",
                         title => "Bait and target normalised coverage",
                         desc_xvals => 'Normalised coverage',
                         desc_yvals => 'Fraction of bases',
@@ -3474,7 +3486,7 @@ sub bam_exome_qc_make_plots {
     @data = ({xvals => $plot_data{bait}{x_cumulative}, yvals => $plot_data{bait}{y_cumulative}, legend => 'baits'},
                 {xvals => $plot_data{target}{x_cumulative}, yvals => $plot_data{target}{y_cumulative}, legend => 'targets'},);
 
-    Bio::RNASeq::VertRes::Utils::Graphs::plot_stats({outfile=>"$outfiles_prefix.cumulative_coverage.$plot_type",
+    Graphs::plot_stats({outfile=>"$outfiles_prefix.cumulative_coverage.$plot_type",
                         title => "Bait and target cumulative coverage",
                         desc_xvals => 'Coverage',
                         desc_yvals => 'Fraction of bases',
@@ -3483,13 +3495,13 @@ sub bam_exome_qc_make_plots {
 
     # Plot: GC of baits/targets vs mean, quartiles coverage
     foreach (qw(bait target)) {
-        Bio::RNASeq::VertRes::Utils::Graphs::plot_histograms_distributions({outfile=>"$outfiles_prefix.$_" . "_gc_vs_cvg.$plot_type",
+        Graphs::plot_histograms_distributions({outfile=>"$outfiles_prefix.$_" . "_gc_vs_cvg.$plot_type",
                                                title => "Coverage vs GC plot of $_" . 's',
                                                desc_xvals => 'GC (%)',
                                                desc_yvals => 'Mapped depth',
                                                xdata => [(0..100)],
                                                ydata => $stats->{"gc_vs_$_" . '_cvg'}});
-        Bio::RNASeq::VertRes::Utils::Graphs::plot_histograms_distributions({outfile=>"$outfiles_prefix.$_" . "_gc_vs_cvg.scaled.$plot_type",
+        Graphs::plot_histograms_distributions({outfile=>"$outfiles_prefix.$_" . "_gc_vs_cvg.scaled.$plot_type",
                                                title => "Coverage vs GC plot of $_" . 's',
                                                x_scale => 1, 
                                                x_scale_values => [(30,40,50)],
@@ -3504,7 +3516,7 @@ sub bam_exome_qc_make_plots {
     foreach (qw(1 2 up)) {
 
         my %key2string = (1, 'first of pair', 2, 'second of pair', 'up', 'unpaired');
-        Bio::RNASeq::VertRes::Utils::Graphs::plot_histograms_distributions({outfile=>"$outfiles_prefix.quality_scores_$_.$plot_type",
+        Graphs::plot_histograms_distributions({outfile=>"$outfiles_prefix.quality_scores_$_.$plot_type",
                                                xdata => [(0 .. $stats->{readlen} - 1)],
                                                ydata => $stats->{'qual_scores_' . $_},
                                                title => "Quality scores distribution, $key2string{$_}",
@@ -3528,7 +3540,7 @@ sub bam_exome_qc_make_plots {
                     {xvals => \@read_xvals, yvals => \@yvals_2, legend => '_2'},
                     {xvals => \@zero_to_100, yvals => $stats->{bait_gc_hist}, legend => 'bait'},
                     {xvals => \@zero_to_100, yvals => $stats->{target_gc_hist}, legend => 'target'},);
-        Bio::RNASeq::VertRes::Utils::Graphs::plot_stats({outfile=>"$outfiles_prefix.gc_$type.$plot_type",
+        Graphs::plot_stats({outfile=>"$outfiles_prefix.gc_$type.$plot_type",
                             normalize => 1,
                             title => "GC Plot $type reads",
                             desc_xvals => '%GC',
@@ -3537,7 +3549,7 @@ sub bam_exome_qc_make_plots {
     }
 
     # Plot: insert size
-    my %insert_stats = Bio::RNASeq::VertRes::Utils::Math->new()->histogram_stats($stats->{insert_size_hist});
+    my %insert_stats = VertRes::Utils::Math->new()->histogram_stats($stats->{insert_size_hist});
 
     # plot 4 standard devations away from the mean
     my $xmin = max (0, $insert_stats{mean} - 4 * $insert_stats{standard_deviation});
@@ -3552,7 +3564,7 @@ sub bam_exome_qc_make_plots {
         }
     }
 
-    Bio::RNASeq::VertRes::Utils::Graphs::plot_stats({outfile=>"$outfiles_prefix.insert_size.$plot_type",
+    Graphs::plot_stats({outfile=>"$outfiles_prefix.insert_size.$plot_type",
                         title => "Insert Size Distribution",
                         desc_xvals => 'Insert Size',
                         desc_yvals => 'Number of read pairs',
@@ -3715,7 +3727,7 @@ sub coverage
     @sorted_bin = sort {my @a = @{$a}; my @b = @{$b}; $a[1] <=> $b[1];} @sorted_bin;
 
     # Run pileup. 
-    my $sam = Bio::RNASeq::VertRes::Wrapper::samtools->new(verbose => $self->verbose, run_method => 'open', quiet => 1);
+    my $sam = VertRes::Wrapper::samtools->new(verbose => $self->verbose, run_method => 'open', quiet => 1);
     my $fh = $sam->pileup($bam, undef, A => 1); 
     my $pileup_ok = 0;
     while(my $inp = <$fh>)
@@ -3758,7 +3770,7 @@ sub coverage_depth
     my %depth_hist; # Depth from mpileup, key = coverage, value = total_bases.
 
     # Run pileup. 
-    my $sam = Bio::RNASeq::VertRes::Wrapper::samtools->new(verbose => $self->verbose, run_method => 'open', quiet => 1);
+    my $sam = VertRes::Wrapper::samtools->new(verbose => $self->verbose, run_method => 'open', quiet => 1);
     my $fh = $sam->pileup($bam, undef, A => 1); 
     while(my $inp = <$fh>)
     {
@@ -3775,7 +3787,7 @@ sub coverage_depth
     $depth_hist{0} = $ref_size - $coverage;
 
     # Calculate Mean depth and SD
-    my $math_util = Bio::RNASeq::VertRes::Utils::Math->new();
+    my $math_util = VertRes::Utils::Math->new();
     my %stats = $math_util->histogram_stats(\%depth_hist);
 
     return($coverage, $stats{'mean'}, $stats{'standard_deviation'});
