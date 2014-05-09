@@ -16,6 +16,7 @@ ok my $bitwise = Bio::RNASeq::BitWise->new(
   protocol => 'StrandSpecificProtocol'
   ),'initialise StrandSpecificProtocol';
 ok $bitwise->update_bitwise_flags(),'update bitwise flags StrandSpecificProtocol';
+is $bitwise->_total_mapped_reads, 2, 'total mapped reads StrandSpecificProtocol';
 
 open(IN, '-|', 'samtools view t/data/my_file.bam | awk \'{print $2;}\'');
 my $read_1 = <IN>;
@@ -35,6 +36,7 @@ ok $bitwise = Bio::RNASeq::BitWise->new(
   output_filename => 't/data/my_file.bam'
   ), 'initialise Standard Protocol';
 ok $bitwise->update_bitwise_flags(), 'update bitwise flags Standard Protocol';
+is $bitwise->_total_mapped_reads, 2, 'total mapped reads Standard Protocol';
 
 open(IN, '-|', 'samtools view t/data/my_file.bam | awk \'{print $2;}\'');
 $read_1 = <IN>;

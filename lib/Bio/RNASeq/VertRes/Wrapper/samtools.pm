@@ -209,7 +209,7 @@ sub merge_and_check {
     $self->throw("failed during the merge step, giving up for now") unless $self->run_status >= 1;
     
     # find out our expectation
-    my $su = VertRes::Utils::Sam->new;
+    my $su = Bio::RNASeq::VertRes::Utils::Sam->new;
     my $bam_count = 0;
     foreach my $bam_file (@{$in_bams}) {
         $bam_count += $su->num_bam_records($bam_file);
@@ -318,7 +318,7 @@ sub calmd_and_check {
     $self->throw("failed during the calmd step, giving up for now") unless $self->run_status >= 1;
     
     # find out our expectation
-    my $su = VertRes::Utils::Sam->new;
+    my $su = Bio::RNASeq::VertRes::Utils::Sam->new;
     my $bam_count = $su->num_bam_records($in_bam);
     
     # find out how many lines are in the merged bam file

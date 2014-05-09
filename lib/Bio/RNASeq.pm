@@ -17,7 +17,7 @@ Find the expression when given an input aligned file and an annotation file
 =cut
 
 use Moose;
-use Bio::RNASeq::SequenceFile;
+#use Bio::RNASeq::SequenceFile;
 use Bio::RNASeq::GFF;
 use Bio::RNASeq::AlignmentSliceRPKM;
 use Bio::RNASeq::AlignmentSliceRPKMGeneModel;
@@ -43,8 +43,8 @@ has 'minimum_intergenic_size' => ( is => 'rw', isa => 'Int',  default => 10 );
 has 'total_mapped_reads_gene_model' =>
   ( is => 'rw', isa => 'Int', lazy => 1, default => 0 );
 
-has '_sequence_file' =>
-  ( is => 'rw', isa => 'Bio::RNASeq::SequenceFile', lazy_build => 1 );
+#has '_total_mapped_reads' =>
+ # ( is => 'rw', isa => 'Bio::RNASeq::BitWise', lazy_build => 1 );
 has '_annotation_file' =>
   ( is => 'rw', isa => 'Bio::RNASeq::GFF', lazy_build => 1 );
 has '_results_spreadsheet' => (
@@ -69,7 +69,7 @@ sub _build__sequence_file {
               . "\n" );
     }
 
-    Bio::RNASeq::SequenceFile->new( filename => $self->sequence_filename );
+    #Bio::RNASeq::SequenceFile->new( filename => $self->sequence_filename );
 }
 
 sub _build__annotation_file {
@@ -93,14 +93,15 @@ sub _corrected_sequence_filename {
 
 sub _build__expression_results {
     my ($self) = @_;
-    my $total_mapped_reads = $self->_sequence_file->total_mapped_reads;
 
-    Bio::RNASeq::BitWise->new(
+    my $bitWise = Bio::RNASeq::BitWise->new(
         filename        => $self->sequence_filename,
         output_filename => $self->_corrected_sequence_filename,
         protocol        => $self->protocol,
         samtools_exec   => $self->samtools_exec
-    )->update_bitwise_flags();
+    );
+	$bitWise->update_bitwise_flags();
+	my $total_mapped_reads = $bitWise->_total_mapped_reads;
 
     my @expression_results            = ();
     my @expression_results_gene_model = ();

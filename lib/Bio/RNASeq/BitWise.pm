@@ -27,6 +27,7 @@ has '_input_sequence_data_filename' => ( is => 'rw', isa => 'Str'); # allow for 
 has '_sequence_data_file_handle'    => ( is => 'rw',               lazy_build => 1 );
 has '_read_protocol_class'          => ( is => 'rw',               lazy_build => 1 );
 has '_output_file_handle'           => ( is => 'rw',               lazy_build => 1 );
+has '_total_mapped_reads'           => ( is => 'rw', isa => 'Int', lazy_build => 1 );
 
 
 sub update_bitwise_flags
@@ -85,6 +86,17 @@ sub _build__read_protocol_class
 	my $read_protocol_class = 'Bio::RNASeq::' . $self->protocol . "::Read";
 	eval("use $read_protocol_class");
   return $read_protocol_class;
+}
+
+sub _build__total_mapped_reads
+{
+	my ($self) = @_;
+	my $cmd = $self->samtools_exec . ' view -c -F 4 ' . $self->filename;
+	
+	my $total_mapped_reads = `$cmd`;
+	$total_mapped_reads =~ s/\D//;
+	
+	return $total_mapped_reads;
 }
 
 sub _build__sequence_data_file_handle

@@ -1,15 +1,15 @@
 =head1 NAME
 
-Bio::RNASeq::VertRes::IO - do basic IO on files/ filehandles
+VertRes::IO - do basic IO on files/ filehandles
 
 =head1 SYNOPSIS
 
-use Bio::RNASeq::VertRes::IO;
+use VertRes::IO;
 
 # supply a file or filehandle to have it opened
-my $io1 = Bio::RNASeq::VertRes::IO->new(file => $infile);
-my $io2 = Bio::RNASeq::VertRes::IO->new(fh => \*STDIN);
-my $io3 = Bio::RNASeq::VertRes::IO->new(file => ">$infile.out.gz");
+my $io1 = VertRes::IO->new(file => $infile);
+my $io2 = VertRes::IO->new(fh => \*STDIN);
+my $io3 = VertRes::IO->new(file => ">$infile.out.gz");
 
 # read in $infile line by line, print back out compressed
 my $in_fh = $io1->fh();
@@ -41,6 +41,7 @@ use File::Spec;
 use IO::Uncompress::AnyUncompress;
 use File::Fetch;
 use Net::FTP::Robust;
+use Bio::RNASeq::VertRes::Utils::FileSystem;
 
 use base qw(Bio::RNASeq::VertRes::Base);
 
@@ -56,7 +57,7 @@ use base qw(Bio::RNASeq::VertRes::Base);
 
 sub new {
     my ($class, @args) = @_;
-    
+	
     my $self = $class->SUPER::new(@args);
     
     # if file or fh args are supplied, those methods will get called and we'll
@@ -336,5 +337,114 @@ sub parse_fofn {
     return @sorted;
 }
 
+=head2  get_remote_file
+
+ Title   : get_remote_file
+ Usage   : $obj->get_remote_file('url', save => '/path/to/download/to'); 
+ Function: Download a remote file from the internet. Tries to be robust: will
+           attempt multiple times to get a file.
+ Returns : path to downloaded file on success (otherwise the file won't exist)
+ Args    : source url. Optionally:
+           save => path to save to. With no path, saves to a temp file.
+           md5 => the expected md5 of the file - if it doesn't match what was
+                  downloaded, the download will be automatically reattempted up
+                  to 3 times. Currently only applies to ftp downloads.
+
+=cut
+
+sub get_remote_file {
+    my ($self, $url, %opts) = @_;
+    return unless $url;
+    $self->{fsu} = VertRes::Utils::FileSystem->new();
+    my $local_dir = $self->{fsu}->tempdir();
+    my $md5 = $opts{md5};
+    
+    my $ff = File::Fetch->new(uri => $url);
+    my $scheme = $ff->scheme;
+    my $host = $ff->host;
+    my $path = $ff->path;
+    my $basename = $ff->file;
+    my $full_path = $path.$basename;
+    
+    my $out_file = $self->{fsu}->catfile($local_dir, $ff->output_file);
+    
+    if ($scheme eq 'ftp') {
+        # use Net::FTP::Robust, since it's potentially better
+        my $ftp;
+        if (exists $self->{ftp_objs}->{$host}) {
+            $ftp = $self->{ftp_objs}->{$host};
+        }
+        else {
+            $ftp = Net::FTP::Robust->new(Host => $host);
+            $self->{ftp_objs}->{$host} = $ftp;
+        }
+        
+        $ftp->get($full_path, $local_dir);
+        
+        unless (-s $out_file) {
+            $self->warn("After 10 automated attempts, failed to download $url at all");
+            unlink($out_file);
+            return;
+        }
+        
+        if ($md5) {
+            my $ok = $self->{fsu}->verify_md5($out_file, $md5);
+            
+            unless ($ok) {
+                my $tries = 0;
+                while (! $ok) {
+                    unlink($out_file);
+                    $ftp->get($full_path, $local_dir);
+                    $ok = $self->{fsu}->verify_md5($out_file, $md5);
+                    
+                    $tries++;
+                    last if $tries == 3;
+                }
+            }
+            
+            unless ($ok) {
+                $self->warn("Tried downloading $url 3 times, but the md5 never matched '$md5'");
+                unlink($out_file);
+                return;
+            }
+        }
+    }
+    else {
+        $out_file = $ff->fetch(to => $local_dir) or $self->throw($ff->error);
+    }
+    
+    my $save_file = $opts{save};
+    if ($save_file) {
+        my $tmp_save_file = $save_file;
+        if ($md5) {
+            $tmp_save_file .= '.tmp';
+        }
+        
+        my $success = File::Copy::move($out_file, $tmp_save_file);
+        $success || $self->throw("Failed to move $out_file to $tmp_save_file");
+        
+        if ($md5) {
+            # recheck md5 after the move, since we may have crossed filesystems
+            my $ok = $self->{fsu}->verify_md5($tmp_save_file, $md5);
+            if ($ok) {
+                my $success = File::Copy::move($tmp_save_file, $save_file);
+                $success || $self->throw("Failed to move $tmp_save_file to $save_file");
+            }
+            else {
+                $self->warn("md5 match failed after moving good download file from $out_file to $tmp_save_file; will unlink it\n");
+                unlink($tmp_save_file);
+                return;
+            }
+        }
+        
+        return $save_file;
+    }
+    return $out_file;
+}
+
+sub DESTROY {
+    my $self = shift;
+    $self->close;
+}
 
 1;

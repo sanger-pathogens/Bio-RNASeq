@@ -7,7 +7,7 @@ use Data::Dumper;
 sub mock_execute_script_and_check_output {
     my ( $script_name, $scripts_and_expected_files ) = @_;
 
-    #system('touch empty_file');
+    system('touch empty_file');
     open OLDOUT, '>&STDOUT';
     open OLDERR, '>&STDERR';
     eval("use $script_name ;");
@@ -30,6 +30,7 @@ sub mock_execute_script_and_check_output {
               $scripts_and_expected_files->{$script_parameters}->[0];
             my $expected_output_file_name =
               $scripts_and_expected_files->{$script_parameters}->[1];
+			  print "$actual_output_file_name\n";
 
             ok( -e $actual_output_file_name,
                 "Actual output file exists $actual_output_file_name" );
