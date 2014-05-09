@@ -1,4 +1,4 @@
-package Bio::RNASeq::Graphs;
+package Bio::RNASeq::VertRes::Utils::Graphs;
 
 # ABSTRACT: Create graphs for the given data sets
 
