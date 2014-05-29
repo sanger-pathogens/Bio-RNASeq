@@ -3,6 +3,8 @@
 package Bio::RNASeq::GFF3Concat;
 
 
+# ABSTRACT: Concatenates GFF files into one GFF3 compatible file
+# PODNAME: gff3_concat
 
 
 BEGIN { unshift( @INC, '../lib' ) }
