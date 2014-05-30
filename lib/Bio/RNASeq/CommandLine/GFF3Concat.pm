@@ -2,45 +2,54 @@
 
 package Bio::RNASeq::CommandLine::GFF3Concat;
 
+# ABSTRACT: Concatenates GFF files into one GFF3 compatible file
+
 use Moose;
-use Getopt::Long qw(GetOptionsFromArray);;
+use Getopt::Long qw(GetOptionsFromArray);
 use Data::Dumper;
 
+has 'args'        => ( is => 'ro', isa => 'ArrayRef', required => 1 );
+has 'script_name' => ( is => 'ro', isa => 'Str',      required => 1 );
+has 'help'        => ( is => 'rw', isa => 'Bool',     default  => 0 );
 
-has 'args' => ( is => 'ro', isa => 'ArrayRef', required => 1 );
-has 'script_name' => ( is => 'ro', isa => 'Str', required => 1 );
-has 'help' => ( is => 'rw', isa => 'Bool', default => 0 );
+has 'input_dir'  => ( is => 'rw', isa => 'Str' );
+has 'output_dir' => ( is => 'rw', isa => 'Str' );
+has 'tag'        => ( is => 'rw', isa => 'Str' );
 
-has 'input_dir' => ( is => 'rw', isa => 'Str');
-has 'output_dir' => ( is => 'rw', isa => 'Str');
-has 'tag' => ( is => 'rw', isa => 'Str');
+has 'command'   => ( is => 'rw', isa => 'Str', lazy_build => 1 );
+has 'final_gff' => ( is => 'rw', isa => 'Str', lazy_build => 1 );
+has 'temp_gff'  => ( is => 'rw', isa => 'Str', lazy_build => 1 );
+has 'temp_fa'   => ( is => 'rw', isa => 'Str', lazy_build => 1 );
 
-
+has 'gff_file_list' => ( is => 'rw', isa => 'ArrayRef', lazy_build => 1 );
+has 'boundaries'    => ( is => 'rw', isa => 'HashRef',  lazy_build => 1 );
+has 'file_handles'  => ( is => 'rw', isa => 'HashRef',  lazy_build => 1 );
 
 sub BUILD {
 
-  my ($self) =@_;
+    my ($self) = @_;
 
-  my ($username,$input_dir,$output_dir,$tag);
+    my ( $username, $input_dir, $output_dir, $tag, $help );
 
-  GetOptionsFromArray(
-		      $self->args,
-		      'i|input_dir=s'                      => \$input_dir,
-		      'o|output_dir=s'                     => \$output_dir,
-		      't|tag=s'                            => \$tag,
-		      'h|help'                             => \$help,
-		     );
+    GetOptionsFromArray(
+        $self->args,
+        'i|input_dir=s'  => \$input_dir,
+        'o|output_dir=s' => \$output_dir,
+        't|tag=s'        => \$tag,
+        'h|help'         => \$help,
+    );
 
-  $self->input_dir($input_dir) if ( defined($input_dir) );
-  $self->output_dir($output_dir) if ( defined($output_dir) );
-  $self->tag($tag) if ( defined($tag) );
+    $self->input_dir($input_dir)   if ( defined($input_dir) );
+    $self->output_dir($output_dir) if ( defined($output_dir) );
+    $self->tag($tag)               if ( defined($tag) );
 }
 
-sub new {
+sub run {
 
-  my ($self) = @_;
+    my ($self) = @_;
 
-  ( $self->input_dir || $self->output_dir || $self->tag ) or die <<USAGE;
+    ( $self->input_dir && $self->output_dir && $self->tag ) or die <<USAGE;
+
 Usage:
   -i|input_dir        <full path to the directory containing the gff files to concatenate>
   -o|output_dir       <full path to the directory where the concatenated gff file will be written to>
@@ -54,158 +63,186 @@ Usage:
 
 USAGE
 
-  my $command = "ls /lustre/scratch108/parasites/lc5/knowlesi.dir/pk_embl_feb14.dir/*.gff";
-  my $big_gff = "/nfs/users/nfs_j/js21/hlustre/lia_rna_seq_test/lia_Pknowlesi_concat.gff";
-  my $temp_gff = "/nfs/users/nfs_j/js21/hlustre/lia_rna_seq_test/temp_concat_gff";
-  my $temp_fa = "/nfs/users/nfs_j/js21/hlustre/lia_rna_seq_test/temp_concat_fa";
+    $self->_set_command_and_filepaths();
+    $self->_get_gff_file_list();
+    $self->_set_gff_files_boundaries();
+    $self->_get_fhs_and_initialise();
+    $self->_concatenate_gffs();
+    $self->_tidy_up();
+}
 
+sub _set_command_and_filepaths {
 
-
-  my ( $gff_file_list ) = get_gff_file_list( $command );
-  my ( $boundaries ) = check_gffs_boundaries( $gff_file_list );
-
-  my ( $temp_gff_fh, $temp_fa_fh, $bgff_fh ) = get_fhs_and_initialise( $temp_gff, $temp_fa, $big_gff );
-
-  concatenate_gffs( $gff_file_list, $bgff_fh, $temp_gff_fh, $temp_fa_fh, $boundaries, $temp_gff, $temp_fa );
-
-  tidy_up( $bgff_fh, $temp_gff_fh, $temp_fa_fh, $temp_gff, $temp_fa );
-
+    my ($self) = @_;
+    $self->command( 'ls ' . $self->input_dir . '/*.gff' );
+    $self->final_gff( $self->output_dir . '/' . $self->tag . '.gff' );
+    $self->temp_gff( $self->output_dir . '/temp_' . $self->tag . '_gff' );
+    $self->temp_fa( $self->output_dir . '/temp_' . $self->tag . '_fa' );
+    return;
 
 }
 
-sub get_gff_file_list {
+sub _get_gff_file_list {
 
-  my $command = shift;
-  my @gff_file_list;
+    my ($self) = @_;
 
-  push( @gff_file_list, split( /\n/, `$command` ) );
+    my @gff_file_list;
+    my $cmd = $self->command;
+    push( @gff_file_list, split( /\n/, `$cmd` ) );
+    $self->gff_file_list( \@gff_file_list );
 
-  return( \@gff_file_list );
+    return;
 }
 
-sub check_gffs_boundaries {
+sub _set_gff_files_boundaries {
 
-  my ( $gff_file_list ) = @_;
+    my ($self) = @_;
 
-  my %boundaries;
+    my %boundaries;
 
-  for my $file (@$gff_file_list) {
+    for my $file ( @{ $self->gff_file_list } ) {
 
-    open ( my $sgff_fh, "<", $file );
+        open( my $sgff_fh, "<", $file );
 
-    my $counter = 0;
+        my $counter = 0;
 
-    while ( my $line = <$sgff_fh> ) {
-      if ( $line =~ m/^##/ ) {
-	push( @{ $boundaries{$file} }, $counter );
-      }
-      $counter++
+        while ( my $line = <$sgff_fh> ) {
+            if ( $line =~ m/^##/ ) {
+                push( @{ $boundaries{$file} }, $counter );
+            }
+            $counter++;
+        }
     }
-  }
-  return( \%boundaries );
+    $self->boundaries( \%boundaries );
+    return;
 }
 
-sub get_fhs_and_initialise {
+sub _get_fhs_and_initialise {
 
-  my ( $temp_gff, $temp_fa, $big_gff ) = @_;
+    my ($self) = @_;
 
-  if ( -e $big_gff ) {
-    `rm $big_gff`;
-    print "deleted $big_gff\n";
-  }
-
-  if ( -e $temp_gff ) {
-    `rm $temp_gff`;
-    print "deleted $temp_gff\n";
-  }
-
-  if ( -e $temp_fa ) {
-    `rm $temp_fa`;
-    print "deleted $temp_fa\n";
-  }
-
-  open ( my $bgff_fh, ">>", $big_gff );
-
-  open ( my $temp_gff_fh, ">>", $temp_gff );
-  print $temp_gff_fh "##gff-version 3\n";
-
-  open ( my $temp_fa_fh, ">>", $temp_fa );
-  print $temp_fa_fh "##FASTA\n";
-
-  return( $temp_gff_fh, $temp_fa_fh, $bgff_fh );
-}
-
-
-sub concatenate_gffs {
-
-  my ( $gff_file_list, $bgff_fh, $temp_gff_fh, $temp_fa_fh, $boundaries, $temp_gff, $temp_fa ) = @_;
-
-  for my $file (@$gff_file_list) {
-    my $lines_counter = 0;
-    open ( my $sgff_fh, "<", $file );
-
-    while ( my $line = <$sgff_fh> ) {
-      if ( $lines_counter > $boundaries->{$file}->[1] && $lines_counter < $boundaries->{$file}->[2]) {
-	print $temp_gff_fh "$line" ;
-      }
-      elsif ( $lines_counter > $boundaries->{$file}->[2]) {
-	print $temp_fa_fh "$line" ;
-      }
-      $lines_counter++
+    if ( -e $self->final_gff ) {
+        my $final_gff = $self->final_gff;
+        `rm $final_gff`;
+        print "deleted $final_gff\n";
     }
-  }
-  close($temp_gff_fh);
-  close($temp_fa_fh);
-  _merge_gff_fa( $bgff_fh, $temp_gff, $temp_fa );
 
+    if ( -e $self->temp_gff ) {
+        my $temp_gff = $self->temp_gff;
+        `rm $temp_gff`;
+        print "deleted $temp_gff\n";
+    }
+
+    if ( -e $self->temp_fa ) {
+        my $temp_fa = $self->temp_fa;
+        `rm $temp_fa`;
+        print "deleted $temp_fa\n";
+    }
+
+    my %file_handles;
+
+    open( my $fgff_fh, ">>", $self->final_gff );
+
+    open( my $tgff_fh, ">>", $self->temp_gff );
+    print $tgff_fh "##gff-version 3\n";
+
+    open( my $tfa_fh, ">>", $self->temp_fa );
+    print $tfa_fh "##FASTA\n";
+
+    $file_handles{final_gff} = $fgff_fh;
+    $file_handles{temp_gff}  = $tgff_fh;
+    $file_handles{temp_fa}   = $tfa_fh;
+
+    $self->file_handles( \%file_handles );
+    return;
+}
+
+sub _concatenate_gffs {
+
+    my ($self) = @_;
+
+    for my $file ( @{ $self->gff_file_list } ) {
+        my $lines_counter = 0;
+        open( my $sgff_fh, "<", $file );
+
+        while ( my $line = <$sgff_fh> ) {
+            if (   $lines_counter > $self->boundaries->{$file}->[1]
+                && $lines_counter < $self->boundaries->{$file}->[2] )
+            {
+                $self->_print_to_file( 'temp_gff', $line, 0 );
+            }
+            elsif ( $lines_counter > $self->boundaries->{$file}->[2] ) {
+                $self->_print_to_file( 'temp_fa', $line, 0 );
+            }
+            $lines_counter++;
+        }
+    }
+    close( ${ $self->file_handles->{'temp_gff'} } );
+    close( ${ $self->file_handles->{'temp_fa'} } );
+    $self->_merge_gff_fa();
+    return;
 }
 
 sub _merge_gff_fa {
 
-  my ( $bgff_fh, $temp_gff, $temp_fa ) = @_;
+    my ($self) = @_;
 
-  open ( my $r_temp_gff_fh, "<", $temp_gff );
-  open ( my $r_temp_fa_fh, "<", $temp_fa );
+    open( my $r_temp_gff_fh, "<", $self->temp_gff );
+    open( my $r_temp_fa_fh,  "<", $self->temp_fa );
 
-  while ( my $line = <$r_temp_gff_fh> ) {
-    $line =~ s/\n//;
-    print $bgff_fh "$line\n";
-  }
+    while ( my $line = <$r_temp_gff_fh> ) {
+        $self->_print_to_file( 'final_gff', $line, 1 );
+    }
 
-  print "GFF annotations merged and ported. Will merge and port the FASTA sequences now\n";
+    print
+"GFF annotations merged and ported. Will merge and port the FASTA sequences now\n";
 
-  while ( my $line = <$r_temp_fa_fh> ) {
-    $line =~ s/\n//;
-    print $bgff_fh "$line\n";
-  }
+    while ( my $line = <$r_temp_fa_fh> ) {
+        $line =~ s/\n//;
+        $self->_print_to_file( 'final_gff', $line, 1 );
+    }
 
-  print "Merged and ported the FASTA sequences\n";
+    print "Merged and ported the FASTA sequences\n";
 
-  close($r_temp_gff_fh);
-  close($r_temp_fa_fh);
-
+    close($r_temp_gff_fh);
+    close($r_temp_fa_fh);
+    return;
 }
 
-sub tidy_up {
+sub _print_to_file {
 
-  my ( $bgff_fh, $temp_gff_fh, $temp_fa_fh, $temp_gff, $temp_fa ) = @_;
+    my ( $self, $file, $line, $new_line ) = @_;
+	
+    if ($new_line) {
+        $line =~ s/\n//;
+        print { ${ $self->file_handles->{$file} } } "$line\n";
 
-  close($bgff_fh);
+    }
+    else {
+        print { ${ $self->file_handles->{$file} } } "$line";
+    }
 
-
-  if ( -e $temp_gff ) {
-    `rm $temp_gff`;
-    print "deleted $temp_gff\n";
-  }
-
-  if ( -e $temp_fa ) {
-    `rm $temp_fa`;
-    print "deleted $temp_fa\n";
-  }
-
-
+    return;
 }
 
+sub _tidy_up {
 
+    my ($self) = @_;
+
+    if ( -e $self->temp_gff ) {
+        my $temp_gff = $self->temp_gff;
+        `rm $temp_gff`;
+        print "deleted $temp_gff\n";
+    }
+
+    if ( -e $self->temp_fa ) {
+        my $temp_fa = $self->temp_fa;
+        `rm $temp_fa`;
+        print "deleted $temp_fa\n";
+    }
+
+    close( ${ $self->file_handles->{final_gff} } );
+    return;
+}
 
 1;

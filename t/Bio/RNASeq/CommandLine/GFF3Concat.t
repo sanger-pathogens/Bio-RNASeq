@@ -23,13 +23,25 @@ system('touch empty_file');
 %scripts_and_expected_files = (
 
     #No protocol argument, should default to standard
-    ' -i t/data/ -o ./  -t test ' => [ 'test.gff', ],
+    ' -i t/data/gff_indir -o ./  -t test ' => [ 'test.gff', ],
 
-  )
+);
 
-  #Test subroutines to put in a proper test filein the Bio::RNASeq package
+mock_execute_script_and_check_output( $script_name,
+    \%scripts_and_expected_files );
 
-  sub test_boundary_navigation {
+cleanup_files();
+done_testing();
+
+sub cleanup_files {
+
+    unlink('empty_file');
+    unlink('test.gff');
+}
+
+#Test subroutines to put in a proper test filein the Bio::RNASeq package
+
+sub test_boundary_navigation {
 
     my ( $gff_file_list, $boundaries ) = @_;
 
