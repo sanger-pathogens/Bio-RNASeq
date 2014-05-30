@@ -1,0 +1,16 @@
+#!/usr/bin/env perl
+
+package Bio::RNASeq::GFF3Concat;
+
+
+# ABSTRACT: Concatenates GFF files into one GFF3 compatible file
+# PODNAME: gff3_concat
+
+
+BEGIN { unshift( @INC, '../lib' ) }
+BEGIN { unshift( @INC, './lib' ) }
+BEGIN { unshift( @INC, '/software/pathogen/internal/prod/lib/' ) }
+use Bio::RNASeq::CommandLine::GFF3Concat;
+
+Bio::RNASeq::CommandLine::GFF3Concat->new(args => \@ARGV, script_name => $0)->run;
+

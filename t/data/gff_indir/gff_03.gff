@@ -1,0 +1,14 @@
+##gff-version 3
+##sequence-region Pk_strainH_chr03 1 973297
+Pk_strainH_chr03	chado	gap	8160	11159	.	-	.	ID=gap8160-11159:corrected;isObsolete=false;feature_id=214698;timelastmodified=21.10.2007+01:50:32+BST
+Pk_strainH_chr03	chado	gene	17778	18801	.	-	.	ID=PKH_030010;Start_range=.%2C.;isObsolete=false;feature_id=213671;timelastmodified=26.06.2013+05:14:10+BST
+Pk_strainH_chr03	chado	CDS	18730	18801	.	-	0	ID=PKH_030010.1:exon:2;Parent=PKH_030010.1;Start_range=.%2C.;isObsolete=false;timelastmodified=26.06.2013+05:14:10+BST;colour=7
+Pk_strainH_chr03	chado	CDS	17778	18537	.	-	0	ID=PKH_030010.1:exon:1;Parent=PKH_030010.1;Start_range=.%2C.;isObsolete=false;timelastmodified=26.06.2013+05:14:10+BST;colour=7
+Pk_strainH_chr03	chado	mRNA	17778	18801	.	-	.	ID=PKH_030010.1;Parent=PKH_030010;Start_range=.%2C.;isObsolete=false;feature_id=213672;timelastmodified=26.06.2013+05:14:10+BST;previous_systematic_id=PK7_1322w
+##FASTA
+>Pk_strainH_chr03
+gctaagggtgtaacaataatgtgataagggtattataataacgctgctgggatattgtaa
+tgaaggttgtaagggtattatattaacgttctaagggtcctgggataaggttgttggggt
+gttataatatatgttgttatggtgtcataatatggtcttaggggtgccggaatagggtct
+taggggtgttggaataacgtcctaggggtgtcagaatagggtcttaggggtgtcagaata
+agaaggtaggggtactagaataaagttatagaggtgtcaggttaacgttgtgggggtgtt

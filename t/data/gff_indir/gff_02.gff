@@ -1,0 +1,17 @@
+##gff-version 3
+##sequence-region Pk_strainH_chr02 1 726886
+Pk_strainH_chr02	chado	gene	1013	7961	.	-	.	ID=PKH_020010;Start_range=.%2C.;isObsolete=false;feature_id=238584;timelastmodified=10.12.2012+03:08:55+GMT
+Pk_strainH_chr02	chado	CDS	7809	7961	.	-	0	ID=PKH_020010.1:exon:7;Parent=PKH_020010.1;Start_range=.%2C.;isObsolete=false;timelastmodified=10.12.2012+03:08:55+GMT;colour=7
+Pk_strainH_chr02	chado	CDS	6696	7563	.	-	0	ID=PKH_020010.1:exon:6;Parent=PKH_020010.1;Start_range=.%2C.;isObsolete=false;timelastmodified=10.12.2012+03:08:55+GMT;colour=7
+Pk_strainH_chr02	chado	CDS	4169	4278	.	-	0	ID=PKH_020010.1:exon:5;Parent=PKH_020010.1;Start_range=.%2C.;isObsolete=false;timelastmodified=10.12.2012+03:08:55+GMT;colour=7
+Pk_strainH_chr02	chado	CDS	3173	3787	.	-	0	ID=PKH_020010.1:exon:4;Parent=PKH_020010.1;Start_range=.%2C.;isObsolete=false;timelastmodified=10.12.2012+03:08:55+GMT;colour=7
+Pk_strainH_chr02	chado	CDS	2127	2640	.	-	0	ID=PKH_020010.1:exon:3;Parent=PKH_020010.1;Start_range=.%2C.;isObsolete=false;timelastmodified=10.12.2012+03:08:55+GMT;colour=7
+Pk_strainH_chr02	chado	CDS	1759	1865	.	-	0	ID=PKH_020010.1:exon:2;Parent=PKH_020010.1;Start_range=.%2C.;isObsolete=false;timelastmodified=10.12.2012+03:08:55+GMT;colour=7
+Pk_strainH_chr02	chado	CDS	1013	1642	.	-	0	ID=PKH_020010.1:exon:1;Parent=PKH_020010.1;Start_range=.%2C.;isObsolete=false;timelastmodified=10.12.2012+03:08:55+GMT;colour=7
+Pk_strainH_chr02	chado	mRNA	1013	7961	.	-	.	ID=PKH_020010.1;Parent=PKH_020010;Start_range=.%2C.;isObsolete=false;feature_id=238585;timelastmodified=10.12.2012+03:08:55+GMT;previous_systematic_id=PK15_1160c
+##FASTA
+>Pk_strainH_chr02
+gaaccctactcctaaacccggaaccctactcctaaacccggaaccctactcctaaacccg
+gaaccctactcctaaacccggaaccctactcctaaacccggaatgtatgttcctacacca
+tgacaccttcatcctaaacccggaatctaagttctgacacccctacaaccttccacctaa
+acccggaatctaagttctaacaccccgacacctttgtcctaaacccggaatctcacttct

@@ -11,6 +11,7 @@ sub mock_execute_script_and_check_output {
     open OLDOUT, '>&STDOUT';
     open OLDERR, '>&STDERR';
     eval("use $script_name ;");
+	print "SCRIPT_NAME: $script_name\n";
     my $returned_values = 0;
     {
         local *STDOUT;
@@ -30,12 +31,37 @@ sub mock_execute_script_and_check_output {
               $scripts_and_expected_files->{$script_parameters}->[0];
             my $expected_output_file_name =
               $scripts_and_expected_files->{$script_parameters}->[1];
-			  print "$actual_output_file_name\n";
+            print "$actual_output_file_name\n";
 
             ok( -e $actual_output_file_name,
                 "Actual output file exists $actual_output_file_name" );
-
 				
+            if ( $script_name eq 'Bio::RNASeq::CommandLine::GFF3Concat' ) {
+                open( my $fh, '<', $actual_output_file_name );
+                my @lines = <$fh>;
+                close($fh);
+
+                print Dumper(@lines);
+                ok( $lines[0] eq "##gff-version 3\n", 'First output line' );
+                ok(
+                    $lines[9] eq
+"Pk_strainH_chr02\tchado\tCDS\t3173\t3787\t.\t-\t0\tID=PKH_020010.1:exon:4;Parent=PKH_020010.1;Start_range=.%2C.;isObsolete=false;timelastmodified=10.12.2012+03:08:55+GMT;colour=7\n",
+                    '10th output line'
+                );
+                ok( $lines[19] eq "##FASTA\n",           '20th output line' );
+                ok( $lines[29] eq ">Pk_strainH_chr02\n", '30th output line' );
+                ok(
+                    $lines[31] eq
+"gaaccctactcctaaacccggaaccctactcctaaacccggaatgtatgttcctacacca\n",
+                    "32nd output line"
+                );
+                ok(
+                    $lines[39] eq
+"agaaggtaggggtactagaataaagttatagaggtgtcaggttaacgttgtgggggtgtt\n",
+                    "40th output line"
+                );
+                ok( scalar @lines == 40, "Total lines in output file" );
+            }
             unlink($actual_output_file_name);
         }
         close STDOUT;
