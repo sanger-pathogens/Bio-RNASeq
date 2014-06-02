@@ -24,6 +24,13 @@ system('touch empty_file');
 
     #No protocol argument, should default to standard
     ' -i t/data/gff_indir -o ./  -t test ' => [ 'test.gff', ],
+	'-i t/data/gff_indir' => ['empty_file'],
+	'-o ./' => ['empty_file'],
+	'-t test' => ['empty_file'],
+	'-i t/data/gff_indir -o ./' => ['empty_file'],
+	'-i t/data/gff_indir -t test' => ['empty_file'],
+	'-o ./ -t test' => ['empty_file'],
+	'-h' => ['empty_file']
 
 );
 
