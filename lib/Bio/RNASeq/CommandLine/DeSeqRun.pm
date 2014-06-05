@@ -55,8 +55,10 @@ USAGE
   	samples_file    => $self->samples_file,
   	deseq_file  => $self->deseq_file,
   	);
+	
 	$deseq_setup->set_deseq();
-	#print "Hello\n";
+	$deseq_setup->write_deseq_input_file();
+
     #print Dumper($deseq_setup);
 
 }

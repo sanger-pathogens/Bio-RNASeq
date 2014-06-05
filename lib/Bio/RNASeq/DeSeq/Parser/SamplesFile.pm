@@ -16,12 +16,12 @@ sub parse {
 
         $validator->validate_content_set_samples();
 
-        if ( $validator->is_samples_file_valid == 1 ) {
-            return($validator->samples);
-
+        if ( $validator->is_samples_file_valid ) {
+            return ( $validator->samples );
         }
         else {
-			die "Will need to throw a proper exception here but essentially the file is invalid";
+            die
+"Will need to throw a proper exception here but essentially the samples file is invalid";
         }
     }
 }

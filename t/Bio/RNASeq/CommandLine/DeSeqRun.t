@@ -14,7 +14,7 @@ BEGIN {
     use_ok('Bio::RNASeq::CommandLine::DeSeqRun');
 }
 
-my $cwd = getcwd();
+my $cwd         = getcwd();
 my $script_name = 'Bio::RNASeq::CommandLine::DeSeqRun';
 
 local $ENV{PATH} = "$ENV{PATH}:./bin";
@@ -23,20 +23,19 @@ system('touch empty_file');
 
 %scripts_and_expected_files = (
 
-' -s t/data/samples_file -d deseq_test'
-      => [ 'empty_file' ],
-' -s t/data/bad_samples_file -d deseq_test'
-	  => [ 'empty_file' ],
+    ' -s t/data/good_samples_file -d deseq_test' =>
+      [ 'empty_file', 'deseq_test' ],
+    ' -s t/data/bad_samples_file -d deseq_test' => ['empty_file'],
 );
 
 mock_execute_script_and_check_output( $script_name,
-      \%scripts_and_expected_files );
+    \%scripts_and_expected_files );
 
 cleanup_files();
 done_testing();
 
 sub cleanup_files {
 
+    unlink('deseq_test');
 
-	  
 }

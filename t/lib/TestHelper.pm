@@ -8,16 +8,18 @@ sub mock_execute_script_and_check_output {
     my ( $script_name, $scripts_and_expected_files ) = @_;
 
     system('touch empty_file');
-    #open OLDOUT, '>&STDOUT';
-    #open OLDERR, '>&STDERR';
+
+    open OLDOUT, '>&STDOUT';
+    open OLDERR, '>&STDERR';
     eval("use $script_name ;");
+
     #print "SCRIPT_NAME: $script_name\n";
     my $returned_values = 0;
     {
-        #local *STDOUT;
-        #open STDOUT, '>/dev/null' or warn "Can't open /dev/null: $!";
-        #local *STDERR;
-        #open STDERR, '>/dev/null' or warn "Can't open /dev/null: $!";
+        local *STDOUT;
+        open STDOUT, '>/dev/null' or warn "Can't open /dev/null: $!";
+        local *STDERR;
+        open STDERR, '>/dev/null' or warn "Can't open /dev/null: $!";
 
         for my $script_parameters ( sort keys %$scripts_and_expected_files ) {
             my $full_script = $script_parameters;
@@ -31,7 +33,6 @@ sub mock_execute_script_and_check_output {
               $scripts_and_expected_files->{$script_parameters}->[0];
             my $expected_output_file_name =
               $scripts_and_expected_files->{$script_parameters}->[1];
-            print "$actual_output_file_name\n";
 
             ok( -e $actual_output_file_name,
                 "Actual output file exists $actual_output_file_name" );
@@ -65,23 +66,45 @@ sub mock_execute_script_and_check_output {
                     ok( scalar @lines == 40, "Total lines in output file" );
                 }
             }
-			if ( $script_name eq 'Bio::RNASeq::CommandLine::DeSeqRun' ) {
-				
-				
-				
-			}
+            if ( $script_name eq 'Bio::RNASeq::CommandLine::DeSeqRun' ) {
+                if ( defined $expected_output_file_name ) {
+                    ok(
+                        -e $expected_output_file_name,
+                        "Expected output file exists $expected_output_file_name"
+                    );
+
+                    my $file_to_compare = 't/data/file_for_DeSeq.deseq';
+                    open( my $ex_fh, '<', $expected_output_file_name );
+                    open( my $co_fh, '<', $file_to_compare );
+
+                    my @ex_lines = <$ex_fh>;
+                    my @co_lines = <$co_fh>;
+
+                    ok(
+                        scalar @ex_lines == @co_lines,
+                        "Number of lines in both files"
+                    );
+
+                    for ( my $i = 0 ; $i < scalar @ex_lines ; $i++ ) {
+                        $ex_lines[$i] =~ s/\n//;
+                        $co_lines[$i] =~ s/\n//;
+                        ok( $ex_lines[$i] eq $co_lines[$i], "Line $i" );
+                    }
+                }
+            }
         }
-        #close STDOUT;
-        #close STDERR;
+
+        close STDOUT;
+        close STDERR;
     }
 
     # Restore stdout.
-    #open STDOUT, '>&OLDOUT' or die "Can't restore stdout: $!";
-    #open STDERR, '>&OLDERR' or die "Can't restore stderr: $!";
-    #
-    ## Avoid leaks by closing the independent copies.
-    #close OLDOUT or die "Can't close OLDOUT: $!";
-    #close OLDERR or die "Can't close OLDERR: $!";
+    open STDOUT, '>&OLDOUT' or die "Can't restore stdout: $!";
+    open STDERR, '>&OLDERR' or die "Can't restore stderr: $!";
+    
+    # Avoid leaks by closing the independent copies.
+    close OLDOUT or die "Can't close OLDOUT: $!";
+    close OLDERR or die "Can't close OLDERR: $!";
     unlink('empty_file');
 
 }
