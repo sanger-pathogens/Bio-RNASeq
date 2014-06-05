@@ -1,44 +1,33 @@
-package Bio::RNASeq::DeSeq::Parser::SamplesFile;
+package Bio::RNASeq::DeSeq::Validate::SamplesFile;
 
 use Moose;
-use Bio::RNASeq::DeSeq::Validate::Samples;
+use List::MoreUtils qw(uniq);
 
+has 'samples_file' => ( is => 'rw', isa => 'Str', required => 1 );
 
+has 'samples' => ( is => 'rw', isa => 'HashRef' );
+has 'content' => ( is => 'rw', isa => 'HashRef' );
 
-has 'samples'            => ( is => 'rw', isa => 'HashRef' );
-has 'content'            => ( is => 'rw', isa => 'HashRef' );
-has 'valid_samples_file' => ( is => 'rw', isa => 'Bool' );
-
-
-
-
-sub _validate_samples_file {
+sub is_samples_file_valid {
 
     my ($self) = @_;
-    if ( -e $self->samples_file ) {
-
-        $self->_check_content_set_samples();
-        for my $file ( keys %{ $self->content } ) {
-            unless ( $file eq 'conditions' ) {
-                my $samples_file = $self->samples_file;
-                if (   $self->content->{conditions} == 2
-                    && $self->content->{$file}->{exists}
-                    && $self->content->{$file}->{condition}
-                    && $self->content->{$file}->{replicate} )
-                {
-                    $self->valid_samples_file(1);
-
-                }
-                else {
-                    $self->valid_samples_file(0);
-                }
+    for my $file ( keys %{ $self->content } ) {
+        unless ( $file eq 'conditions' ) {
+            if (   $self->content->{conditions} == 2
+                && $self->content->{$file}->{exists}
+                && $self->content->{$file}->{condition}
+                && $self->content->{$file}->{replicate} )
+            {
+                return 1;
+            }
+            else {
+                return 0;
             }
         }
-        return;
     }
 }
 
-sub _check_content_set_samples {
+sub validate_content_set_samples {
 
     my ($self) = @_;
 
@@ -48,9 +37,9 @@ sub _check_content_set_samples {
 
     open( my $sf_fh, '<', $self->samples_file );
 
-	my $undefined_filename_counter = 1;
+    my $undefined_filename_counter = 1;
     while ( my $line = <$sf_fh> ) {
-		$line =~ s/\n//;
+        $line =~ s/\n//;
         my @data = split( /,/, $line );
 
         if ( defined $data[0] && $data[0] ne q// ) {
@@ -109,15 +98,15 @@ sub _check_content_set_samples {
             }
         }
         else {
-			my $filename = "mock_$undefined_filename_counter";
+            my $filename = "mock_$undefined_filename_counter";
             $samples{$filename}{condition} = 'NA';
             $samples{$filename}{replicate} = 'NA';
 
             $content{$filename}{exists}    = 0;
             $content{$filename}{condition} = 0;
             $content{$filename}{replicate} = 0;
-			
-			$undefined_filename_counter++;
+
+            $undefined_filename_counter++;
         }
     }
     close($sf_fh);
@@ -144,3 +133,5 @@ sub _check_content_set_samples {
 
     return;
 }
+
+1;

@@ -11,7 +11,7 @@ with 'TestHelper';
 
 BEGIN {
     use Test::Most;
-    use_ok('Bio::DeSeq');
+    use_ok('Bio::RNASeq::DeSeq::Parser::SamplesFile');
 }
 
 

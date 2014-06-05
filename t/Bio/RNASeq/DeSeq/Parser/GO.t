@@ -11,8 +11,7 @@ with 'TestHelper';
 
 BEGIN {
     use Test::Most;
-    use_ok('Bio::DeSeq');
+    use_ok('Bio::RNASeq::DeSeq::Parser::GO');
 }
-
 
 done_testing();

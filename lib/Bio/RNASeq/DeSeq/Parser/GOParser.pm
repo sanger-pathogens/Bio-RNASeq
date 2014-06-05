@@ -1,1 +1,0 @@
-package Bio::RNASeq::DeSeq::Parser::GOParser;

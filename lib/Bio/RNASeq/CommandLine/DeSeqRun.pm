@@ -57,7 +57,7 @@ USAGE
   	);
 	$deseq_setup->set_deseq();
 	#print "Hello\n";
-    print Dumper($deseq_setup);
+    #print Dumper($deseq_setup);
 
 }
 
