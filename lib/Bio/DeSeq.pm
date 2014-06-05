@@ -1,7 +1,9 @@
 package Bio::DeSeq;
 
 use Moose;
+use Bio::RNASeq::DeSeq::Parser::SamplesFile;
 use List::MoreUtils qw(uniq);
+
 
 has 'samples_file' => ( is => 'rw', isa => 'Str', required => 1 );
 has 'deseq_file'   => ( is => 'rw', isa => 'Str', required => 1 );
@@ -56,11 +58,12 @@ sub _check_content_set_samples {
 
     open( my $sf_fh, '<', $self->samples_file );
 
+	my $undefined_filename_counter = 1;
     while ( my $line = <$sf_fh> ) {
-
+		$line =~ s/\n//;
         my @data = split( /,/, $line );
 
-        if ( defined $data[0] ) {
+        if ( defined $data[0] && $data[0] ne q// ) {
 
             if ( -e $data[0] ) {
 
@@ -81,7 +84,7 @@ sub _check_content_set_samples {
 
                 }
 
-                if ( defined $data[2] ) {
+                if ( defined $data[2] && $data[2] ne q// ) {
                     if ( $data[2] =~ m/\d+/ ) {
 
                         $samples{ $data[0] }{replicate} = $data[2];
@@ -116,14 +119,15 @@ sub _check_content_set_samples {
             }
         }
         else {
+			my $filename = "mock_$undefined_filename_counter";
+            $samples{$filename}{condition} = 'NA';
+            $samples{$filename}{replicate} = 'NA';
 
-            $samples{'mock_filename'}{condition} = 'NA';
-            $samples{'mock_filename'}{replicate} = 'NA';
-
-            $content{'mock_filename'}{exists}    = 0;
-            $content{'mock_filename'}{condition} = 0;
-            $content{'mock_filename'}{replicate} = 0;
-
+            $content{$filename}{exists}    = 0;
+            $content{$filename}{condition} = 0;
+            $content{$filename}{replicate} = 0;
+			
+			$undefined_filename_counter++;
         }
     }
     close($sf_fh);
@@ -151,4 +155,6 @@ sub _check_content_set_samples {
     return;
 }
 
+no Moose;
+__PACKAGE__->meta->make_immutable;
 1;
