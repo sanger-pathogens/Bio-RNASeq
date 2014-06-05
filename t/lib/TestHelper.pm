@@ -8,16 +8,16 @@ sub mock_execute_script_and_check_output {
     my ( $script_name, $scripts_and_expected_files ) = @_;
 
     system('touch empty_file');
-    open OLDOUT, '>&STDOUT';
-    open OLDERR, '>&STDERR';
+    #open OLDOUT, '>&STDOUT';
+    #open OLDERR, '>&STDERR';
     eval("use $script_name ;");
-    print "SCRIPT_NAME: $script_name\n";
+    #print "SCRIPT_NAME: $script_name\n";
     my $returned_values = 0;
     {
-        local *STDOUT;
-        open STDOUT, '>/dev/null' or warn "Can't open /dev/null: $!";
-        local *STDERR;
-        open STDERR, '>/dev/null' or warn "Can't open /dev/null: $!";
+        #local *STDOUT;
+        #open STDOUT, '>/dev/null' or warn "Can't open /dev/null: $!";
+        #local *STDERR;
+        #open STDERR, '>/dev/null' or warn "Can't open /dev/null: $!";
 
         for my $script_parameters ( sort keys %$scripts_and_expected_files ) {
             my $full_script = $script_parameters;
@@ -65,18 +65,23 @@ sub mock_execute_script_and_check_output {
                     ok( scalar @lines == 40, "Total lines in output file" );
                 }
             }
+			if ( $script_name eq 'Bio::RNASeq::CommandLine::DeSeqRun' ) {
+				
+				
+				
+			}
         }
-        close STDOUT;
-        close STDERR;
+        #close STDOUT;
+        #close STDERR;
     }
 
     # Restore stdout.
-    open STDOUT, '>&OLDOUT' or die "Can't restore stdout: $!";
-    open STDERR, '>&OLDERR' or die "Can't restore stderr: $!";
-
-    # Avoid leaks by closing the independent copies.
-    close OLDOUT or die "Can't close OLDOUT: $!";
-    close OLDERR or die "Can't close OLDERR: $!";
+    #open STDOUT, '>&OLDOUT' or die "Can't restore stdout: $!";
+    #open STDERR, '>&OLDERR' or die "Can't restore stderr: $!";
+    #
+    ## Avoid leaks by closing the independent copies.
+    #close OLDOUT or die "Can't close OLDOUT: $!";
+    #close OLDERR or die "Can't close OLDERR: $!";
     unlink('empty_file');
 
 }

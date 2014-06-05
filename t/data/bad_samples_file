@@ -1,0 +1,5 @@
+t/data/rna_seq_output_files/t1_expression.csv,treated,a
+t/data/rna_seq_output_files/t2_expression.csv,xmen,2
+t/data/rna_seq_output_files/t3_expression.csv,treated,3
+t/data/rna_seq_output_files/ub1_expression.csv,untreated,1
+t/data/rna_seq_output_files/usdSA2_expression.csv,fsacdsdf,sdsasdfd

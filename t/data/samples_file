@@ -1,0 +1,5 @@
+t/data/rna_seq_output_files/t1_expression.csv,treated,1
+t/data/rna_seq_output_files/t2_expression.csv,treated,2
+t/data/rna_seq_output_files/t3_expression.csv,treated,3
+t/data/rna_seq_output_files/u1_expression.csv,untreated,1
+t/data/rna_seq_output_files/u2_expression.csv,untreated,2
