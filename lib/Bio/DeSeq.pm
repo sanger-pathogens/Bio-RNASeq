@@ -33,16 +33,17 @@ sub set_deseq {
 
 sub write_deseq_input_file {
 
-    my ($self) = @_;
+  my ($self) = @_;
 
+  if ( -e $self->deseq_file ) {
     open( my $fh, '>', './' . $self->deseq_file );
 
     my $file_content = "gene_id\t";
 
     for my $file ( sort keys $self->samples ) {
 
-        $file_content .= $self->samples->{$file}->{condition}
-          . $self->samples->{$file}->{replicate} . "\t";
+      $file_content .= $self->samples->{$file}->{condition}
+	. $self->samples->{$file}->{replicate} . "\t";
 
     }
     $file_content =~ s/\t$//;
@@ -50,21 +51,23 @@ sub write_deseq_input_file {
 
     for my $gene ( @{ $self->genes } ) {
 
-        $file_content .= "$gene\t";
+      $file_content .= "$gene\t";
 
-        for my $file ( sort keys $self->samples ) {
+      for my $file ( sort keys $self->samples ) {
 
-            $file_content .=
-              $self->samples->{$file}->{read_counts}->{$gene} . "\t";
+	$file_content .=
+	  $self->samples->{$file}->{read_counts}->{$gene} . "\t";
 
-        }
-        $file_content =~ s/\t$//;
-        $file_content .= "\n";
+      }
+      $file_content =~ s/\t$//;
+      $file_content .= "\n";
     }
 
     print $fh "$file_content";
 
     $self->deseq_fh($fh);
+  }
+
 }
 
 no Moose;
