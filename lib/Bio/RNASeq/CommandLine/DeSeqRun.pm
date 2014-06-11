@@ -10,7 +10,6 @@ package Bio::RNASeq::CommandLine::DeSeqRun;
 use Moose;
 use Getopt::Long qw(GetOptionsFromArray);
 use Bio::DeSeq;
-use Data::Dumper;
 
 has 'args'        => ( is => 'ro', isa => 'ArrayRef', required => 1 );
 has 'script_name' => ( is => 'ro', isa => 'Str',      required => 1 );
@@ -44,7 +43,7 @@ sub run {
 	
 Usage:
   -s|samples_file         <A file with the list of samples to analyse and their corresponding file of expression values in the format ("filepath","condition","replicate")>
-  -d|deseq_file           <The name of the file that will be used as the DeSeq analysis input. The file will be writen wherever you're running deseq_run from>  
+  -d|deseq_file           <The name of the file that will be used as the DeSeq analysis input. NOTE - The file will be writen wherever you're running deseq_run from>  
   -h|help                  <print this message>
 
 
@@ -57,9 +56,9 @@ USAGE
 
     $deseq_setup->set_deseq();
     $deseq_setup->write_deseq_input_file();
-    print Dumper($deseq_setup);
+
     close( $deseq_setup->deseq_fh );
-    print "closed file handle\n";
+
 }
 
 1;
