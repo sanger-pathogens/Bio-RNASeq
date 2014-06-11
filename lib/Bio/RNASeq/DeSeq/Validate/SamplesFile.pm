@@ -10,110 +10,120 @@ has 'content' => ( is => 'rw', isa => 'HashRef' );
 
 sub is_samples_file_valid {
 
-    my ($self) = @_;
+  my ($self) = @_;
 
-    my @prefinal_validation;
-    for my $file ( keys %{ $self->content } ) {
-        unless ( $file eq 'conditions' ) {
-            if (   $self->content->{conditions} == 2
-                && $self->content->{$file}->{exists}
-                && $self->content->{$file}->{condition}
-                && $self->content->{$file}->{replicate} )
-            {
-                push( @prefinal_validation, 1 );
-            }
-            else {
-                push( @prefinal_validation, 0 );
-            }
-        }
+  my @prefinal_validation;
+  for my $file ( keys %{ $self->content } ) {
+    unless ( $file eq 'conditions' ) {
+      if (   $self->content->{conditions} == 2
+	     && $self->content->{$file}->{exists}
+	     && $self->content->{$file}->{condition}
+	     && $self->content->{$file}->{replicate} ) {
+	push( @prefinal_validation, 1 );
+      } else {
+	push( @prefinal_validation, 0 );
+      }
     }
-    my @final_validation = uniq(@prefinal_validation);
-    return ( $final_validation[0] );
+  }
+  my @final_validation = uniq(@prefinal_validation);
+  return ( $final_validation[0] );
 }
 
 sub validate_content_set_samples {
 
-    my ($self) = @_;
+  my ($self) = @_;
 
-    my %samples;
-    my %content;
-    my @condition_validation;
+  my %samples;
+  my %content;
+  my @condition_validation;
 
-    open( my $sf_fh, '<', $self->samples_file );
+  my $file =  $self->samples_file;
+  my $max_lines = `wc -l $file`;
 
-    my $undefined_filename_counter = 1;
-    while ( my $line = <$sf_fh> ) {
-        $line =~ s/\n//;
-        my @data = split( /,/, $line );
+  open( my $sf_fh, '<', $self->samples_file );
 
-        if ( defined $data[0] && $data[0] ne q// ) {
+  my $line_counter = 0;
+  my $undefined_filename_counter = 1;
 
-            if ( -e $data[0] ) {
+  while ( my $line = <$sf_fh> ) {
 
-                $content{ $data[0] }{exists} = 1;
+    $line_counter++;
+    $line =~ s/\n//;
 
-                if ( defined $data[1] ) {
+    my @data = split( /,/, $line );
 
-                    $samples{ $data[0] }{condition} = $data[1];
-                    $content{ $data[0] }{condition} = 1;
-                    push( @condition_validation, $data[1] );
+    if ( defined $data[0] && $data[0] ne q// ) {
 
-                }
-                else {
+      if ( -e $data[0] ) {
 
-                    $samples{ $data[0] }{condition} = 'undefined';
-                    $content{ $data[0] }{condition} = 0;
-                    push( @condition_validation, 'undefined' );
+	$content{ $data[0] }{exists} = 1;
 
-                }
+	if ( defined $data[1] ) {
 
-                if ( defined $data[2] && $data[2] ne q// ) {
-                    if ( $data[2] =~ m/\d+/ ) {
+	  $samples{ $data[0] }{condition} = $data[1];
+	  $content{ $data[0] }{condition} = 1;
+	  push( @condition_validation, $data[1] );
 
-                        $samples{ $data[0] }{replicate} = $data[2];
-                        $content{ $data[0] }{replicate} = 1;
-                    }
-                    else {
+	} else {
 
-                        $samples{ $data[0] }{replicate} =
-                          'not a positive integer';
-                        $content{ $data[0] }{replicate} = 0;
+	  $samples{ $data[0] }{condition} = 'undefined';
+	  $content{ $data[0] }{condition} = 0;
+	  push( @condition_validation, 'undefined' );
 
-                    }
-                }
-                else {
+	}
 
-                    $samples{ $data[0] }{replicate} = 'undefined';
-                    $content{ $data[0] }{replicate} = 0;
+	if ( defined $data[2] && $data[2] ne q// ) {
+	  if ( $data[2] =~ m/\d+/ ) {
 
-                }
-            }
-            else {
+	    $samples{ $data[0] }{replicate} = $data[2];
+	    $content{ $data[0] }{replicate} = 1;
+	  } else {
 
-                $samples{ $data[0] }{condition} = 'NA';
-                $samples{ $data[0] }{replicate} = 'NA';
+	    $samples{ $data[0] }{replicate} =
+	      'not a positive integer';
+	    $content{ $data[0] }{replicate} = 0;
 
-                $content{ $data[0] }{exists}    = 0;
-                $content{ $data[0] }{condition} = 0;
-                $content{ $data[0] }{replicate} = 0;
+	  }
+	} else {
 
-                push( @condition_validation, 'NA' );
+	  $samples{ $data[0] }{replicate} = 'undefined';
+	  $content{ $data[0] }{replicate} = 0;
 
-            }
-        }
-        else {
-            my $filename = "mock_$undefined_filename_counter";
-            $samples{$filename}{condition} = 'NA';
-            $samples{$filename}{replicate} = 'NA';
+	}
+      } else {
 
-            $content{$filename}{exists}    = 0;
-            $content{$filename}{condition} = 0;
-            $content{$filename}{replicate} = 0;
 
-            $undefined_filename_counter++;
-        }
+	$samples{ $data[0] }{condition} = 'NA';
+	$samples{ $data[0] }{replicate} = 'NA';
+
+	$content{ $data[0] }{exists}    = 0;
+	$content{ $data[0] }{condition} = 0;
+	$content{ $data[0] }{replicate} = 0;
+
+	push( @condition_validation, 'NA' );
+
+      }
+    } else {
+      unless ( $line_counter == $max_lines ) {
+
+	my $filename = "mock_$undefined_filename_counter";
+	$samples{$filename}{condition} = 'NA';
+	$samples{$filename}{replicate} = 'NA';
+
+	$content{$filename}{exists}    = 0;
+	$content{$filename}{condition} = 0;
+	$content{$filename}{replicate} = 0;
+
+	$undefined_filename_counter++;
+      }
+      else {
+
+	last;
+
+      }
     }
-    close($sf_fh);
+  }
+  close($sf_fh);
 
     my @unique_conditions = uniq(@condition_validation);
 
