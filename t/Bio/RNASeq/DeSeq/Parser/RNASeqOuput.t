@@ -12,10 +12,7 @@ with 'TestHelper';
 BEGIN {
     use Test::Most;
     use_ok('Bio::RNASeq::DeSeq::Parser::RNASeqOutput');
-	
-	
-	
-}
 
+}
 
 done_testing();

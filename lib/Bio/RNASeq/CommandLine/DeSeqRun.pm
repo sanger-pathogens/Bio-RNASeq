@@ -10,15 +10,13 @@ package Bio::RNASeq::CommandLine::DeSeqRun;
 use Moose;
 use Getopt::Long qw(GetOptionsFromArray);
 use Bio::DeSeq;
-use Data::Dumper;
 
 has 'args'        => ( is => 'ro', isa => 'ArrayRef', required => 1 );
 has 'script_name' => ( is => 'ro', isa => 'Str',      required => 1 );
 has 'help'        => ( is => 'rw', isa => 'Bool',     default  => 0 );
 
 has 'samples_file' => ( is => 'rw', isa => 'Str' );
-has 'deseq_file' => (is => 'rw', isa => 'Str');
-
+has 'deseq_file'   => ( is => 'rw', isa => 'Str' );
 
 sub BUILD {
 
@@ -29,12 +27,12 @@ sub BUILD {
     GetOptionsFromArray(
         $self->args,
         's|samples_file=s' => \$samples_file,
-		'd|deseq_file=s' => \$deseq_file,
+        'd|deseq_file=s'   => \$deseq_file,
         'h|help'           => \$help,
     );
 
     $self->samples_file($samples_file) if ( defined($samples_file) );
-	$self->deseq_file($deseq_file) if ( defined($deseq_file) );
+    $self->deseq_file($deseq_file)     if ( defined($deseq_file) );
 
 }
 
@@ -51,17 +49,14 @@ Usage:
 
 USAGE
 
-	my $deseq_setup = Bio::DeSeq->new(
-  	samples_file    => $self->samples_file,
-  	deseq_file  => $self->deseq_file,
-  	);
-	
-	$deseq_setup->set_deseq();
-	$deseq_setup->write_deseq_input_file();
+    my $deseq_setup = Bio::DeSeq->new(
+        samples_file => $self->samples_file,
+        deseq_file   => $self->deseq_file,
+    );
 
-    #print Dumper($deseq_setup);
-
+    $deseq_setup->set_deseq();
+    $deseq_setup->write_deseq_input_file();
+    close( $deseq_setup->deseq_fh );
 }
-
 
 1;

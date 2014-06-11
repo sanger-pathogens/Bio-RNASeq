@@ -13,7 +13,6 @@ sub parse {
         my $validator =
           Bio::RNASeq::DeSeq::Validate::SamplesFile->new(
             samples_file => $self->samples_file );
-
         $validator->validate_content_set_samples();
 
         if ( $validator->is_samples_file_valid ) {

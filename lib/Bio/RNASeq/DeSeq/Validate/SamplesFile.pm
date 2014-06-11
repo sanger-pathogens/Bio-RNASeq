@@ -11,8 +11,8 @@ has 'content' => ( is => 'rw', isa => 'HashRef' );
 sub is_samples_file_valid {
 
     my ($self) = @_;
-	
-	my @prefinal_validation;
+
+    my @prefinal_validation;
     for my $file ( keys %{ $self->content } ) {
         unless ( $file eq 'conditions' ) {
             if (   $self->content->{conditions} == 2
@@ -20,15 +20,15 @@ sub is_samples_file_valid {
                 && $self->content->{$file}->{condition}
                 && $self->content->{$file}->{replicate} )
             {
-                push(@prefinal_validation,1);
+                push( @prefinal_validation, 1 );
             }
             else {
-                push(@prefinal_validation,0);
+                push( @prefinal_validation, 0 );
             }
         }
     }
-	my @final_validation = uniq(@prefinal_validation);
-	return( $final_validation[0] );
+    my @final_validation = uniq(@prefinal_validation);
+    return ( $final_validation[0] );
 }
 
 sub validate_content_set_samples {

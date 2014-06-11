@@ -3,13 +3,13 @@ package Bio::DeSeq;
 use Moose;
 use Bio::RNASeq::DeSeq::Parser::SamplesFile;
 use Bio::RNASeq::DeSeq::Parser::RNASeqOutput;
-use Data::Dumper;
 
 has 'samples_file' => ( is => 'rw', isa => 'Str', required => 1 );
 has 'deseq_file'   => ( is => 'rw', isa => 'Str', required => 1 );
 
-has 'samples' => ( is => 'rw', isa => 'HashRef' );
-has 'genes'   => ( is => 'rw', isa => 'ArrayRef' );
+has 'samples'  => ( is => 'rw', isa => 'HashRef' );
+has 'genes'    => ( is => 'rw', isa => 'ArrayRef' );
+has 'deseq_fh' => ( is => 'rw', isa => 'FileHandle' );
 
 sub set_deseq {
 
@@ -35,7 +35,6 @@ sub write_deseq_input_file {
 
     my ($self) = @_;
 
-	#print Dumper($self);
     open( my $fh, '>', './' . $self->deseq_file );
 
     my $file_content = "gene_id\t";
@@ -46,7 +45,7 @@ sub write_deseq_input_file {
           . $self->samples->{$file}->{replicate} . "\t";
 
     }
-	$file_content =~ s/\t$//;
+    $file_content =~ s/\t$//;
     $file_content .= "\n";
 
     for my $gene ( @{ $self->genes } ) {
@@ -59,13 +58,14 @@ sub write_deseq_input_file {
               $self->samples->{$file}->{read_counts}->{$gene} . "\t";
 
         }
-		$file_content =~ s/\t$//;
+        $file_content =~ s/\t$//;
         $file_content .= "\n";
     }
 
     print $fh "$file_content";
 
-    close($fh);
+    $self->deseq_fh($fh);
+
 }
 
 no Moose;

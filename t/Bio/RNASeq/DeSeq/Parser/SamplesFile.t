@@ -14,5 +14,4 @@ BEGIN {
     use_ok('Bio::RNASeq::DeSeq::Parser::SamplesFile');
 }
 
-
 done_testing();

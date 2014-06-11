@@ -14,5 +14,4 @@ BEGIN {
     use_ok('Bio::DeSeq');
 }
 
-
 done_testing();
