@@ -3,6 +3,7 @@ package Bio::DeSeq;
 use Moose;
 use Bio::RNASeq::DeSeq::Parser::SamplesFile;
 use Bio::RNASeq::DeSeq::Parser::RNASeqOutput;
+use Data::Dumper;
 
 has 'samples_file' => ( is => 'rw', isa => 'Str', required => 1 );
 has 'deseq_file'   => ( is => 'rw', isa => 'Str', required => 1 );
@@ -34,7 +35,7 @@ sub set_deseq {
 sub write_deseq_input_file {
 
   my ($self) = @_;
-
+  print Dumper($self);
   my $dfile = $self->deseq_file;
   if ( -e $dfile ) {
     open( my $fh, '>', './' . $self->deseq_file );
