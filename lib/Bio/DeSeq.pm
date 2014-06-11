@@ -35,7 +35,8 @@ sub write_deseq_input_file {
 
   my ($self) = @_;
 
-  if ( -e $self->deseq_file ) {
+  my $dfile = $self->deseq_file;
+  if ( -e $dfile ) {
     open( my $fh, '>', './' . $self->deseq_file );
 
     my $file_content = "gene_id\t";
