@@ -38,8 +38,12 @@ sub validate_content_set_samples {
   my @condition_validation;
 
   my $file =  $self->samples_file;
-  my $max_lines = `wc -l $file`;
-
+  my $out = `wc -l $file`;
+  my $max_lines;
+  if ($out =~ m/(\d+)/) {
+    $max_lines = $1;
+  }
+  print "$file\n";
   open( my $sf_fh, '<', $self->samples_file );
 
   my $line_counter = 0;
@@ -55,7 +59,7 @@ sub validate_content_set_samples {
     if ( defined $data[0] && $data[0] ne q// ) {
 
       if ( -e $data[0] ) {
-
+	print "file that should exist: $data[0]\n";
 	$content{ $data[0] }{exists} = 1;
 
 	if ( defined $data[1] ) {
@@ -91,21 +95,28 @@ sub validate_content_set_samples {
 
 	}
       } else {
+	print "file that apparently doesn't exist: $data[0]\n";
+	print "LINE COUNTER: $line_counter\n";
+	unless ( $line_counter == $max_lines ) {
+	  print "MAXLINE: $max_lines\n";
+	  $samples{ $data[0] }{condition} = 'NA';
+	  $samples{ $data[0] }{replicate} = 'NA';
 
+	  $content{ $data[0] }{exists}    = 0;
+	  $content{ $data[0] }{condition} = 0;
+	  $content{ $data[0] }{replicate} = 0;
 
-	$samples{ $data[0] }{condition} = 'NA';
-	$samples{ $data[0] }{replicate} = 'NA';
+	  push( @condition_validation, 'NA' );
+	} else {
+	  print "Fick off\n";
+	  last;
 
-	$content{ $data[0] }{exists}    = 0;
-	$content{ $data[0] }{condition} = 0;
-	$content{ $data[0] }{replicate} = 0;
-
-	push( @condition_validation, 'NA' );
-
+	}
       }
     } else {
       unless ( $line_counter == $max_lines ) {
 
+	print "Suck it\n";
 	my $filename = "mock_$undefined_filename_counter";
 	$samples{$filename}{condition} = 'NA';
 	$samples{$filename}{replicate} = 'NA';
@@ -117,7 +128,7 @@ sub validate_content_set_samples {
 	$undefined_filename_counter++;
       }
       else {
-
+	print "Fick off\n";
 	last;
 
       }
