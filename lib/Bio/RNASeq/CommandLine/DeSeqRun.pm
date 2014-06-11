@@ -44,7 +44,7 @@ sub run {
 	
 Usage:
   -s|samples_file         <A file with the list of samples to analyse and their corresponding file of expression values in the format ("filepath","condition","replicate")>
-  -d|deseq_file           <The name of the file that will be used as the DeSeq analysis input>  
+  -d|deseq_file           <The name of the file that will be used as the DeSeq analysis input. The file will be writen wherever you're running deseq_run from>  
   -h|help                  <print this message>
 
 
