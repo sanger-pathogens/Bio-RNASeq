@@ -65,7 +65,6 @@ sub write_deseq_input_file {
     print $fh "$file_content";
 
     $self->deseq_fh($fh);
-
 }
 
 no Moose;

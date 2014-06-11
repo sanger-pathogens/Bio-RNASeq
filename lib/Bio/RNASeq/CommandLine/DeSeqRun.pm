@@ -59,6 +59,7 @@ USAGE
     $deseq_setup->write_deseq_input_file();
     print Dumper($deseq_setup);
     close( $deseq_setup->deseq_fh );
+    print "closed file handle\n";
 }
 
 1;
