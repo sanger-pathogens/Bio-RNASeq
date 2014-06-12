@@ -29,7 +29,7 @@ sub run {
   }
   else {
 
-    my $exception = 'The file path specified in the -d option => ' . $self->deseq_ff . ' , does not exist';
+    my $exception = 'The file path specified in the -d option => ' . $self->deseq_file . ' , does not exist';
     die "$exception";
 
   }
