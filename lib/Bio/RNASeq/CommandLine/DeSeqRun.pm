@@ -54,10 +54,8 @@ USAGE
         deseq_file   => $self->deseq_file,
     );
 
-    $deseq_setup->set_deseq();
-    $deseq_setup->write_deseq_input_file();
-
-    close( $deseq_setup->deseq_fh );
+    $deseq_setup->run;
+   
 
 }
 

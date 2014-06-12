@@ -3,15 +3,36 @@ package Bio::DeSeq;
 use Moose;
 use Bio::RNASeq::DeSeq::Parser::SamplesFile;
 use Bio::RNASeq::DeSeq::Parser::RNASeqOutput;
+use Bio::RNASeq::DeSeq::Writer::DeseqInputFile;
 
 has 'samples_file' => ( is => 'rw', isa => 'Str', required => 1 );
 has 'deseq_file'   => ( is => 'rw', isa => 'Str', required => 1 );
 
 has 'samples'  => ( is => 'rw', isa => 'HashRef' );
 has 'genes'    => ( is => 'rw', isa => 'ArrayRef' );
-has 'deseq_fh' => ( is => 'rw', isa => 'FileHandle' );
 
-sub set_deseq {
+
+
+sub run {
+
+  my ($self) = @_;
+  $self->_set_deseq();
+  
+  my $deseq_input_writer = Bio::RNASeq::DeSeq::Writer::DeseqInputFile->new(
+									   deseq_file => $self->deseq_file, 
+									   samples => $self->samples,
+									   genes => $self->genes,
+									  );
+
+  $deseq_input_writer->run;
+  if ( $deseq_input_writer->exit_c ) {
+    print "Deseq input file is ready to run\n";
+  }
+
+
+}
+
+sub _set_deseq {
 
     my ($self) = @_;
 
@@ -31,42 +52,7 @@ sub set_deseq {
     $self->genes( $rso->genes );
 }
 
-sub write_deseq_input_file {
 
-  my ($self) = @_;
-
-  open( my $fh, '>', './' . $self->deseq_file );
-
-  my $file_content = "gene_id\t";
-
-  for my $file ( sort keys $self->samples ) {
-
-    $file_content .= $self->samples->{$file}->{condition}
-      . $self->samples->{$file}->{replicate} . "\t";
-
-  }
-  $file_content =~ s/\t$//;
-  $file_content .= "\n";
-
-  for my $gene ( @{ $self->genes } ) {
-
-    $file_content .= "$gene\t";
-
-    for my $file ( sort keys $self->samples ) {
-
-      $file_content .=
-	$self->samples->{$file}->{read_counts}->{$gene} . "\t";
-
-    }
-    $file_content =~ s/\t$//;
-    $file_content .= "\n";
-  }
-
-  print $fh "$file_content";
-
-  $self->deseq_fh($fh);
-
-}
 
 no Moose;
 __PACKAGE__->meta->make_immutable;
