@@ -5,6 +5,8 @@ use Bio::RNASeq::DeSeq::Validate::SamplesFile;
 
 has 'samples_file' => ( is => 'rw', isa => 'Str', required => 1 );
 
+has 'exit_c' => ( is => 'rw', isa => 'Bool', default => 1 );
+
 sub parse {
 
     my ($self) = @_;

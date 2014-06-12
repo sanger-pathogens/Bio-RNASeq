@@ -9,7 +9,7 @@ has 'genes'    => ( is => 'rw', isa => 'ArrayRef', required => 1 );
 
 has 'deseq_ff' => ( is => 'rw', isa => 'Str');
 has 'deseq_fh' => ( is => 'rw', isa => 'FileHandle' );
-has 'exit_c' => ( is => 'rw', isa => 'Bool', default => 0 );
+has 'exit_c' => ( is => 'rw', isa => 'Bool', default => 1 );
 
 sub run {
 
@@ -24,7 +24,6 @@ sub run {
 
     $self->_write;
     close( $self->deseq_fh );
-    $self->exit_c(1);
 
   }
   else {

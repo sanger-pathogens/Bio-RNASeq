@@ -7,6 +7,7 @@ use Bio::RNASeq::DeSeq::Writer::DeseqInputFile;
 
 has 'samples_file' => ( is => 'rw', isa => 'Str', required => 1 );
 has 'deseq_file'   => ( is => 'rw', isa => 'Str', required => 1 );
+has 'read_count_a_index'   => ( is => 'rw', isa => 'Int', required => 1 );
 
 has 'samples'  => ( is => 'rw', isa => 'HashRef' );
 has 'genes'    => ( is => 'rw', isa => 'ArrayRef' );
@@ -16,19 +17,28 @@ has 'genes'    => ( is => 'rw', isa => 'ArrayRef' );
 sub run {
 
   my ($self) = @_;
+
   $self->_set_deseq();
   
-  my $deseq_input_writer = Bio::RNASeq::DeSeq::Writer::DeseqInputFile->new(
+  my $ds_iwriter = Bio::RNASeq::DeSeq::Writer::DeseqInputFile->new(
 									   deseq_file => $self->deseq_file, 
 									   samples => $self->samples,
 									   genes => $self->genes,
 									  );
 
-  $deseq_input_writer->run;
-  if ( $deseq_input_writer->exit_c ) {
+  $ds_iwriter->run;
+
+=head
+
+  if ( $ds_iwriter->exit_c ) {
     print "Deseq input file is ready to run\n";
+    my $rscript_writer = Bio::RNASeq::DeSeq::Writer::RScript->new(
+								  deseq_ff => $self->deseq_file, 
+								 );
+    $rscript_writer->run;
   }
 
+=cut
 
 }
 
@@ -44,7 +54,9 @@ sub _set_deseq {
 
     my $rso =
       Bio::RNASeq::DeSeq::Parser::RNASeqOutput->new(
-        samples => $self->samples );
+						    samples => $self->samples,
+						    read_count_a_index => $self->read_count_a_index,
+						   );
 
     $rso->get_read_counts();
 

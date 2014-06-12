@@ -17,22 +17,25 @@ has 'help'        => ( is => 'rw', isa => 'Bool',     default  => 0 );
 
 has 'samples_file' => ( is => 'rw', isa => 'Str' );
 has 'deseq_file'   => ( is => 'rw', isa => 'Str' );
+has 'read_count_a_index'   => ( is => 'rw', isa => 'Int', default => 1 );
 
 sub BUILD {
 
     my ($self) = @_;
 
-    my ( $samples_file, $deseq_file, $help );
+    my ( $samples_file, $deseq_file, $expression_file_column, $help );
 
     GetOptionsFromArray(
-        $self->args,
-        's|samples_file=s' => \$samples_file,
-        'd|deseq_file=s'   => \$deseq_file,
-        'h|help'           => \$help,
+			$self->args,
+			's|samples_file=s' => \$samples_file,
+			'd|deseq_file=s'   => \$deseq_file,
+			'c|column:i' =>\$expression_file_column,
+			'h|help'           => \$help,
     );
 
     $self->samples_file($samples_file) if ( defined($samples_file) );
     $self->deseq_file($deseq_file)     if ( defined($deseq_file) );
+    $self->read_count_a_index($expression_file_column - 1)     if ( defined($expression_file_column) );
 
 }
 
@@ -50,9 +53,10 @@ Usage:
 USAGE
 
     my $deseq_setup = Bio::DeSeq->new(
-        samples_file => $self->samples_file,
-        deseq_file   => $self->deseq_file,
-    );
+				      samples_file => $self->samples_file,
+				      deseq_file   => $self->deseq_file,
+				      read_count_a_index => $self->read_count_a_index,
+				     );
 
     $deseq_setup->run;
    

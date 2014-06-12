@@ -10,8 +10,11 @@ package Bio::RNASeq::DeSeq::Parser::RNASeqOutput;
 use Moose;
 use List::MoreUtils qw(uniq);
 
-has 'samples' => ( is => 'rw', isa => 'HashRef' );
+has 'samples' => ( is => 'rw', isa => 'HashRef', required => 1 );
+has 'read_count_a_index'   => ( is => 'rw', isa => 'Int', required => 1 );
+
 has 'genes'   => ( is => 'rw', isa => 'ArrayRef' );
+has 'exit_c' => ( is => 'rw', isa => 'Bool', default => 1 );
 
 sub get_read_counts {
 
@@ -25,7 +28,7 @@ sub get_read_counts {
         while ( my $line = <$fh> ) {
             if ( $counter > 0 ) {
                 my @row = split( /,/, $line );
-                $self->samples->{$file}->{read_counts}->{ $row[1] } = $row[8];
+                $self->samples->{$file}->{read_counts}->{ $row[1] } = $row[$self->read_count_a_index];
                 push( @genes, $row[1] );
             }
             $counter++;
