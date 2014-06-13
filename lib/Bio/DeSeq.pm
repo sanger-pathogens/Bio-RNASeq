@@ -12,7 +12,7 @@ has 'read_count_a_index'   => ( is => 'rw', isa => 'Int', required => 1 );
 
 has 'samples'  => ( is => 'rw', isa => 'HashRef' );
 has 'genes'    => ( is => 'rw', isa => 'ArrayRef' );
-
+has 'rscript_name'   => ( is => 'rw', isa => 'Str' );
 
 sub run {
 
@@ -39,6 +39,9 @@ sub run {
   $rscript_writer->run;
 
   die "Couldn't write R script"   if ( ! $rscript_writer->exit_c );
+
+  $self->rscript_name( $rscript_writer->rscript_name );
+
 
 
 }

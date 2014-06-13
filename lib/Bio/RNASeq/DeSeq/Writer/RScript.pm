@@ -17,7 +17,7 @@ sub run {
   my ( $self ) = @_;
 
   $self->_set_rscript();
-  $self->_print_r_script();
+  $self->_create_r_script();
 
 }
 
@@ -47,7 +47,7 @@ sub _set_rscript {
 
 }
 
-sub _print_r_script {
+sub _create_r_script {
 
   my ( $self ) = @_;
 
