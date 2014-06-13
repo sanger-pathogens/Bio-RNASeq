@@ -16,7 +16,7 @@ sub run {
   my ( $self ) = @_;
 
   $self->_set_rscript();
-  #$self->_print_r_script();
+  $self->_print_r_script();
 
 }
 
@@ -24,15 +24,10 @@ sub _set_rscript {
 
   my ( $self ) = @_;
 
-  my $input_file = $self->deseq_ff;
-  my $analysis_result_file = $self->deseq_file . '_result_table.csv';
-  my $conditions = $self->r_conditions;
-  my $lib_types = $self->r_lib_types;
-
-  my $rscript = 'source("http://bioconductor.org/biocLite.R")' . "\n";
+  my $rscript = '#!/usr/bin/env Rscript' . "\n";
+  $rscript .= 'source("http://bioconductor.org/biocLite.R")' . "\n";
   $rscript .= 'biocLite("DESeq")' . "\n";
   $rscript .= 'library(DESeq)' . "\n";
-  #$rscript .= 'datafile = system.file( "'  '")' . "\n";
   $rscript .= 'thisCountTable = read.table( "' . $self->deseq_ff . '", header=TRUE, row.names=1 )' . "\n";
   $rscript .= 'thisDesign = data.frame(' . "\n";
   $rscript .= 'row.names = colnames(thisCountTable),' . "\n";
@@ -43,31 +38,26 @@ sub _set_rscript {
   $rscript .= 'condition = thisDesign$condition[ pairedSamples ]' . "\n";
   $rscript .= qq/cds = newCountDataSet( countTable, condition )\n/;
   $rscript .= qq/cds = estimateSizeFactors( cds )\n/;
-  $rscript .= qq/sizeFactors( cds )\n/;
   $rscript .= qq/cds = estimateDispersions(cds)\n/;
-  $rscript .= qq/str( fitInfo(cds) )\n/;
   $rscript .= qq/res = nbinomTest( cds, "untreated", "treated" )\n/;
   $rscript .= 'write.csv( res, file="' . $self->deseq_file . '_result_table.csv")' . "\n";
 
-
-
-=head
-
-
-
-head(res)
-"My_Pasilla_Analysis_Result_Table.csv")
-plotMA(res)
-hist(res$pval, breaks=100, col="skyblue", border = "slateblue", main="")
-
-
-END_OF_R_SCRIPT
-
-=cut
-
-  print "$rscript\n";
   $self->rscript($rscript);
 
+}
+
+sub _print_r_script {
+
+  my ( $self ) = @_;
+
+  open ( my $fh, '>', $self->deseq_file . '.r' );
+
+  $self->rscript_fh( $fh );
+
+  $self->rscript_fh->print( $self->rscript );
+
+  close( $self->rscript_fh );
+  
 }
 
 
