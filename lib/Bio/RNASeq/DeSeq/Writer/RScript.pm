@@ -33,7 +33,7 @@ sub _set_rscript {
   $rscript .= 'biocLite("DESeq")' . "\n";
   $rscript .= 'library(DESeq)' . "\n";
   #$rscript .= 'datafile = system.file( "'  '")' . "\n";
-  $rscript .= 'thisCountTable = read.table( ' . $self->deseq_ff . ', header=TRUE, row.names=1 )' . "\n";
+  $rscript .= 'thisCountTable = read.table( "' . $self->deseq_ff . '", header=TRUE, row.names=1 )' . "\n";
   $rscript .= 'thisDesign = data.frame(' . "\n";
   $rscript .= 'row.names = colnames(thisCountTable),' . "\n";
   $rscript .= 'condition = ' . $self->r_conditions . ",\n";
