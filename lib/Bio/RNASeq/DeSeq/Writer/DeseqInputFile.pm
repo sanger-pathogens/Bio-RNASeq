@@ -49,7 +49,8 @@ sub _write {
 
   for my $file ( sort keys $self->samples ) {
 
-    $file_content .= $self->samples->{$file}->{condition} . "\t";
+    $file_content .= $self->samples->{$file}->{condition}
+      . $self->samples->{$file}->{replicate} . "\t";
     $r_conditions .= q/"/ . $self->samples->{$file}->{condition} . q/",/;
     $r_lib_types .= q/"/ . $self->samples->{$file}->{lib_type} . q/",/;
 

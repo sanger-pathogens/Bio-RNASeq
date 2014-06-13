@@ -32,8 +32,8 @@ sub _set_rscript {
   my $rscript = 'source("http://bioconductor.org/biocLite.R")' . "\n";
   $rscript .= 'biocLite("DESeq")' . "\n";
   $rscript .= 'library(DESeq)' . "\n";
-  $rscript .= 'datafile = system.file( "' . $self->deseq_ff . '")' . "\n";
-  $rscript .= 'thisCountTable = read.table( datafile, header=TRUE, row.names=1 )' . "\n";
+  #$rscript .= 'datafile = system.file( "'  '")' . "\n";
+  $rscript .= 'thisCountTable = read.table( ' . $self->deseq_ff . ', header=TRUE, row.names=1 )' . "\n";
   $rscript .= 'thisDesign = data.frame(' . "\n";
   $rscript .= 'row.names = colnames(thisCountTable),' . "\n";
   $rscript .= 'condition = ' . $self->r_conditions . ",\n";
