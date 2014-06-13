@@ -23,9 +23,9 @@ system('touch empty_file');
 
 %scripts_and_expected_files = (
 
-    ' -s t/data/good_samples_file -d deseq_test' =>
+    ' -i t/data/good_samples_file -o deseq_test -c 9' =>
       [ 'empty_file', 'deseq_test' ],
-    ' -s t/data/bad_samples_file -d deseq_test' => ['empty_file'],
+    ' -i t/data/bad_samples_file -o deseq_test -c 9' => ['empty_file'],
 );
 
 mock_execute_script_and_check_output( $script_name,

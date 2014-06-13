@@ -4,6 +4,7 @@ use Moose;
 use Bio::RNASeq::DeSeq::Parser::SamplesFile;
 use Bio::RNASeq::DeSeq::Parser::RNASeqOutput;
 use Bio::RNASeq::DeSeq::Writer::DeseqInputFile;
+use Bio::RNASeq::DeSeq::Writer::RScript;
 
 has 'samples_file' => ( is => 'rw', isa => 'Str', required => 1 );
 has 'deseq_file'   => ( is => 'rw', isa => 'Str', required => 1 );
@@ -13,32 +14,30 @@ has 'samples'  => ( is => 'rw', isa => 'HashRef' );
 has 'genes'    => ( is => 'rw', isa => 'ArrayRef' );
 
 
-
 sub run {
 
   my ($self) = @_;
 
   $self->_set_deseq();
   
-  my $ds_iwriter = Bio::RNASeq::DeSeq::Writer::DeseqInputFile->new(
+  my $dsi_writer = Bio::RNASeq::DeSeq::Writer::DeseqInputFile->new(
 									   deseq_file => $self->deseq_file, 
 									   samples => $self->samples,
 									   genes => $self->genes,
 									  );
 
-  $ds_iwriter->run;
+  $dsi_writer->run;
 
-=head
-
-  if ( $ds_iwriter->exit_c ) {
+  if ( $dsi_writer->exit_c ) {
     print "Deseq input file is ready to run\n";
     my $rscript_writer = Bio::RNASeq::DeSeq::Writer::RScript->new(
-								  deseq_ff => $self->deseq_file, 
+								  deseq_file => $self->deseq_file,
+								  deseq_ff => $dsi_writer->deseq_ff, 
+								  r_conditions => $dsi_writer->r_conditions,
+								  r_lib_types => $dsi_writer->r_lib_types,
 								 );
     $rscript_writer->run;
   }
-
-=cut
 
 }
 

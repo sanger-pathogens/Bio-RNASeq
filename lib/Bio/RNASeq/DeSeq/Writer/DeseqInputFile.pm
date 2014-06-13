@@ -9,6 +9,8 @@ has 'genes'    => ( is => 'rw', isa => 'ArrayRef', required => 1 );
 
 has 'deseq_ff' => ( is => 'rw', isa => 'Str');
 has 'deseq_fh' => ( is => 'rw', isa => 'FileHandle' );
+has 'r_conditions' => ( is => 'rw', isa => 'Str' );
+has 'r_lib_types' => ( is => 'rw', isa => 'Str' );
 has 'exit_c' => ( is => 'rw', isa => 'Bool', default => 1 );
 
 sub run {
@@ -38,18 +40,28 @@ sub _write {
 
   my ($self) = @_;
 
+  my $r_conditions = q/c( /;
+  my $r_lib_types = q/c( /;
+
   open( my $fh, '>', $self->deseq_ff );
 
   my $file_content = "gene_id\t";
 
   for my $file ( sort keys $self->samples ) {
 
-    $file_content .= $self->samples->{$file}->{condition}
-      . $self->samples->{$file}->{replicate} . "\t";
+    $file_content .= $self->samples->{$file}->{condition} . "\t";
+    $r_conditions .= q/"/ . $self->samples->{$file}->{condition} . q/",/;
+    $r_lib_types .= q/"/ . $self->samples->{$file}->{lib_type} . q/",/;
 
   }
   $file_content =~ s/\t$//;
   $file_content .= "\n";
+  
+  $r_conditions =~ s/,$//;
+  $r_lib_types =~ s/,$//;
+
+  $r_conditions .= q/ )/;
+  $r_lib_types .= q/ )/;
 
   for my $gene ( @{ $self->genes } ) {
 
@@ -68,6 +80,8 @@ sub _write {
   print $fh "$file_content";
 
   $self->deseq_fh($fh);
+  $self->r_conditions($r_conditions);
+  $self->r_lib_types($r_lib_types);
 
 }
 

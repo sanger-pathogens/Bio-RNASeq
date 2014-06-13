@@ -27,8 +27,8 @@ sub BUILD {
 
     GetOptionsFromArray(
 			$self->args,
-			's|samples_file=s' => \$samples_file,
-			'd|deseq_file=s'   => \$deseq_file,
+			'i|input=s' => \$samples_file,
+			'o|output=s'   => \$deseq_file,
 			'c|column:i' =>\$expression_file_column,
 			'h|help'           => \$help,
     );
@@ -45,9 +45,14 @@ sub run {
     ( $self->samples_file && $self->deseq_file ) or die <<USAGE;
 	
 Usage:
-  -s|samples_file         <A file with the list of samples to analyse and their corresponding file of expression values in the format ("filepath","condition","replicate")>
-  -d|deseq_file           <The name of the file that will be used as the DeSeq analysis input. NOTE - The file will be writen wherever you're running deseq_run from>  
-  -h|help                  <print this message>
+
+  -i|input         <A file with the list of samples to analyse and their corresponding files of expression values in the format ("filepath","condition","replicate","lib_type"). lib_type defaults to paried-end if not specified on the samples file>
+
+  -o|output        <The name of the file that will be used as the DeSeq analysis input. NOTE - The file will be writen wherever you're running deseq_run from>
+
+  -c|column        <Optional: Number of the column you want to use as your read count from your expression files. Defaults to the second column in the expression file if no value is specified> 
+
+  -h|help          <print this message>
 
 
 USAGE

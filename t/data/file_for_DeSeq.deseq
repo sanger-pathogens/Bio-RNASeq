@@ -1,4 +1,4 @@
-gene_id	treated1	treated2	treated3	untreated1	untreated2
+gene_id	treated	treated	treated	untreated	untreated
 Armor	94	112	116	9286	9336
 Beast	260	273	300	421	2031
 Firestar	421	380	439	260	414
