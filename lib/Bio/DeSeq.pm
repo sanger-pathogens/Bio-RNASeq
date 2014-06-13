@@ -18,7 +18,7 @@ sub run {
 
   my ($self) = @_;
 
-  $self->_set_deseq();
+  $self->_prepare_deseq_setup();
   
   my $dsi_writer = Bio::RNASeq::DeSeq::Writer::DeseqInputFile->new(
 									   deseq_file => $self->deseq_file, 
@@ -28,20 +28,22 @@ sub run {
 
   $dsi_writer->run;
 
-  if ( $dsi_writer->exit_c ) {
-    print "Deseq input file is ready to run\n";
-    my $rscript_writer = Bio::RNASeq::DeSeq::Writer::RScript->new(
-								  deseq_file => $self->deseq_file,
-								  deseq_ff => $dsi_writer->deseq_ff, 
-								  r_conditions => $dsi_writer->r_conditions,
-								  r_lib_types => $dsi_writer->r_lib_types,
-								 );
-    $rscript_writer->run;
-  }
+  die "Couldn't write DeSeq input file"   if ( ! $dsi_writer->exit_c );
+
+  my $rscript_writer = Bio::RNASeq::DeSeq::Writer::RScript->new(
+								deseq_file => $self->deseq_file,
+								deseq_ff => $dsi_writer->deseq_ff, 
+								r_conditions => $dsi_writer->r_conditions,
+								r_lib_types => $dsi_writer->r_lib_types,
+							       );
+  $rscript_writer->run;
+
+  die "Couldn't write R script"   if ( ! $rscript_writer->exit_c );
+
 
 }
 
-sub _set_deseq {
+sub _prepare_deseq_setup {
 
     my ($self) = @_;
 

@@ -9,6 +9,7 @@ has 'r_lib_types' => ( is => 'rw', isa => 'Str', required => 1 );
 
 has 'rscript' => ( is => 'rw', isa => 'Str' );
 has 'rscript_fh' => ( is => 'rw', isa => 'FileHandle' );
+has 'rscript_name' => ( is => 'rw', isa => 'Str' );
 has 'exit_c' => ( is => 'rw', isa => 'Bool', default => 1 );
 
 sub run {
@@ -50,13 +51,20 @@ sub _print_r_script {
 
   my ( $self ) = @_;
 
-  open ( my $fh, '>', $self->deseq_file . '.r' );
+  my $rscript_name = $self->deseq_file . '.r';
+  open ( my $fh, '>',  $rscript_name);
 
   $self->rscript_fh( $fh );
 
   $self->rscript_fh->print( $self->rscript );
 
   close( $self->rscript_fh );
+
+  $self->rscript_name($rscript_name);
+
+  my $mode = "0775";
+  chmod oct($mode), $self->rscript_name;
+
   
 }
 
