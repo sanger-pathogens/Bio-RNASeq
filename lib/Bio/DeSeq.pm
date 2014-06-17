@@ -21,10 +21,10 @@ sub run {
   $self->_prepare_deseq_setup();
   
   my $dsi_writer = Bio::RNASeq::DeSeq::Writer::DeseqInputFile->new(
-									   deseq_file => $self->deseq_file, 
-									   samples => $self->samples,
-									   genes => $self->genes,
-									  );
+								   deseq_file => $self->deseq_file, 
+								   samples => $self->samples,
+								   genes => $self->genes,
+								  );
 
   $dsi_writer->run;
 

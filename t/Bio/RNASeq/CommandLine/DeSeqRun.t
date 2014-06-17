@@ -23,12 +23,19 @@ system('touch empty_file');
 
 %scripts_and_expected_files = (
 
-    ' -i t/data/good_samples_file -o deseq_test -c 9' =>
-      [ 'empty_file', 'deseq_test' ],
-    ' -i t/data/bad_samples_file -o deseq_test -c 9' => ['empty_file'],
+			       ' -i t/data/good_samples_file -o deseq_test -c 9' =>
+			       [
+				[ 'empty_file', 'empty_file' ],
+				[ 'deseq_test', 't/data/file_for_DeSeq.deseq' ],
+				[ 'deseq_test.r', 't/data/rscript.deseq' ]
+			       ],
+			       ' -i t/data/bad_samples_file -o deseq_test -c 9' => 
+			       [
+				['empty_file', 'empty_file']
+			       ],
 );
 
-mock_execute_script_and_check_output( $script_name,
+mock_execute_script_and_check_multiple_file_output( $script_name,
     \%scripts_and_expected_files );
 
 cleanup_files();
@@ -37,5 +44,6 @@ done_testing();
 sub cleanup_files {
 
     unlink('deseq_test');
+    unlink('deseq_test.r');
 
 }
