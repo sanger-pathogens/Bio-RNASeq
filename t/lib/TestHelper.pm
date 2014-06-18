@@ -166,8 +166,6 @@ sub mock_execute_script_and_check_multiple_file_output {
 		  my @ex_lines = <$ex_fh>;
 		  my @co_lines = <$co_fh>;
 
-		  print ('Lines expected: ', scalar @ex_lines, '\tActual: ', scalar @co_lines, "\n");
-
 		  ok(
 		     scalar @ex_lines == @co_lines,
 		     "Number of lines in both files"
