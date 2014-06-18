@@ -8,18 +8,34 @@ package Bio::RNASeq::DeSeq::Validate::RNASeqOutput;
 =cut
 
 use Moose;
+use List::MoreUtils qw(uniq);
+use Data::Dumper;
 
 has 'file_number'   => ( is => 'rw', isa => 'Int', required => 1 );
 has 'genes'   => ( is => 'rw', isa => 'ArrayRef', required => 1 );
 
 
-sub is_gene_universe_shared_by_all_files {
+sub is_gene_universe_in_all_files {
 
   my ( $self ) = @_;
 
-  map($hash{$_}++, @array);
-  print join(' ',map($_.':'.$hash{$_}, sort {$hash{$a}<=>$hash{$b}} keys %hash));
+  my %validation;
+  my @counts;
+  map($validation{$_}++, @{ $self->genes });
+  push(@counts, values %validation);
 
+  my @unique_counts = uniq(@counts);
+  if ( scalar @unique_counts == 1 ) {
+    if ( $unique_counts[0] == $self->file_number ) {
+      return 1;
+    }
+    else {
+      return 0;
+    }
+  }
+  else {
+    return 0;
+  }
 }
 
 

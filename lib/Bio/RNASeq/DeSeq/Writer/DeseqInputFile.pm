@@ -5,7 +5,7 @@ use Bio::RNASeq::DeSeq::Validate::DeseqOutputFilePath;
 
 has 'deseq_file' => ( is => 'rw', isa => 'Str', required => 1 );
 has 'samples'  => ( is => 'rw', isa => 'HashRef', required => 1 );
-has 'genes'    => ( is => 'rw', isa => 'ArrayRef', required => 1 );
+has 'gene_universe'    => ( is => 'rw', isa => 'ArrayRef', required => 1 );
 
 has 'deseq_ff' => ( is => 'rw', isa => 'Str');
 has 'deseq_fh' => ( is => 'rw', isa => 'FileHandle' );
@@ -64,7 +64,7 @@ sub _write {
   $r_conditions .= q/ )/;
   $r_lib_types .= q/ )/;
 
-  for my $gene ( @{ $self->genes } ) {
+  for my $gene ( @{ $self->gene_universe } ) {
 
     $file_content .= "$gene\t";
 
