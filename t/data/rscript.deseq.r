@@ -1,6 +1,4 @@
 #!/usr/bin/env Rscript
-source("http://bioconductor.org/biocLite.R")
-biocLite("DESeq")
 library(DESeq)
 thisCountTable = read.table( "./deseq_test", header=TRUE, row.names=1 )
 thisDesign = data.frame(
