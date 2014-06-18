@@ -21,6 +21,7 @@ sub submit_deseq_job {
   $bsub_command .= '"' . $self->rscript_path . '"';
   
   print "$bsub_command\n";
+  system($bsub_command) or die "system $bsub failed: $?";
 
 }
 
