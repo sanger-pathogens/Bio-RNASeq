@@ -20,8 +20,7 @@ sub submit_deseq_job {
   $bsub_command .= '.err -M5000 -R "select[mem>5000] rusage[mem=5000]" ';
   $bsub_command .= '"' . $self->rscript_path . '"';
   
-  print "$bsub_command\n";
-  system($bsub_command) or die "system $bsub_command failed: $?";
+  system($bsub_command) == 0 or die "system $bsub_command failed: $?";
 
 }
 
