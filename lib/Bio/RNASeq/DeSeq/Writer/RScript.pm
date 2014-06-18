@@ -26,8 +26,6 @@ sub _set_rscript {
   my ( $self ) = @_;
 
   my $rscript = '#!/usr/bin/env Rscript' . "\n";
-  $rscript .= 'source("http://bioconductor.org/biocLite.R")' . "\n";
-  $rscript .= 'biocLite("DESeq")' . "\n";
   $rscript .= 'library(DESeq)' . "\n";
   $rscript .= 'thisCountTable = read.table( "' . $self->deseq_ff . '", header=TRUE, row.names=1 )' . "\n";
   $rscript .= 'thisDesign = data.frame(' . "\n";
