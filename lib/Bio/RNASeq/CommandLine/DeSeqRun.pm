@@ -45,15 +45,25 @@ sub run {
     ( $self->samples_file && $self->deseq_file ) or die <<USAGE;
 	
 Usage:
-
-  -i|input         <A file with the list of samples to analyse and their corresponding files of expression values in the format ("filepath","condition","replicate","lib_type"). lib_type defaults to paried-end if not specified on the samples file>
-
-  -o|output        <The name of the file that will be used as the DeSeq analysis input. NOTE - The file will be writen wherever you're running deseq_run from>
-
-  -c|column        <Optional: Number of the column you want to use as your read count from your expression files. Defaults to the second column in the expression file if no value is specified> 
-
+  -i|input         <A file with the list of samples to analyse and their corresponding files of expression values
+                    in the format ("filepath","condition","replicate","lib_type"). lib_type defaults to paired-end
+                    if not specified on the samples file>
+  -o|output        <The name of the file that will be used as the DeSeq analysis input. NOTE - The file will be
+                    writen wherever you're running deseq_run from>
+  -c|column        <Optional: Number of the column you want to use as your read count from your expression files.
+                              Defaults to the second column in the expression file if no value is specified> 
   -h|help          <print this message>
 
+It makes use of the DESeq Bioconductor R package to carry out differential gene expression analysis.
+
+Simon Anders and Wolfgang Huber (2010): Differential expression
+  analysis for sequence count data. Genome Biology 11:R106
+
+It takes as input a file with the list of samples to analyse and their corresponding files of expression
+values in the format ("filepath","condition","replicate","lib_type"). It parses this file and accesses
+all the files defined in the first column and extracts a gene list and the read counts from them.
+It generates a matrix ready for DESeq analysis. It's final output will be a spreadsheet (.csv)
+that can be loaded subsequently into a DESeq session or can be visualised in Excel.
 
 USAGE
 
