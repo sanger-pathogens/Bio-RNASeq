@@ -54,9 +54,8 @@ It takes as input a file with the list of samples to analyse and their
 corresponding files of expression values in the format
 ("filepath","condition","replicate","lib_type"). It parses this file
 and accesses all the files defined in the first column and parses
-them. It generates a matrix ready for DESeq analysis. It's final
-output will be a spreadsheet (.csv) that can be loaded subsequently
-into a DESeq session or can be visualised in Excel.
+them. It generates a matrix ready for DESeq analysis.
+It's final output will be a spreadsheet (.csv) with several parameters that allow identification of the differentially expressed genes in the dataset. This can be loaded subsequently into a DESeq session or can be visualised in Excel.
 
   
 
