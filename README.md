@@ -85,53 +85,55 @@ USAGE
 
 **rna_seq_expression**
 
--s**|**sequence_file             - aligned BAM file
+-s **|** sequence_file             - aligned BAM file
 
--a**|**annotation_file           - annotation file (GFF)
+-a **|** annotation_file           - annotation file (GFF)
 
--p**|**protocol                  - standard|strand_specific
+-p **|** protocol                  - standard|strand_specific
 
--o**|**output_base_filename      - Optional: base name and location to use for output files
+-o **|** output_base_filename      - Optional: base name and location to use for output files
 
--q**|**minimum_mapping_quality   - Optional: minimum mapping quality
+-q **|** minimum_mapping_quality   - Optional: minimum mapping quality
 
--c**|**no_coverage_plots         - Optional: Dont create Artemis coverage plots
+-c **|** no_coverage_plots         - Optional: Dont create Artemis coverage plots
 
--i**|**intergenic_regions        - Optional: Include intergenic regions
+-i **|** intergenic_regions        - Optional: Include intergenic regions
 
--b**|**bitwise_flag              - Optional: Only include reads which pass filter
+-b **|** bitwise_flag              - Optional: Only include reads which pass filter
 
--h**|**help                      - print this message
-
-
-Merging GFF Files -
-
-gff3_concat
-
--i|input_dir        - full path to the directory containing the gff files to concatenate
--o|output_dir       - full path to the directory where the concatenated gff file will be written to
--t|tag              - the name to tag the concatenated gff file with
- -h|help             - print this message
+-h **|** help                      - print this message
 
 
-Quantifying Differential Gene Expression -
+###Merging GFF Files###
 
-differential_expression_with_deseq
+**gff3_concat**
 
-  -i|input         - A file with the list of samples to analyse and their corresponding files of expression values
-                    in the format ("filepath","condition","replicate","lib_type"). lib_type defaults to paired-end
-                    if not specified on the samples file
-  -o|output        - The name of the file that will be used as the DeSeq analysis input. NOTE - The file will be
-                    writen wherever you're running deseq_run from
-  -c|column        - Optional: Number of the column you want to use as your read count from your expression files.
-                              Defaults to the second column in the expression file if no value is specified>
-  -h|help           - print this message
+-i **|** input_dir        - full path to the directory containing the gff files to concatenate
+
+-o **|** output_dir       - full path to the directory where the concatenated gff file will be written to
+
+-t **|** tag              - the name to tag the concatenated gff file with
+
+-h **|** help             - print this message
+
+
+###Quantifying Differential Gene Expression###
+
+**differential_expression_with_deseq**
+
+-i **|** input         - A file with the list of samples to analyse and their corresponding files of expression values in the format ("filepath","condition","replicate","lib_type"). lib_type defaults to paired-end if not specified on the samples file
+
+-o **|** output        - The name of the file that will be used as the DeSeq analysis input. NOTE - The file will be writen wherever you're running deseq_run from
+
+-c **|** column        - Optional: Number of the column you want to use as your read count from your expression files. Defaults to the second column in the expression file if no value is specified
+
+-h **|** help           - print this message
   
 
 REQUIRES
 ========
 
-The samtools executable must be set in your path. You can download samtools here:
+The **samtools** executable must be set in your path. You can download samtools here:
 
 https://github.com/samtools
 
@@ -146,14 +148,14 @@ Once you've downloaded this, in a bash terminal, in the samtools v0.1.18 directo
 
 __NOTE:__ You don't need to run `make install`. You don't need to install the older version of samtools on your system.
 
-Requires the R programming language:
+Requires the **R** programming language:
 
 http://www.r-project.org/
 
-The R framework Bioconductor:
+The R framework **Bioconductor**:
 
 http://www.bioconductor.org/
 
-And the Bioconductor package DESeq:
+And the Bioconductor package **DESeq**:
 
 http://bioconductor.org/packages/release/bioc/html/DESeq.html
