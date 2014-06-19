@@ -2,6 +2,7 @@ package TestHelper;
 use Moose::Role;
 use Test::Most;
 use File::Slurp;
+use File::Compare;
 use Data::Dumper;
 
 sub mock_execute_script_and_check_output {
@@ -64,47 +65,13 @@ sub mock_execute_script_and_check_output {
                         "40th output line"
                     );
                     ok( scalar @lines == 40, "Total lines in output file" );
-                }
-            }
-            if ( $script_name eq 'Bio::RNASeq::CommandLine::DeSeqRun' ) {
-
-	      print "Actual -> $actual_output_file_name\tExpected -> $expected_output_file_name\n";
-	      if ( defined $expected_output_file_name ) {
-		print Dumper($scripts_and_expected_files);
-		ok(
-		   -e $expected_output_file_name,
-		   "Expected output file exists $expected_output_file_name"
-		  );
-
-		if ( $expected_output_file_name eq 'deseq_test' ) {
-		  my $file_to_compare = 't/data/file_for_DeSeq.deseq';
-		  open( my $ex_fh, '<', $expected_output_file_name );
-		  open( my $co_fh, '<', $file_to_compare );
-
-		  my @ex_lines = <$ex_fh>;
-		  my @co_lines = <$co_fh>;
-
-		  ok(
-		     scalar @ex_lines == @co_lines,
-		     "Number of lines in both files"
-		    );
-
-		  print "Blah $expected_output_file_name\n";
-		  for ( my $i = 0 ; $i < scalar @ex_lines ; $i++ ) {
-		    $ex_lines[$i] =~ s/\n//;
-		    $co_lines[$i] =~ s/\n//;
-		    ok( $ex_lines[$i] eq $co_lines[$i], "Line $i" );
 		  }
-		} if ( $expected_output_file_name eq 'deseq_test.r' ) {
-		  print "suck my balls\n";
-		}
 	      }
-            }
 	  }
 
         close STDOUT;
 	close STDERR;
-    }
+      }
 
 
 
@@ -159,32 +126,15 @@ sub mock_execute_script_and_check_multiple_file_output {
 
 		if ( $actual_output_file_name ne 'empty_file' ) {
 		  
-		  open( my $ex_fh, '<', $expected_output_file_name );
-		  open( my $co_fh, '<', $actual_output_file_name );
+		  ok(compare($actual_output_file_name,$expected_output_file_name) == 0, "Files are equal");
 
-		  my @ex_lines = <$ex_fh>;
-		  my @co_lines = <$co_fh>;
-
-		  
-
-		  ok(
-		     scalar @ex_lines == scalar @co_lines,
-		     "Number of lines in both files"
-		    );
-
-
-		  for ( my $i = 0 ; $i < scalar @ex_lines ; $i++ ) {
-		    $ex_lines[$i] =~ s/\n//;
-		    $co_lines[$i] =~ s/\n//;
-		    ok( $ex_lines[$i] eq $co_lines[$i], "Line $i" );
-		  }
 		}
 	      }
 	    }
 	  }
         close STDOUT;
 	close STDERR;
-    }
+      }
 
 
 
