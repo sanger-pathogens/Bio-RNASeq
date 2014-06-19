@@ -7,21 +7,21 @@ Differential Gene Expression.
 
 There are three components to this application.
 
-Calculating Read Counts -
+###Calculating Read Counts###
 
-The main component is accessed through the rna_seq_expression command.
+The main component is accessed through the **rna_seq_expression** command.
 This component is responsible for calculating expression values, in
 the form of RPKM (reads per kilobase per million) from any given BAM file.
 
-rna_seq_expression takes in an aligned sequence file (BAM) and a
+**rna_seq_expression** takes in an aligned sequence file (BAM) and a
 corresponding annotation file (GFF) and creates a spreadsheet (.csv) with expression values.
 The BAM must be aligned to the same reference that the annotation refers to and must be sorted.
 
 The RPKM values are calculated according to two different methodologies:
 
-1) total number of reads on the bam file that mapped to the reference genome;
+**1)** total number of reads on the bam file that mapped to the reference genome;
 
-2) total number of reads on the bam file that mapped to gene models in the reference genome.
+**2)** total number of reads on the bam file that mapped to gene models in the reference genome.
 
 The *expression.csv file will contain both datasets. 
 
@@ -29,28 +29,26 @@ Coverage plots compatible with Artemis will also be produced. You can download A
 
 http://www.sanger.ac.uk/resources/software/artemis/
 
-Merging GFF Files -
+###Merging GFF Files###
 
-rna_seq_expression can only handle a single GFF file. If the
+**rna_seq_expression** can only handle a single GFF file. If the
 annotation is broken up into several files, Bio-RNASeq provides a
 utility to merge the annotation into one single GFF3 compatible file.
 
-Access to this utility (the second component) is done through the gff3_concat command.
+Access to this utility (the second component) is done through the **gff3_concat** command.
 
 It takes as input the location of the GFF files to merge. The path
 where  the final concatenated GFF file should be written to. And a
 customised tag for the newly created GFF file.
 
-Quantifying Differential Gene Expression -
+###Quantifying Differential Gene Expression###
 
-Last but not least, the third component in this application suite
-allows analysis of differential gene expression directly from the
-output of rna_seq_expression or from a bespoke expression dataset.
+Last but not least, the third component in this application suite can be accessed through the **differential_expression_with_deseq** allows analysis of differential gene expression directly from the
+output of **rna_seq_expression** or from a bespoke expression dataset.
 It makes use of the DESeq Bioconductor R package to carry out differential gene
 expression analysis.
 
-Simon Anders and Wolfgang Huber (2010): Differential expression
-  analysis for sequence count data. Genome Biology 11:R106
+*Simon Anders and Wolfgang Huber (2010): Differential expression  analysis for sequence count data. Genome Biology 11:R106*
 
 It takes as input a file with the list of samples to analyse and their
 corresponding files of expression values in the format
@@ -65,48 +63,45 @@ into a DESeq session or can be visualised in Excel.
 SYNOPSIS
 ========
 
-Calculating Read Counts -
+###Calculating Read Counts###
 
-rna_seq_expression -s [filename.bam] -a [filename.gff] -p [standard|strand_specific] -o [./foobar]
+**rna_seq_expression** **-s** [filename.bam] **-a** [filename.gff] **-p** [standard|strand_specific] **-o** [./foobar]
 
-Merging GFF Files -
+###Merging GFF Files###
 
-gff3_concat -i [full path to directory of gff files] -o
-[full path to output directory] -t [name of the newly merged GFF file]
+**gff3_concat** **-i** [full path to directory of gff files] **-o** [full path to output directory] **-t** [name of the newly merged GFF file]
 
 
-Quantifying Differential Gene Expression -
+##Quantifying Differential Gene Expression##
 
-differential_expression_with_deseq -i
-[file containing list of files to analyse and key descriptions] -o
-[name to be used for all the output files generated] -c
-[Number of the read count column (1-1000)] 
+**differential_expression_with_deseq** **-i** [file containing list of files to analyse and key descriptions] **-o**
+[name to be used for all the output files generated] **-c** [Number of the read count column (1-1000)]
 
 
 USAGE
 =====
 
-Calculating Read Counts -
+###Calculating Read Counts###
 
-rna_seq_expression
+**rna_seq_expression**
 
--s|sequence_file             - aligned BAM file
+-s**|**sequence_file             - aligned BAM file
 
--a|annotation_file           - annotation file (GFF)
+-a**|**annotation_file           - annotation file (GFF)
 
--p|protocol                  - standard|strand_specific
+-p**|**protocol                  - standard|strand_specific
 
--o|output_base_filename      - Optional: base name and location to use for output files
+-o**|**output_base_filename      - Optional: base name and location to use for output files
 
--q|minimum_mapping_quality   - Optional: minimum mapping quality
+-q**|**minimum_mapping_quality   - Optional: minimum mapping quality
 
--c|no_coverage_plots         - Optional: Dont create Artemis coverage plots
+-c**|**no_coverage_plots         - Optional: Dont create Artemis coverage plots
 
--i|intergenic_regions        - Optional: Include intergenic regions
+-i**|**intergenic_regions        - Optional: Include intergenic regions
 
--b|bitwise_flag              - Optional: Only include reads which pass filter
+-b**|**bitwise_flag              - Optional: Only include reads which pass filter
 
--h|help                    - print this message
+-h**|**help                      - print this message
 
 
 Merging GFF Files -
