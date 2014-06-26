@@ -23,22 +23,20 @@ sub _result_rows {
         push(
             @denormalised_results,
             [
-                $result_set->{seq_id},
-                $result_set->{gene_id},
-                $result_set->{locus_tag},
-                $result_set->{feature_type},
-                $result_set->{mapped_reads_sense},
-                $result_set->{rpkm_sense},
-                $result_set->{mapped_reads_antisense},
-                $result_set->{rpkm_antisense},
-                $result_set->{total_mapped_reads},
-                $result_set->{total_rpkm},
-				$result_set->{mapped_reads_sense_gene_model},
-				$result_set->{rpkm_sense_gene_model},
-				$result_set->{mapped_reads_antisense_gene_model},
-				$result_set->{rpkm_antisense_gene_model},
-                $result_set->{total_mapped_reads_gene_model},
-                $result_set->{total_rpkm_gene_model},
+	     $result_set->{seq_id},
+	     $result_set->{gene_id},
+	     $result_set->{locus_tag},
+	     $result_set->{feature_type},
+	     $result_set->{total_mapped_reads},
+	     $result_set->{total_rpkm},
+	     $result_set->{total_mapped_reads_gene_model},
+	     $result_set->{total_rpkm_gene_model},
+	     $result_set->{mapped_reads_sense},
+	     $result_set->{rpkm_sense},
+	     $result_set->{rpkm_sense_gene_model},
+	     $result_set->{mapped_reads_antisense},
+	     $result_set->{rpkm_antisense},
+	     $result_set->{rpkm_antisense_gene_model},
             ]
         );
     }
@@ -46,50 +44,47 @@ sub _result_rows {
     return \@denormalised_results;
 }
 
+
 sub _header {
     my ($self) = @_;
     my @header;
 
     if ( $self->protocol eq "StrandSpecificProtocol" ) {
+
         @header = [
-            "Seq ID",
-            "GeneID",
-            "Locus Tag",
-            "Feature Type",
-            "Antisense Reads Mapping",
-            "Antisense RPKM",
-            "Sense Reads Mapping",
-            "Sense RPKM",
-            "Total Mapped Reads",
-            "Total RPKM",
-            "Antisense Reads Mapping to gene models",
-            "Antisense RPKM to gene models",
-            "Sense Reads Mapping to gene models",
-            "Sense RPKM to gene models",			
-            "Total Mapped Reads to gene models",
-            "Total RPKM to gene models"
-        ];
-    }
-    else {
+		   "Seq ID",
+		   "GeneID",
+		   "Locus Tag",
+		   "Feature Type",
+		   "Total Reads Mapping",
+		   "Total RPKM (Reads Mapped)",
+		   "Total Reads Mapping (Reads Mapped to Gene Models)",
+		   "Total RPKM (Reads Mapped to Gene Models)",
+		   "Antisense Reads Mapping",
+		   "Antisense RPKM (Reads Mapped)",
+		   "Antisense RPKM (Reads Mapped to Gene Models)",
+		   "Sense Reads Mapping",
+		   "Sense RPKM (Reads Mapped)",
+		   "Sense RPKM (Reads Mapped to Gene Models)",
+		  ];
+      } else {
         @header = [
-            "Seq ID",
-            "GeneID",
-            "Locus Tag",
-            "Feature Type",
-            "Sense Reads Mapping",
-            "Sense RPKM",
-            "Antisense Reads Mapping",
-            "Antisense RPKM",
-            "Total Mapped Reads",
-            "Total RPKM",
-            "Sense Reads Mapping to gene models",
-            "Sense RPKM to gene models",
-            "Antisense Reads Mapping to gene models",
-            "Antisense RPKM to gene models",
-            "Total Mapped Reads to gene models",
-            "Total RPKM to gene models",
-        ];
-    }
+		   "Seq ID",
+		   "GeneID",
+		   "Locus Tag",
+		   "Feature Type",
+		   "Total Reads Mapping",
+		   "Total RPKM (Reads Mapped)",
+		   "Total Reads Mapping (Reads Mapped to Gene Models)",
+		   "Total RPKM (Reads Mapped to Gene Models)",
+		   "Sense Reads Mapping",
+		   "Sense RPKM (Reads Mapped)",
+		   "Sense RPKM (Reads Mapped to Gene Models)",
+		   "Antisense Reads Mapping",
+		   "Antisense RPKM (Reads Mapped)",
+		   "Antisense RPKM (Reads Mapped to Gene Models)",
+		  ];
+      }
 
     return \@header;
 }
