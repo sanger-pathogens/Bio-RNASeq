@@ -23,17 +23,17 @@ system('touch empty_file');
 
 %scripts_and_expected_files = (
 
-			       ' -i t/data/good_samples_file -o deseq_test -c 9' =>
+			       ' -i t/data/good_samples_file -o deseq_test -c 5' =>
 			       [
 				[ 'empty_file', 'empty_file' ],
 				[ 'deseq_test', 't/data/file_for_DeSeq.deseq' ],
 				[ 'deseq_test.r', 't/data/rscript.deseq.r' ]
 			       ],
-			       ' -i t/data/bad_samples_file -o non_existent_file -c 9' => 
+			       ' -i t/data/bad_samples_file -o non_existent_file -c 5' => 
 			       [
 				['empty_file', 'empty_file']
 			       ],
-			       ' -i t/data/bad_samples_file -o deseq_test -c 9' => 
+			       ' -i t/data/bad_samples_file -o deseq_test -c 5' => 
 			       [
 				['empty_file', 'empty_file']
 			       ],
