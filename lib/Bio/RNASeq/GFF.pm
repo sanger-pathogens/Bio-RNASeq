@@ -38,7 +38,7 @@ sub _build_features
   while( my $raw_feature = $self->_gff_parser->next_feature())
   {
       last unless defined($raw_feature); # No more features
-      next if !($raw_feature->primary_tag eq 'CDS' ||   $raw_feature->primary_tag eq 'polypeptide');
+      next if !($raw_feature->primary_tag eq 'CDS' ||   $raw_feature->primary_tag eq 'polypeptide' ||   $raw_feature->primary_tag eq 'gene');
 
       my $feature_object = Bio::RNASeq::Feature->new(raw_feature => $raw_feature);
 
