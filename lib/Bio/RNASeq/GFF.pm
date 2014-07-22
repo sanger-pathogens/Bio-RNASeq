@@ -16,7 +16,7 @@ Represents a GFF from a GFF file
 use Moose;
 use Bio::Tools::NonStandardGFF;
 use Bio::RNASeq::Feature;
-use Data::Dumper;
+#use Data::Dumper;
 
 has 'filename'          => ( is => 'rw', isa => 'Str',             required   => 1 );
 has 'features'          => ( is => 'rw', isa => 'HashRef',         lazy_build => 1 );
@@ -26,6 +26,7 @@ has 'sequence_lengths' => ( is => 'rw', isa => 'HashRef',         lazy_build => 
 sub _build__gff_parser
 {
   my ($self) = @_;
+#  print "in _build__gff_parser\n";
   Bio::Tools::NonStandardGFF->new(-gff_version => 3, -file => $self->filename);
 }
 
@@ -38,6 +39,8 @@ sub _build_features
 
   while( my $raw_feature = $self->_gff_parser->next_feature())
   {
+
+    #print Dumper $raw_feature;
       last unless defined($raw_feature); # No more features
 
       next if !($raw_feature->primary_tag eq 'CDS' ||   $raw_feature->primary_tag eq 'polypeptide' ||   $raw_feature->primary_tag eq 'intron');

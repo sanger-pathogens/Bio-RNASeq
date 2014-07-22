@@ -9,6 +9,7 @@ BEGIN { unshift( @INC, './lib' ) }
 
 BEGIN {
     use Test::Most;
+    use Test::Exception;
     use_ok('Bio::RNASeq');
 }
 
@@ -90,6 +91,29 @@ for my $protocol ( keys %protocols ) {
         }
     }
 }
+
+$sequence_filename   = "t/data/647029.pe.markdup.bam";
+$annotation_filename = 't/data/Citrobacter_rodentium_ICC168_v1_test.gff';
+for my $protocol ( keys %protocols ) {
+
+  my $tmp_dir =
+    File::Temp->newdir( DIR => File::Spec->curdir(), CLEANUP => 1 );
+    my $output_base_filename = $tmp_dir . '/_test';
+
+  my @output_filename_extensions =
+    qw( .corrected.bam .corrected.bam.bai .expression.csv );
+
+  dies_ok { my $expression_results = Bio::RNASeq->new(
+						      sequence_filename    => $sequence_filename,
+						      annotation_filename  => $annotation_filename,
+						      filters              => \%filters,
+						      protocol             => $protocols{$protocol},
+						      output_base_filename => $output_base_filename,
+						     ); 
+	  } "BAM file doesn't correspond to GFF file. Expecting to die";
+}
+#$expression_results->output_spreadsheet();
+
 
 done_testing();
 
