@@ -69,13 +69,13 @@ sub mock_execute_script_and_check_output {
 	      }
 	  }
 
-        close STDOUT;
-	close STDERR;
+        #close STDOUT;
+	#close STDERR;
       }
 
 
 
-    # Restore stdout.
+    ## Restore stdout.
     open STDOUT, '>&OLDOUT' or die "Can't restore stdout: $!";
     open STDERR, '>&OLDERR' or die "Can't restore stderr: $!";
      

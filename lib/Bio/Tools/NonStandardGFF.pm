@@ -401,6 +401,7 @@ sub next_feature {
     $self->from_gff_string($feat, $gff_string);
 
     if ($self->features_attached_to_seqs) {
+      print('SEQ_ID:',$feat->seq_id,"\tFEATURE:",$feat,"\n");
         push(@{$self->_feature_idx_by_seq_id->{$feat->seq_id}},
              $feat);
     }

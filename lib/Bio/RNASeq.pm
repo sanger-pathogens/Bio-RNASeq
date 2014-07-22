@@ -43,10 +43,8 @@ has 'minimum_intergenic_size' => ( is => 'rw', isa => 'Int',  default => 10 );
 has 'total_mapped_reads_gene_model' =>
   ( is => 'rw', isa => 'Int', lazy => 1, default => 0 );
 
-#has '_total_mapped_reads' =>
-# ( is => 'rw', isa => 'Bio::RNASeq::BitWise', lazy_build => 1 );
-has '_annotation_file' =>
-  ( is => 'rw', isa => 'Bio::RNASeq::GFF', lazy_build => 1 );
+has '_annotation_file' =>  ( is => 'rw', isa => 'Bio::RNASeq::GFF', lazy_build => 1 );
+has 'valid_run' => (is => 'rw', isa => 'Bool', builder => '_build__sequence_file' );
 has '_results_spreadsheet' => (
     is         => 'rw',
     isa        => 'Bio::RNASeq::ExpressionStatsSpreadsheet',
@@ -56,21 +54,22 @@ has '_expression_results' => ( is => 'rw', isa => 'ArrayRef', lazy_build => 1 );
 
 sub _build__sequence_file {
     my ($self) = @_;
+
     my $validator = Bio::RNASeq::ValidateInputs->new(
         sequence_filename   => $self->sequence_filename,
         annotation_filename => $self->annotation_filename,
     );
 
-    if ( $validator->are_input_files_valid() == 0 ) {
+    unless ( $validator->are_input_files_valid() ) {
+
         Bio::RNASeq::Exceptions::FailedToOpenAlignmentSlice->throw(
-                error => "Input files invalid: "
-              . $self->sequence_filename . " "
-              . $self->annotation_filename    #!/usr/bin/env perl
+                error => "Run is invalid. Read names in "
+              . $self->sequence_filename . " don't match the sequence region names in "
+              . $self->annotation_filename
               . "\n"
         );
+	die;
     }
-
-    #Bio::RNASeq::SequenceFile->new( filename => $self->sequence_filename );
 }
 
 sub _build__annotation_file {
@@ -96,11 +95,11 @@ sub _build__expression_results {
     my ($self) = @_;
 
     my $bitWise = Bio::RNASeq::BitWise->new(
-        filename        => $self->sequence_filename,
-        output_filename => $self->_corrected_sequence_filename,
-        protocol        => $self->protocol,
-        samtools_exec   => $self->samtools_exec
-    );
+					    filename        => $self->sequence_filename,
+					    output_filename => $self->_corrected_sequence_filename,
+					    protocol        => $self->protocol,
+					    samtools_exec   => $self->samtools_exec
+					   );
     $bitWise->update_bitwise_flags();
     my $total_mapped_reads = $bitWise->_total_mapped_reads;
 
@@ -108,65 +107,64 @@ sub _build__expression_results {
     my @expression_results_gene_model = ();
 
     for my $feature_id ( keys %{ $self->_annotation_file->features } ) {
-        my $alignment_slice1 = Bio::RNASeq::AlignmentSliceRPKM->new(
-            filename           => $self->_corrected_sequence_filename,
-            total_mapped_reads => $total_mapped_reads,
-            feature       => $self->_annotation_file->features->{$feature_id},
-            filters       => $self->filters,
-            protocol      => $self->protocol,
-            samtools_exec => $self->samtools_exec,
-            window_margin => $self->window_margin,
-        );
-        my $alignment_slice_results = $alignment_slice1->rpkm_values;
+      my $alignment_slice1 = Bio::RNASeq::AlignmentSliceRPKM->new(
+								  filename           => $self->_corrected_sequence_filename,
+								  total_mapped_reads => $total_mapped_reads,
+								  feature       => $self->_annotation_file->features->{$feature_id},
+								  filters       => $self->filters,
+								  protocol      => $self->protocol,
+								  samtools_exec => $self->samtools_exec,
+								  window_margin => $self->window_margin,
+								 );
+      my $alignment_slice_results = $alignment_slice1->rpkm_values;
 
-        $alignment_slice_results->{gene_id} = $feature_id;
-        $alignment_slice_results->{seq_id} =
-          $self->_annotation_file->features->{$feature_id}->seq_id;
-        $alignment_slice_results->{locus_tag} =
-          $self->_annotation_file->features->{$feature_id}->locus_tag;
-        $alignment_slice_results->{feature_type} =
-          $self->_annotation_file->features->{$feature_id}->feature_type;
-        push( @expression_results, $alignment_slice_results );
+      $alignment_slice_results->{gene_id} = $feature_id;
+      $alignment_slice_results->{seq_id} =
+	$self->_annotation_file->features->{$feature_id}->seq_id;
+      $alignment_slice_results->{locus_tag} =
+	$self->_annotation_file->features->{$feature_id}->locus_tag;
+      $alignment_slice_results->{feature_type} =
+	$self->_annotation_file->features->{$feature_id}->feature_type;
+      push( @expression_results, $alignment_slice_results );
     }
 
     if ( defined( $self->intergenic_regions )
-        && $self->intergenic_regions == 1 )
-    {
-        $self->_calculate_values_for_intergenic_regions( \@expression_results,
-            $total_mapped_reads );
+	 && $self->intergenic_regions == 1 ) {
+      $self->_calculate_values_for_intergenic_regions( \@expression_results,
+						       $total_mapped_reads );
     }
 
     $self->_total_mapped_reads_gene_model_method( \@expression_results );
 
     for my $feature_id ( keys %{ $self->_annotation_file->features } ) {
-        my $alignment_slice = Bio::RNASeq::AlignmentSliceRPKMGeneModel->new(
-            filename           => $self->_corrected_sequence_filename,
-            total_mapped_reads => $total_mapped_reads,
-            total_mapped_reads_gene_model =>
-              $self->total_mapped_reads_gene_model,
-            feature       => $self->_annotation_file->features->{$feature_id},
-            filters       => $self->filters,
-            protocol      => $self->protocol,
-            samtools_exec => $self->samtools_exec,
-            window_margin => $self->window_margin,
-        );
-        my $alignment_slice_results_gene_model = $alignment_slice->rpkm_values;
-        $alignment_slice_results_gene_model->{total_mapped_reads_gene_model} =
-          $self->total_mapped_reads_gene_model;
-        $alignment_slice_results_gene_model->{gene_id} = $feature_id;
-        $alignment_slice_results_gene_model->{seq_id} =
-          $self->_annotation_file->features->{$feature_id}->seq_id;
-        $alignment_slice_results_gene_model->{locus_tag} =
-          $self->_annotation_file->features->{$feature_id}->locus_tag;
-        $alignment_slice_results_gene_model->{feature_type} =
-          $self->_annotation_file->features->{$feature_id}->feature_type;
+      my $alignment_slice = Bio::RNASeq::AlignmentSliceRPKMGeneModel->new(
+									  filename           => $self->_corrected_sequence_filename,
+									  total_mapped_reads => $total_mapped_reads,
+									  total_mapped_reads_gene_model =>
+									  $self->total_mapped_reads_gene_model,
+									  feature       => $self->_annotation_file->features->{$feature_id},
+									  filters       => $self->filters,
+									  protocol      => $self->protocol,
+									  samtools_exec => $self->samtools_exec,
+									  window_margin => $self->window_margin,
+									 );
+      my $alignment_slice_results_gene_model = $alignment_slice->rpkm_values;
+      $alignment_slice_results_gene_model->{total_mapped_reads_gene_model} =
+	$self->total_mapped_reads_gene_model;
+      $alignment_slice_results_gene_model->{gene_id} = $feature_id;
+      $alignment_slice_results_gene_model->{seq_id} =
+	$self->_annotation_file->features->{$feature_id}->seq_id;
+      $alignment_slice_results_gene_model->{locus_tag} =
+	$self->_annotation_file->features->{$feature_id}->locus_tag;
+      $alignment_slice_results_gene_model->{feature_type} =
+	$self->_annotation_file->features->{$feature_id}->feature_type;
 
-        push( @expression_results_gene_model,
-            $alignment_slice_results_gene_model );
+      push( @expression_results_gene_model,
+	    $alignment_slice_results_gene_model );
     }
 
     $self->_merge_expression_results( \@expression_results,
-        \@expression_results_gene_model );
+				      \@expression_results_gene_model );
 
     return \@expression_results;
 }
