@@ -288,14 +288,14 @@ sub parseExpressionResultsFile {
     my $column_index = 0;
     for my $header (@$headers) {
 
-        if ( $header =~ /$set_of_expected_results->[1]/ ) {
+        if ( $header eq $set_of_expected_results->[1] ) {
             last;
         }
         $column_index++;
     }
 
     while ( my $row = $csv->getline($fh) ) {
-        unless ( $row->[1] =~ /$set_of_expected_results->[0]/ ) {
+        unless ( $row->[1] eq $set_of_expected_results->[0] ) {
             next;
         }
         is( $row->[$column_index], $set_of_expected_results->[2],
