@@ -43,7 +43,7 @@ sub _build_features
     #print Dumper $raw_feature;
       last unless defined($raw_feature); # No more features
 
-      next if !($raw_feature->primary_tag eq 'CDS' ||   $raw_feature->primary_tag eq 'polypeptide' ||   $raw_feature->primary_tag eq 'intron');
+      next if !($raw_feature->primary_tag eq 'CDS' ||   $raw_feature->primary_tag eq 'gene' ||   $raw_feature->primary_tag eq 'intron');
 
       my $feature_object = Bio::RNASeq::Feature->new(raw_feature => $raw_feature);
 
