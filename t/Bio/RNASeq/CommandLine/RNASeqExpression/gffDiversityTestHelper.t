@@ -22,34 +22,46 @@ my @expected_results_library;
 #1 read mapping in the middle of CDS/gene
 #For Chado gff's we should test for the gene feature types and not for the CDS feature types
 @expected_results_library = (
-			['GreatCurl.1:exon:1', 'Total Reads Mapping', 1],
-			['GreatCurl.1:exon:1', 'Sense Reads Mapping', 1],
-			['GreatCurl.1:exon:1', 'Antisense Reads Mapping', 0],
-			['GreatCurl.3:exon:3', 'Total Reads Mapping', 0],
-			['GreatCurl.3:exon:3', 'Sense Reads Mapping', 0],
-			['GreatCurl.3:exon:3', 'Antisense Reads Mapping', 0],
+			['GreatCurl.1:exon:1', 'Total Reads Mapping', 1,'Chado GFF one read mapping'],
+			['GreatCurl.1:exon:1', 'Sense Reads Mapping', 1,'Chado GFF one read mapping'],
+			['GreatCurl.1:exon:1', 'Antisense Reads Mapping', 0,'Chado GFF one read mapping'],
+			['GreatCurl.3:exon:3', 'Total Reads Mapping', 0,'Chado GFF one read mapping'],
+			['GreatCurl.3:exon:3', 'Sense Reads Mapping', 0,'Chado GFF one read mapping'],
+			['GreatCurl.3:exon:3', 'Antisense Reads Mapping', 0,'Chado GFF one read mapping'],
+		       );
+
+run_rna_seq('t/data/gffs_sams/one_read_mapping_one_gene_chado.sam','t/data/gffs_sams/multipurpose_3_cds_chado.gff', \@expected_results_library);
+
+#Chado total mapped reads based on gene feture type
+@expected_results_library = (
+			['GreatCurl', 'Total Reads Mapping', 1,'Chado GFF gene feature one read mapping'],
+			['GreatCurl', 'Sense Reads Mapping', 1,'Chado GFF gene feature one read mapping'],
+			['GreatCurl', 'Antisense Reads Mapping', 0,'Chado GFF gene feature one read mapping'],
+			['SplitHair', 'Total Reads Mapping', 0,'Chado GFF gene feature one read mapping'],
+			['SplitHair', 'Sense Reads Mapping', 0,'Chado GFF gene feature one read mapping'],
+			['SplitHair', 'Antisense Reads Mapping', 0,'Chado GFF gene feature one read mapping'],
 		       );
 
 run_rna_seq('t/data/gffs_sams/one_read_mapping_one_gene_chado.sam','t/data/gffs_sams/multipurpose_3_cds_chado.gff', \@expected_results_library);
 
 @expected_results_library = (
-			['Clostridium_difficile_630_v1.9_00001', 'Total Reads Mapping', 1],
-			['Clostridium_difficile_630_v1.9_00001', 'Sense Reads Mapping', 1],
-			['Clostridium_difficile_630_v1.9_00001', 'Antisense Reads Mapping', 0],
-			['Clostridium_difficile_630_v1.9_00002', 'Total Reads Mapping', 0],
-			['Clostridium_difficile_630_v1.9_00002', 'Sense Reads Mapping', 0],
-			['Clostridium_difficile_630_v1.9_00002', 'Antisense Reads Mapping', 0],
+			['Clostridium_difficile_630_v1.9_00001', 'Total Reads Mapping', 1,'Annot GFF one read mapping'],
+			['Clostridium_difficile_630_v1.9_00001', 'Sense Reads Mapping', 1,'Annot GFF one read mapping'],
+			['Clostridium_difficile_630_v1.9_00001', 'Antisense Reads Mapping', 0,'Annot GFF one read mapping'],
+			['Clostridium_difficile_630_v1.9_00002', 'Total Reads Mapping', 0,'Annot GFF one read mapping'],
+			['Clostridium_difficile_630_v1.9_00002', 'Sense Reads Mapping', 0,'Annot GFF one read mapping'],
+			['Clostridium_difficile_630_v1.9_00002', 'Antisense Reads Mapping', 0,'Annot GFF one read mapping'],
 		       );
 
 run_rna_seq('t/data/gffs_sams/one_read_mapping_one_gene_annot.sam','t/data/gffs_sams/multipurpose_3_cds_annot.gff', \@expected_results_library);
 
 @expected_results_library = (
-			['DUMMY_EMBL_CHR.1', 'Total Reads Mapping', 1],
-			['DUMMY_EMBL_CHR.1', 'Sense Reads Mapping', 1],
-			['DUMMY_EMBL_CHR.1', 'Antisense Reads Mapping', 0],
-			['DUMMY_EMBL_CHR.5', 'Total Reads Mapping', 0],
-			['DUMMY_EMBL_CHR.5', 'Sense Reads Mapping', 0],
-			['DUMMY_EMBL_CHR.5', 'Antisense Reads Mapping', 0],
+			['DUMMY_EMBL_CHR.1', 'Total Reads Mapping', 1,'EMBL GFF one read mapping'],
+			['DUMMY_EMBL_CHR.1', 'Sense Reads Mapping', 1,'EMBL GFF one read mapping'],
+			['DUMMY_EMBL_CHR.1', 'Antisense Reads Mapping', 0,'EMBL GFF one read mapping'],
+			['DUMMY_EMBL_CHR.5', 'Total Reads Mapping', 0,'EMBL GFF one read mapping'],
+			['DUMMY_EMBL_CHR.5', 'Sense Reads Mapping', 0,'EMBL GFF one read mapping'],
+			['DUMMY_EMBL_CHR.5', 'Antisense Reads Mapping', 0,'EMBL GFF one read mapping'],
 		       );
 
 run_rna_seq('t/data/gffs_sams/one_read_mapping_one_gene_embl.sam','t/data/gffs_sams/multipurpose_3_cds_embl.gff', \@expected_results_library);
@@ -58,12 +70,12 @@ run_rna_seq('t/data/gffs_sams/one_read_mapping_one_gene_embl.sam','t/data/gffs_s
 
 #Failing firstly because it doesn't hadle gene feature type properly. If ran with the CDS feature type IDs is as a similar result to the above tests.
 @expected_results_library = (
-			['ENSMUSG00000094722', 'Total Reads Mapping', 1],
-			['ENSMUSG00000094722', 'Sense Reads Mapping', 1],
-			['ENSMUSG00000094722', 'Antisense Reads Mapping', 0],
-			['ENSMUSG00000094723;', 'Total Reads Mapping', 0],
-			['ENSMUSG00000094723;', 'Sense Reads Mapping', 0],
-			['ENSMUSG00000094723;', 'Antisense Reads Mapping', 0],
+			['ENSMUSG00000094722', 'Total Reads Mapping', 1,'Mammal GFF one read mapping'],
+			['ENSMUSG00000094722', 'Sense Reads Mapping', 1,'Mammal GFF one read mapping'],
+			['ENSMUSG00000094722', 'Antisense Reads Mapping', 0,'Mammal GFF one read mapping'],
+			['ENSMUSG00000094723;', 'Total Reads Mapping', 0,'Mammal GFF one read mapping'],
+			['ENSMUSG00000094723;', 'Sense Reads Mapping', 0,'Mammal GFF one read mapping'],
+			['ENSMUSG00000094723;', 'Antisense Reads Mapping', 0,'Mammal GFF one read mapping'],
 		       );
 
 run_rna_seq('t/data/gffs_sams/one_read_mapping_one_gene_mammal.sam','t/data/gffs_sams/multipurpose_3_genes_mammal_gtf2gff3.gff', \@expected_results_library);
@@ -73,34 +85,34 @@ run_rna_seq('t/data/gffs_sams/one_read_mapping_one_gene_mammal.sam','t/data/gffs
 #3 Reads mapping - 1 partly flanking to the left, 1 straight inside, 1 slightly flanking to the right
 #For Chado gff's we should test for the gene feature types and not for the CDS feature types
 @expected_results_library = (
-			['GreatCurl.1:exon:1', 'Total Reads Mapping', 3],
-			['GreatCurl.1:exon:1', 'Sense Reads Mapping', 3],
-			['GreatCurl.1:exon:1', 'Antisense Reads Mapping', 0],
-			['GreatCurl.3:exon:3', 'Total Reads Mapping', 0],
-			['GreatCurl.3:exon:3', 'Sense Reads Mapping', 0],
-			['GreatCurl.3:exon:3', 'Antisense Reads Mapping', 0],
+			['GreatCurl.1:exon:1', 'Total Reads Mapping', 3,'Chado GFF 3 reads mapping flanking'],
+			['GreatCurl.1:exon:1', 'Sense Reads Mapping', 3,'Chado GFF 3 reads mapping flanking'],
+			['GreatCurl.1:exon:1', 'Antisense Reads Mapping', 0,'Chado GFF 3 reads mapping flanking'],
+			['GreatCurl.3:exon:3', 'Total Reads Mapping', 0,'Chado GFF 3 reads mapping flanking'],
+			['GreatCurl.3:exon:3', 'Sense Reads Mapping', 0,'Chado GFF 3 reads mapping flanking'],
+			['GreatCurl.3:exon:3', 'Antisense Reads Mapping', 0,'Chado GFF 3 reads mapping flanking'],
 		       );
 
 run_rna_seq('t/data/gffs_sams/mapping_to_one_feature_chado.sam','t/data/gffs_sams/multipurpose_3_cds_chado.gff', \@expected_results_library);
 
 @expected_results_library = (
-			['Clostridium_difficile_630_v1.9_00001', 'Total Reads Mapping', 3],
-			['Clostridium_difficile_630_v1.9_00001', 'Sense Reads Mapping', 3],
-			['Clostridium_difficile_630_v1.9_00001', 'Antisense Reads Mapping', 0],
-			['Clostridium_difficile_630_v1.9_00002', 'Total Reads Mapping', 0],
-			['Clostridium_difficile_630_v1.9_00002', 'Sense Reads Mapping', 0],
-			['Clostridium_difficile_630_v1.9_00002', 'Antisense Reads Mapping', 0],
+			['Clostridium_difficile_630_v1.9_00001', 'Total Reads Mapping', 3,'Annot GFF 3 reads mapping flanking'],
+			['Clostridium_difficile_630_v1.9_00001', 'Sense Reads Mapping', 3,'Annot GFF 3 reads mapping flanking'],
+			['Clostridium_difficile_630_v1.9_00001', 'Antisense Reads Mapping', 0,'Annot GFF 3 reads mapping flanking'],
+			['Clostridium_difficile_630_v1.9_00002', 'Total Reads Mapping', 0,'Annot GFF 3 reads mapping flanking'],
+			['Clostridium_difficile_630_v1.9_00002', 'Sense Reads Mapping', 0,'Annot GFF 3 reads mapping flanking'],
+			['Clostridium_difficile_630_v1.9_00002', 'Antisense Reads Mapping', 0,'Annot GFF 3 reads mapping flanking'],
 		       );
 
 run_rna_seq('t/data/gffs_sams/mapping_to_one_feature_annot.sam','t/data/gffs_sams/multipurpose_3_cds_annot.gff', \@expected_results_library);
 
 @expected_results_library = (
-			['DUMMY_EMBL_CHR.5', 'Total Reads Mapping', 3],
-			['DUMMY_EMBL_CHR.5', 'Sense Reads Mapping', 3],
-			['DUMMY_EMBL_CHR.5', 'Antisense Reads Mapping', 0],
-			['DUMMY_EMBL_CHR.1', 'Total Reads Mapping', 0],
-			['DUMMY_EMBL_CHR.1', 'Sense Reads Mapping', 0],
-			['DUMMY_EMBL_CHR.1', 'Antisense Reads Mapping', 0],
+			['DUMMY_EMBL_CHR.5', 'Total Reads Mapping', 3,'EMBL GFF 3 reads mapping flanking'],
+			['DUMMY_EMBL_CHR.5', 'Sense Reads Mapping', 3,'EMBL GFF 3 reads mapping flanking'],
+			['DUMMY_EMBL_CHR.5', 'Antisense Reads Mapping', 0,'EMBL GFF 3 reads mapping flanking'],
+			['DUMMY_EMBL_CHR.1', 'Total Reads Mapping', 0,'EMBL GFF 3 reads mapping flanking'],
+			['DUMMY_EMBL_CHR.1', 'Sense Reads Mapping', 0,'EMBL GFF 3 reads mapping flanking'],
+			['DUMMY_EMBL_CHR.1', 'Antisense Reads Mapping', 0,'EMBL GFF 3 reads mapping flanking'],
 		       );
 
 run_rna_seq('t/data/gffs_sams/one_read_mapping_one_gene_embl.sam','t/data/gffs_sams/multipurpose_3_cds_embl.gff', \@expected_results_library);
@@ -110,34 +122,34 @@ run_rna_seq('t/data/gffs_sams/one_read_mapping_one_gene_embl.sam','t/data/gffs_s
 #No reads mapping  - Tests will pass, simply because the code isn't working properly and is not generating any read counts. 
 #For Chado gff's we should test for the gene feature types and not for the CDS feature types
 @expected_results_library = (
-			['GreatCurl.1:exon:1', 'Total Reads Mapping', 0],
-			['GreatCurl.1:exon:1', 'Sense Reads Mapping', 0],
-			['GreatCurl.1:exon:1', 'Antisense Reads Mapping', 0],
-			['GreatCurl.3:exon:3', 'Total Reads Mapping', 0],
-			['GreatCurl.3:exon:3', 'Sense Reads Mapping', 0],
-			['GreatCurl.3:exon:3', 'Antisense Reads Mapping', 0],
+			['GreatCurl.1:exon:1', 'Total Reads Mapping', 0,'Chado GFF no reads mapping flanking'],
+			['GreatCurl.1:exon:1', 'Sense Reads Mapping', 0,'Chado GFF no reads mapping flanking'],
+			['GreatCurl.1:exon:1', 'Antisense Reads Mapping', 0,'Chado GFF no reads mapping flanking'],
+			['GreatCurl.3:exon:3', 'Total Reads Mapping', 0,'Chado GFF no reads mapping flanking'],
+			['GreatCurl.3:exon:3', 'Sense Reads Mapping', 0,'Chado GFF no reads mapping flanking'],
+			['GreatCurl.3:exon:3', 'Antisense Reads Mapping', 0,'Chado GFF no reads mapping flanking'],
 		       );
 
 run_rna_seq('t/data/gffs_sams/nothing_to_map_chado.sam','t/data/gffs_sams/multipurpose_3_cds_chado.gff', \@expected_results_library);
 
 @expected_results_library = (
-			['Clostridium_difficile_630_v1.9_00001', 'Total Reads Mapping', 0],
-			['Clostridium_difficile_630_v1.9_00001', 'Sense Reads Mapping', 0],
-			['Clostridium_difficile_630_v1.9_00001', 'Antisense Reads Mapping', 0],
-			['Clostridium_difficile_630_v1.9_00002', 'Total Reads Mapping', 0],
-			['Clostridium_difficile_630_v1.9_00002', 'Sense Reads Mapping', 0],
-			['Clostridium_difficile_630_v1.9_00002', 'Antisense Reads Mapping', 0],
+			['Clostridium_difficile_630_v1.9_00001', 'Total Reads Mapping', 0,'Annot GFF no reads mapping flanking'],
+			['Clostridium_difficile_630_v1.9_00001', 'Sense Reads Mapping', 0,'Annot GFF no reads mapping flanking'],
+			['Clostridium_difficile_630_v1.9_00001', 'Antisense Reads Mapping', 0,'Annot GFF no reads mapping flanking'],
+			['Clostridium_difficile_630_v1.9_00002', 'Total Reads Mapping', 0,'Annot GFF no reads mapping flanking'],
+			['Clostridium_difficile_630_v1.9_00002', 'Sense Reads Mapping', 0,'Annot GFF no reads mapping flanking'],
+			['Clostridium_difficile_630_v1.9_00002', 'Antisense Reads Mapping', 0,'Annot GFF no reads mapping flanking'],
 		       );
 
 run_rna_seq('t/data/gffs_sams/nothing_to_map_annot.sam','t/data/gffs_sams/multipurpose_3_cds_annot.gff', \@expected_results_library);
 
 @expected_results_library = (
-			['DUMMY_EMBL_CHR.5', 'Total Reads Mapping', 0],
-			['DUMMY_EMBL_CHR.5', 'Sense Reads Mapping', 0],
-			['DUMMY_EMBL_CHR.5', 'Antisense Reads Mapping', 0],
-			['DUMMY_EMBL_CHR.1', 'Total Reads Mapping', 0],
-			['DUMMY_EMBL_CHR.1', 'Sense Reads Mapping', 0],
-			['DUMMY_EMBL_CHR.1', 'Antisense Reads Mapping', 0],
+			['DUMMY_EMBL_CHR.5', 'Total Reads Mapping', 0,'EMBL GFF no reads mapping flanking'],
+			['DUMMY_EMBL_CHR.5', 'Sense Reads Mapping', 0,'EMBL GFF no reads mapping flanking'],
+			['DUMMY_EMBL_CHR.5', 'Antisense Reads Mapping', 0,'EMBL GFF no reads mapping flanking'],
+			['DUMMY_EMBL_CHR.1', 'Total Reads Mapping', 0,'EMBL GFF no reads mapping flanking'],
+			['DUMMY_EMBL_CHR.1', 'Sense Reads Mapping', 0,'EMBL GFF no reads mapping flanking'],
+			['DUMMY_EMBL_CHR.1', 'Antisense Reads Mapping', 0,'EMBL GFF no reads mapping flanking'],
 		       );
 
 run_rna_seq('t/data/gffs_sams/nothing_to_map_embl.sam','t/data/gffs_sams/multipurpose_3_cds_embl.gff', \@expected_results_library);
@@ -147,68 +159,59 @@ run_rna_seq('t/data/gffs_sams/nothing_to_map_embl.sam','t/data/gffs_sams/multipu
 #Split Reads
 #For Chado gff's we should test for the gene feature types and not for the CDS feature types
 @expected_results_library = (
-			['GreatCurl.1:exon:1', 'Total Reads Mapping', 1],
-			['GreatCurl.1:exon:1', 'Sense Reads Mapping', 1],
-			['GreatCurl.1:exon:1', 'Antisense Reads Mapping', 0],
-			['GreatCurl.3:exon:3', 'Total Reads Mapping', 1],
-			['GreatCurl.3:exon:3', 'Sense Reads Mapping', 1],
-			['GreatCurl.3:exon:3', 'Antisense Reads Mapping', 0],
+			['GreatCurl.1:exon:1', 'Total Reads Mapping', 1,'Chado GFF split reads mapping'],
+			['GreatCurl.1:exon:1', 'Sense Reads Mapping', 1,'Chado GFF split reads mapping'],
+			['GreatCurl.1:exon:1', 'Antisense Reads Mapping', 0,'Chado GFF split reads mapping'],
+			['GreatCurl.3:exon:3', 'Total Reads Mapping', 1,'Chado GFF split reads mapping'],
+			['GreatCurl.3:exon:3', 'Sense Reads Mapping', 1,'Chado GFF split reads mapping'],
+			['GreatCurl.3:exon:3', 'Antisense Reads Mapping', 0,'Chado GFF split reads mapping'],
 		       );
 
 run_rna_seq('t/data/gffs_sams/split_read_mapping_to_2_cds_chado.sam','t/data/gffs_sams/split_reads_chado.gff', \@expected_results_library);
 
+#Chado total mapped reads based on gene feture type
 @expected_results_library = (
-			['GreatCurl', 'Total Reads Mapping', 1],
-			['GreatCurl', 'Sense Reads Mapping', 1],
-			['GreatCurl', 'Antisense Reads Mapping', 0],
-			['SplitHair', 'Total Reads Mapping', 1],
-			['SplitHair', 'Sense Reads Mapping', 1],
-			['SplitHair', 'Antisense Reads Mapping', 0],
+			['GreatCurl', 'Total Reads Mapping', 2,'Chado GFF gene feature type split reads mapping'],
+			['GreatCurl', 'Sense Reads Mapping', 2,'Chado GFF gene feature type split reads mapping'],
+			['GreatCurl', 'Antisense Reads Mapping', 0,'Chado GFF gene feature type split reads mapping'],
+			['SplitHair', 'Total Reads Mapping', 1,'Chado GFF gene feature type split reads mapping'],
+			['SplitHair', 'Sense Reads Mapping', 1,'Chado GFF gene feature type split reads mapping'],
+			['SplitHair', 'Antisense Reads Mapping', 0,'Chado GFF gene feature type split reads mapping'],
 		       );
 
 run_rna_seq('t/data/gffs_sams/split_read_mapping_to_2_cds_chado.sam','t/data/gffs_sams/split_reads_chado.gff', \@expected_results_library);
 
-@expected_results_library = (
-			['Great', 'Total Reads Mapping', 1],
-			['Great', 'Sense Reads Mapping', 1],
-			['Great', 'Antisense Reads Mapping', 0],
-			['Split', 'Total Reads Mapping', 1],
-			['Split', 'Sense Reads Mapping', 1],
-			['Split', 'Antisense Reads Mapping', 0],
-		       );
-
-run_rna_seq('t/data/gffs_sams/split_read_mapping_to_2_cds_chado.sam','t/data/gffs_sams/split_reads_chado.gff', \@expected_results_library);
 
 @expected_results_library = (
-			['Clostridium_difficile_630_v1.9_00001', 'Total Reads Mapping', 1],
-			['Clostridium_difficile_630_v1.9_00001', 'Sense Reads Mapping', 1],
-			['Clostridium_difficile_630_v1.9_00001', 'Antisense Reads Mapping', 0],
-			['Clostridium_difficile_630_v1.9_00002', 'Total Reads Mapping', 2],
-			['Clostridium_difficile_630_v1.9_00002', 'Sense Reads Mapping', 2],
-			['Clostridium_difficile_630_v1.9_00002', 'Antisense Reads Mapping', 0],
-			['Clostridium_difficile_630_v1.9_00003', 'Total Reads Mapping', 2],
-			['Clostridium_difficile_630_v1.9_00003', 'Sense Reads Mapping', 2],
-			['Clostridium_difficile_630_v1.9_00003', 'Antisense Reads Mapping', 0],
-			['Clostridium_difficile_630_v1.9_00004', 'Total Reads Mapping', 1],
-			['Clostridium_difficile_630_v1.9_00004', 'Sense Reads Mapping', 1],
-			['Clostridium_difficile_630_v1.9_00004', 'Antisense Reads Mapping', 0],
+			['Clostridium_difficile_630_v1.9_00001', 'Total Reads Mapping', 1,'Annot GFF split reads mapping'],
+			['Clostridium_difficile_630_v1.9_00001', 'Sense Reads Mapping', 1,'Annot GFF split reads mapping'],
+			['Clostridium_difficile_630_v1.9_00001', 'Antisense Reads Mapping', 0,'Annot GFF split reads mapping'],
+			['Clostridium_difficile_630_v1.9_00002', 'Total Reads Mapping', 2,'Annot GFF split reads mapping'],
+			['Clostridium_difficile_630_v1.9_00002', 'Sense Reads Mapping', 2,'Annot GFF split reads mapping'],
+			['Clostridium_difficile_630_v1.9_00002', 'Antisense Reads Mapping', 0,'Annot GFF split reads mapping'],
+			['Clostridium_difficile_630_v1.9_00003', 'Total Reads Mapping', 2,'Annot GFF split reads mapping'],
+			['Clostridium_difficile_630_v1.9_00003', 'Sense Reads Mapping', 2,'Annot GFF split reads mapping'],
+			['Clostridium_difficile_630_v1.9_00003', 'Antisense Reads Mapping', 0,'Annot GFF split reads mapping'],
+			['Clostridium_difficile_630_v1.9_00004', 'Total Reads Mapping', 1,'Annot GFF split reads mapping'],
+			['Clostridium_difficile_630_v1.9_00004', 'Sense Reads Mapping', 1,'Annot GFF split reads mapping'],
+			['Clostridium_difficile_630_v1.9_00004', 'Antisense Reads Mapping', 0,'Annot GFF split reads mapping'],
 		       );
 
 run_rna_seq('t/data/gffs_sams/split_read_mapping_to_2_cds_annot.sam','t/data/gffs_sams/split_reads_annot.gff', \@expected_results_library);
 
 @expected_results_library = (
-			['DUMMY_EMBL_CHR.1', 'Total Reads Mapping', 1],
-			['DUMMY_EMBL_CHR.1', 'Sense Reads Mapping', 1],
-			['DUMMY_EMBL_CHR.1', 'Antisense Reads Mapping', 0],
-			['DUMMY_EMBL_CHR.5', 'Total Reads Mapping', 2],
-			['DUMMY_EMBL_CHR.5', 'Sense Reads Mapping', 2],
-			['DUMMY_EMBL_CHR.5', 'Antisense Reads Mapping', 0],
-			['DUMMY_EMBL_CHR.9', 'Total Reads Mapping', 2],
-			['DUMMY_EMBL_CHR.9', 'Sense Reads Mapping', 2],
-			['DUMMY_EMBL_CHR.9', 'Antisense Reads Mapping', 0],
-			['DUMMY_EMBL_CHR.10', 'Total Reads Mapping', 1],
-			['DUMMY_EMBL_CHR.10', 'Sense Reads Mapping', 1],
-			['DUMMY_EMBL_CHR.10', 'Antisense Reads Mapping', 0],
+			['DUMMY_EMBL_CHR.1', 'Total Reads Mapping', 1,'EMBL GFF split reads mapping'],
+			['DUMMY_EMBL_CHR.1', 'Sense Reads Mapping', 1,'EMBL GFF split reads mapping'],
+			['DUMMY_EMBL_CHR.1', 'Antisense Reads Mapping', 0,'EMBL GFF split reads mapping'],
+			['DUMMY_EMBL_CHR.5', 'Total Reads Mapping', 2,'EMBL GFF split reads mapping'],
+			['DUMMY_EMBL_CHR.5', 'Sense Reads Mapping', 2,'EMBL GFF split reads mapping'],
+			['DUMMY_EMBL_CHR.5', 'Antisense Reads Mapping', 0,'EMBL GFF split reads mapping'],
+			['DUMMY_EMBL_CHR.9', 'Total Reads Mapping', 2,'EMBL GFF split reads mapping'],
+			['DUMMY_EMBL_CHR.9', 'Sense Reads Mapping', 2,'EMBL GFF split reads mapping'],
+			['DUMMY_EMBL_CHR.9', 'Antisense Reads Mapping', 0,'EMBL GFF split reads mapping'],
+			['DUMMY_EMBL_CHR.10', 'Total Reads Mapping', 1,'EMBL GFF split reads mapping'],
+			['DUMMY_EMBL_CHR.10', 'Sense Reads Mapping', 1,'EMBL GFF split reads mapping'],
+			['DUMMY_EMBL_CHR.10', 'Antisense Reads Mapping', 0,'EMBL GFF split reads mapping'],
 		       );
 
 run_rna_seq('t/data/gffs_sams/split_read_mapping_to_2_cds_embl.sam','t/data/gffs_sams/split_reads_embl.gff', \@expected_results_library);
@@ -239,6 +242,8 @@ sub run_rna_seq {
     my $intergenic_regions = 1;
     my %filters            = ( mapping_quality => 1 );
 
+    my $test_name = $results_library->[0]->[3];
+    print "TEST: $test_name\n";
     ok(
         my $expression_results = Bio::RNASeq->new(
             sequence_filename    => $bam_file,
