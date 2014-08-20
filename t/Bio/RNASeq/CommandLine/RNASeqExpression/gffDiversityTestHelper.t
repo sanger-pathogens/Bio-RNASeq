@@ -259,6 +259,8 @@ run_rna_seq('t/data/gffs_sams/overlapping_genes_chado.sam','t/data/gffs_sams/ove
 
 #=head
 
+#=cut
+
 @expected_results_library = (
 			['Clostridium_difficile_630_v1.9_00001', 'Total Reads Mapping', 2,'Annot GFF overlapping features'],
 			['Clostridium_difficile_630_v1.9_00001', 'Sense Reads Mapping', 2,'Annot GFF overlapping features'],
@@ -278,6 +280,7 @@ run_rna_seq('t/data/gffs_sams/overlapping_genes_chado.sam','t/data/gffs_sams/ove
 		       );
 
 run_rna_seq('t/data/gffs_sams/overlapping_genes_annot.sam','t/data/gffs_sams/overlapping_genes_annot.gff', \@expected_results_library);
+
 
 
 
@@ -302,19 +305,19 @@ run_rna_seq('t/data/gffs_sams/overlapping_genes_annot.sam','t/data/gffs_sams/ove
 run_rna_seq('t/data/gffs_sams/overlapping_genes_embl.sam','t/data/gffs_sams/overlapping_genes_embl.gff', \@expected_results_library);
 ##END Overlapping features
 
-#=cut
+=head
 
 ##Overlapping in different frames of translation
 #For Chado gff's we should test for the gene feature types and not for the CDS feature types. Including both for now. But the first ones should fail
 @expected_results_library = (
-			['GreatCurl.1:exon:1', 'Total Reads Mapping', 2,'Chado GFF overlapping in diff frames of translation'],
-			['GreatCurl.1:exon:1', 'Sense Reads Mapping', 2,'Chado GFF overlapping in diff frames of translation'],
+			['GreatCurl.1:exon:1', 'Total Reads Mapping', 4,'Chado GFF overlapping in diff frames of translation'],
+			['GreatCurl.1:exon:1', 'Sense Reads Mapping', 4,'Chado GFF overlapping in diff frames of translation'],
 			['GreatCurl.1:exon:1', 'Antisense Reads Mapping', 0,'Chado GFF overlapping in diff frames of translation'],
-			['GreatCurl.2:exon:2', 'Total Reads Mapping', 1,'Chado GFF overlapping in diff frames of translation'],
-			['GreatCurl.2:exon:2', 'Sense Reads Mapping', 1,'Chado GFF overlapping in diff frames of translation'],
+			['GreatCurl.2:exon:2', 'Total Reads Mapping', 4,'Chado GFF overlapping in diff frames of translation'],
+			['GreatCurl.2:exon:2', 'Sense Reads Mapping', 4,'Chado GFF overlapping in diff frames of translation'],
 			['GreatCurl.2:exon:2', 'Antisense Reads Mapping', 0,'Chado GFF overlapping in diff frames of translation'],
-			['SunBurn.1:exon:1', 'Total Reads Mapping', 2,'Chado GFF overlapping in diff frames of translation'],
-			['SunBurn.1:exon:1', 'Sense Reads Mapping', 2,'Chado GFF overlapping in diff frames of translation'],
+			['SunBurn.1:exon:1', 'Total Reads Mapping', 4,'Chado GFF overlapping in diff frames of translation'],
+			['SunBurn.1:exon:1', 'Sense Reads Mapping', 4,'Chado GFF overlapping in diff frames of translation'],
 			['SunBurn.1:exon:1', 'Antisense Reads Mapping', 0,'Chado GFF overlapping in diff frames of translation'],
 		       );
 
@@ -323,11 +326,11 @@ run_rna_seq('t/data/gffs_sams/overlapping_in_diff_frames_of_trans_chado.sam','t/
 
 #Chado total mapped reads based on gene feture type
 @expected_results_library = (
-			['GreatCurl', 'Total Reads Mapping', 2,'Chado GFF gene feature type overlapping in diff frames of translation'],
-			['GreatCurl', 'Sense Reads Mapping', 2,'Chado GFF gene feature type overlapping in diff frames of translation'],
+			['GreatCurl', 'Total Reads Mapping', 6,'Chado GFF gene feature type overlapping in diff frames of translation'],
+			['GreatCurl', 'Sense Reads Mapping', 6,'Chado GFF gene feature type overlapping in diff frames of translation'],
 			['GreatCurl', 'Antisense Reads Mapping', 0,'Chado GFF gene feature type overlapping in diff frames of translation'],
-			['SunBurn', 'Total Reads Mapping', 1,'Chado GFF gene feature type overlapping in diff frames of translation'],
-			['SunBurn', 'Sense Reads Mapping', 1,'Chado GFF gene feature type overlapping in diff frames of translation'],
+			['SunBurn', 'Total Reads Mapping', 4,'Chado GFF gene feature type overlapping in diff frames of translation'],
+			['SunBurn', 'Sense Reads Mapping', 4,'Chado GFF gene feature type overlapping in diff frames of translation'],
 			['SunBurn', 'Antisense Reads Mapping', 0,'Chado GFF gene feature type overlapping in diff frames of translation'],
 		       );
 
@@ -335,29 +338,31 @@ run_rna_seq('t/data/gffs_sams/overlapping_in_diff_frames_of_trans_chado.sam','t/
 
 
 @expected_results_library = (
-			['DUMMY_EMBL_CHR.1', 'Total Reads Mapping', 2,'EMBL GFF overlapping in diff frames of translation'],
-			['DUMMY_EMBL_CHR.1', 'Sense Reads Mapping', 2,'EMBL GFF overlapping in diff frames of translation'],
+			['DUMMY_EMBL_CHR.1', 'Total Reads Mapping', 4,'EMBL GFF overlapping in diff frames of translation'],
+			['DUMMY_EMBL_CHR.1', 'Sense Reads Mapping', 4,'EMBL GFF overlapping in diff frames of translation'],
 			['DUMMY_EMBL_CHR.1', 'Antisense Reads Mapping', 0,'EMBL GFF overlapping in diff frames of translation'],
-			['DUMMY_EMBL_CHR.5', 'Total Reads Mapping', 2,'EMBL GFF overlapping in diff frames of translation'],
-			['DUMMY_EMBL_CHR.5', 'Sense Reads Mapping', 2,'EMBL GFF overlapping in diff frames of translation'],
+			['DUMMY_EMBL_CHR.5', 'Total Reads Mapping', 4,'EMBL GFF overlapping in diff frames of translation'],
+			['DUMMY_EMBL_CHR.5', 'Sense Reads Mapping', 4,'EMBL GFF overlapping in diff frames of translation'],
 			['DUMMY_EMBL_CHR.5', 'Antisense Reads Mapping', 0,'EMBL GFF overlapping in diff frames of translation'],
-			['DUMMY_EMBL_CHR.9', 'Total Reads Mapping', 1,'EMBL GFF overlapping in diff frames of translation'],
-			['DUMMY_EMBL_CHR.9', 'Sense Reads Mapping', 1,'EMBL GFF overlapping in diff frames of translation'],
+			['DUMMY_EMBL_CHR.9', 'Total Reads Mapping', 4,'EMBL GFF overlapping in diff frames of translation'],
+			['DUMMY_EMBL_CHR.9', 'Sense Reads Mapping', 4,'EMBL GFF overlapping in diff frames of translation'],
 			['DUMMY_EMBL_CHR.9', 'Antisense Reads Mapping', 0,'EMBL GFF overlapping in diff frames of translation'],
 
 			    );
 
 run_rna_seq('t/data/gffs_sams/overlapping_in_diff_frames_of_trans_embl.sam','t/data/gffs_sams/overlapping_in_diff_frames_of_trans_embl.gff', \@expected_results_library);
 
+#=cut
+
 @expected_results_library = (
-			['Clostridium_difficile_630_v1.9_00001', 'Total Reads Mapping', 2,'Annot GFF overlapping in diff frames of translation'],
-			['Clostridium_difficile_630_v1.9_00001', 'Sense Reads Mapping', 2,'Annot GFF overlapping in diff frames of translation'],
+			['Clostridium_difficile_630_v1.9_00001', 'Total Reads Mapping', 4,'Annot GFF overlapping in diff frames of translation'],
+			['Clostridium_difficile_630_v1.9_00001', 'Sense Reads Mapping', 4,'Annot GFF overlapping in diff frames of translation'],
 			['Clostridium_difficile_630_v1.9_00001', 'Antisense Reads Mapping', 0,'Annot GFF overlapping in diff frames of translation'],
-			['Clostridium_difficile_630_v1.9_00002', 'Total Reads Mapping', 2,'Annot GFF overlapping in diff frames of translation'],
-			['Clostridium_difficile_630_v1.9_00002', 'Sense Reads Mapping', 2,'Annot GFF overlapping in diff frames of translation'],
+			['Clostridium_difficile_630_v1.9_00002', 'Total Reads Mapping', 4,'Annot GFF overlapping in diff frames of translation'],
+			['Clostridium_difficile_630_v1.9_00002', 'Sense Reads Mapping', 4,'Annot GFF overlapping in diff frames of translation'],
 			['Clostridium_difficile_630_v1.9_00002', 'Antisense Reads Mapping', 0,'Annot GFF overlapping in diff frames of translation'],
-			['Clostridium_difficile_630_v1.9_00004', 'Total Reads Mapping', 1,'Annot GFF overlapping in diff frames of translation'],
-			['Clostridium_difficile_630_v1.9_00004', 'Sense Reads Mapping', 1,'Annot GFF overlapping in diff frames of translation'],
+			['Clostridium_difficile_630_v1.9_00004', 'Total Reads Mapping', 4,'Annot GFF overlapping in diff frames of translation'],
+			['Clostridium_difficile_630_v1.9_00004', 'Sense Reads Mapping', 4,'Annot GFF overlapping in diff frames of translation'],
 			['Clostridium_difficile_630_v1.9_00004', 'Antisense Reads Mapping', 0,'Annot GFF overlapping in diff frames of translation'],
 		       );
 
@@ -368,8 +373,8 @@ run_rna_seq('t/data/gffs_sams/overlapping_in_diff_frames_of_trans_annot.sam','t/
 #=head
 
 @expected_results_library = (
-			['TeenyTiny.1:exon:1', 'Total Reads Mapping', 2,'one tiny test'],
-			['TeenyTiny.1:exon:1', 'Sense Reads Mapping', 2,'one tiny test'],
+			['TeenyTiny.1:exon:1', 'Total Reads Mapping', 4,'one tiny test'],
+			['TeenyTiny.1:exon:1', 'Sense Reads Mapping', 4,'one tiny test'],
 			['TeenyTiny.1:exon:1', 'Antisense Reads Mapping', 0,'one tiny test'],
 			['TeenyTiny.2:exon:2', 'Total Reads Mapping', 1,'one tiny test'],
 			['TeenyTiny.2:exon:2', 'Sense Reads Mapping', 1,'one tiny test'],
@@ -378,7 +383,24 @@ run_rna_seq('t/data/gffs_sams/overlapping_in_diff_frames_of_trans_annot.sam','t/
 
 run_rna_seq('t/data/gffs_sams/tiny_chado.sam','t/data/gffs_sams/tiny_chado.gff', \@expected_results_library);
 
-#=cut
+
+
+
+@expected_results_library = (
+			['TeenyTiny.1:exon:1', 'Total Reads Mapping', 1,'one tiny test'],
+			['TeenyTiny.1:exon:1', 'Sense Reads Mapping', 1,'one tiny test'],
+			['TeenyTiny.1:exon:1', 'Antisense Reads Mapping', 0,'one tiny test'],
+			['TeenyTiny.2:exon:2', 'Total Reads Mapping', 2,'one tiny test'],
+			['TeenyTiny.2:exon:2', 'Sense Reads Mapping', 2,'one tiny test'],
+			['TeenyTiny.2:exon:2', 'Antisense Reads Mapping', 0,'one tiny test'],
+			['TeenyTiny.3:exon:3', 'Total Reads Mapping', 1,'one tiny test'],
+			['TeenyTiny.3:exon:3', 'Sense Reads Mapping', 1,'one tiny test'],
+			['TeenyTiny.3:exon:3', 'Antisense Reads Mapping', 0,'one tiny test'],
+		       );
+
+run_rna_seq('t/data/gffs_sams/overlap_simple_tiny_chado.sam','t/data/gffs_sams/overlap_simple_tiny_chado.gff', \@expected_results_library);
+
+=cut
 
 done_testing();
 

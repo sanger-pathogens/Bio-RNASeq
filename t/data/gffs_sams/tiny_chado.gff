@@ -1,7 +1,7 @@
 ##gff-version   3
 ##sequence-region   DUMMY_TINY_CHR 1 30
-DUMMY_TINY_CHR	chado	gene	10	136	.	+	.	ID=TeenyTiny;Name=TeenyTiny;feature_id=1;isObsolete=false;timelastmodified=16.02.2010 03:17:41 GMT
-DUMMY_TINY_CHR	chado	mRNA	10	136	.	+	.	ID=TeenyTiny.1;Parent=TeenyTiny;feature_id=2;isObsolete=false;timelastmodified=16.02.2010 02:34:48 GMT
+DUMMY_TINY_CHR	chado	gene	10	23	.	+	.	ID=TeenyTiny;Name=TeenyTiny;feature_id=1;isObsolete=false;timelastmodified=16.02.2010 03:17:41 GMT
+DUMMY_TINY_CHR	chado	mRNA	10	23	.	+	.	ID=TeenyTiny.1;Parent=TeenyTiny;feature_id=2;isObsolete=false;timelastmodified=16.02.2010 02:34:48 GMT
 DUMMY_TINY_CHR	chado	CDS	10	17	.	+	0	ID=TeenyTiny.1:exon:1;Parent=TeenyTiny.1;colour=7;isObsolete=false;timelastmodified=16.02.2010 03:17:41 GMT
-DUMMY_TINY_CHR	chado	CDS	130	136	.	+	0	ID=TeenyTiny.2:exon:2;Parent=TeenyTiny.1;colour=7;isObsolete=false;timelastmodified=16.02.2010 03:17:41 GMT
-DUMMY_TINY_CHR	chado	polypeptide	10	136	.	+	0	ID=TeenyTiny.1:pep;Derives_from=TeenyTiny.1;colour=7;isObsolete=false;timelastmodified=16.02.2010 03:17:41 GMT
+DUMMY_TINY_CHR	chado	CDS	18	23	.	+	0	ID=TeenyTiny.2:exon:2;Parent=TeenyTiny.1;colour=7;isObsolete=false;timelastmodified=16.02.2010 03:17:41 GMT
+DUMMY_TINY_CHR	chado	polypeptide	10	23	.	+	0	ID=TeenyTiny.1:pep;Derives_from=TeenyTiny.1;colour=7;isObsolete=false;timelastmodified=16.02.2010 03:17:41 GMT
