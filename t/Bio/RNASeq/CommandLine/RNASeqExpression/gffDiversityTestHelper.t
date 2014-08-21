@@ -305,7 +305,7 @@ run_rna_seq('t/data/gffs_sams/overlapping_genes_annot.sam','t/data/gffs_sams/ove
 run_rna_seq('t/data/gffs_sams/overlapping_genes_embl.sam','t/data/gffs_sams/overlapping_genes_embl.gff', \@expected_results_library);
 ##END Overlapping features
 
-=head
+#=head
 
 ##Overlapping in different frames of translation
 #For Chado gff's we should test for the gene feature types and not for the CDS feature types. Including both for now. But the first ones should fail
@@ -367,11 +367,12 @@ run_rna_seq('t/data/gffs_sams/overlapping_in_diff_frames_of_trans_embl.sam','t/d
 		       );
 
 run_rna_seq('t/data/gffs_sams/overlapping_in_diff_frames_of_trans_annot.sam','t/data/gffs_sams/overlapping_in_diff_frames_of_trans_annot.gff', \@expected_results_library);
-
+##END of Overlapping in diff frames of translation
 #=cut
 
 #=head
 
+#Experimental tiny regions
 @expected_results_library = (
 			['TeenyTiny.1:exon:1', 'Total Reads Mapping', 4,'one tiny test'],
 			['TeenyTiny.1:exon:1', 'Sense Reads Mapping', 4,'one tiny test'],
@@ -399,8 +400,142 @@ run_rna_seq('t/data/gffs_sams/tiny_chado.sam','t/data/gffs_sams/tiny_chado.gff',
 		       );
 
 run_rna_seq('t/data/gffs_sams/overlap_simple_tiny_chado.sam','t/data/gffs_sams/overlap_simple_tiny_chado.gff', \@expected_results_library);
+##END of tiny regions
 
-=cut
+#=cut
+
+##Reads in intronic regions and at their boundaries
+#For Chado gff's we should test for the gene feature types and not for the CDS feature types. Including both for now. But the first ones should fail
+@expected_results_library = (
+			['GreatCurl.1:exon:1', 'Total Reads Mapping', 4,'Chado GFF intronic mappings'],
+			['GreatCurl.1:exon:1', 'Sense Reads Mapping', 4,'Chado GFF intronic mappings'],
+			['GreatCurl.1:exon:1', 'Antisense Reads Mapping', 0,'Chado GFF intronic mappings'],
+			['GreatCurl.2:exon:2', 'Total Reads Mapping', 4,'Chado GFF intronic mappings'],
+			['GreatCurl.2:exon:2', 'Sense Reads Mapping', 4,'Chado GFF intronic mappings'],
+			['GreatCurl.2:exon:2', 'Antisense Reads Mapping', 0,'Chado GFF intronic mappings'],
+		       );
+
+run_rna_seq('t/data/gffs_sams/intronic_mapping_chado.sam','t/data/gffs_sams/intronic_mapping_chado.gff', \@expected_results_library);
+
+
+#Chado total mapped reads based on gene feture type
+@expected_results_library = (
+			['GreatCurl', 'Total Reads Mapping', 9,'Chado GFF gene feature type intronic mappings'],
+			['GreatCurl', 'Sense Reads Mapping', 9,'Chado GFF gene feature type intronic mappings'],
+			['GreatCurl', 'Antisense Reads Mapping', 0,'Chado GFF gene feature type intronic mappings'],
+		       );
+
+run_rna_seq('t/data/gffs_sams/intronic_mapping_chado.sam','t/data/gffs_sams/intronic_mapping_chado.gff', \@expected_results_library);
+
+
+@expected_results_library = (
+			['DUMMY_EMBL_CHR.1', 'Total Reads Mapping', 4,'EMBL GFF intronic mappings'],
+			['DUMMY_EMBL_CHR.1', 'Sense Reads Mapping', 4,'EMBL GFF intronic mappings'],
+			['DUMMY_EMBL_CHR.1', 'Antisense Reads Mapping', 0,'EMBL GFF intronic mappings'],
+			['DUMMY_EMBL_CHR.5', 'Total Reads Mapping', 4,'EMBL GFF intronic mappings'],
+			['DUMMY_EMBL_CHR.5', 'Sense Reads Mapping', 4,'EMBL GFF intronic mappings'],
+			['DUMMY_EMBL_CHR.5', 'Antisense Reads Mapping', 0,'EMBL GFF intronic mappings'],
+			    );
+
+run_rna_seq('t/data/gffs_sams/intronic_mapping_embl.sam','t/data/gffs_sams/intronic_mapping_embl.gff', \@expected_results_library);
+
+#=cut
+
+@expected_results_library = (
+			['Clostridium_difficile_630_v1.9_00001', 'Total Reads Mapping', 4,'Annot GFF intronic mappings'],
+			['Clostridium_difficile_630_v1.9_00001', 'Sense Reads Mapping', 4,'Annot GFF intronic mappings'],
+			['Clostridium_difficile_630_v1.9_00001', 'Antisense Reads Mapping', 0,'Annot GFF intronic mappings'],
+			['Clostridium_difficile_630_v1.9_00002', 'Total Reads Mapping', 4,'Annot GFF intronic mappings'],
+			['Clostridium_difficile_630_v1.9_00002', 'Sense Reads Mapping', 4,'Annot GFF intronic mappings'],
+			['Clostridium_difficile_630_v1.9_00002', 'Antisense Reads Mapping', 0,'Annot GFF intronic mappings'],
+		       );
+
+run_rna_seq('t/data/gffs_sams/intronic_mapping_annot.sam','t/data/gffs_sams/intronic_mapping_annot.gff', \@expected_results_library);
+##End of intronic mappings
+
+
+
+##Intergenic mappings and their boundaries - Eukaryotic organisms only
+#For Chado gff's we should test for the gene feature types and not for the CDS feature types. Including both for now. But the first ones should fail
+@expected_results_library = (
+			['GreatCurl.1:exon:1', 'Total Reads Mapping', 0,'Chado GFF intergenic mappings'],
+			['GreatCurl.1:exon:1', 'Sense Reads Mapping', 0,'Chado GFF intergenic mappings'],
+			['GreatCurl.1:exon:1', 'Antisense Reads Mapping', 0,'Chado GFF intergenic mappings'],
+			['GreatCurl.2:exon:2', 'Total Reads Mapping', 4,'Chado GFF intergenic mappings'],
+			['GreatCurl.2:exon:2', 'Sense Reads Mapping', 4,'Chado GFF intergenic mappings'],
+			['GreatCurl.2:exon:2', 'Antisense Reads Mapping', 0,'Chado GFF intergenic mappings'],
+			['SunBurn.1:exon:1', 'Total Reads Mapping', 5,'Chado GFF intergenic mappings'],
+			['SunBurn.1:exon:1', 'Sense Reads Mapping', 5,'Chado GFF intergenic mappings'],
+			['SunBurn.1:exon:1', 'Antisense Reads Mapping', 0,'Chado GFF intergenic mappings'],
+			['SunBurn.2:exon:2', 'Total Reads Mapping', 0,'Chado GFF intergenic mappings'],
+			['SunBurn.2:exon:2', 'Sense Reads Mapping', 0,'Chado GFF intergenic mappings'],
+			['SunBurn.2:exon:2', 'Antisense Reads Mapping', 0,'Chado GFF intergenic mappings'],
+		       );
+
+run_rna_seq('t/data/gffs_sams/intergenic_mapping_chado.sam','t/data/gffs_sams/intergenic_mapping_chado.gff', \@expected_results_library);
+
+
+#Chado total mapped reads based on gene feture type
+@expected_results_library = (
+			['GreatCurl', 'Total Reads Mapping', 4,'Chado GFF gene feature type intergenic mappings'],
+			['GreatCurl', 'Sense Reads Mapping', 4,'Chado GFF gene feature type intergenic mappings'],
+			['GreatCurl', 'Antisense Reads Mapping', 0,'Chado GFF gene feature type intergenic mappings'],
+			['SunBurn', 'Total Reads Mapping', 5,'Chado GFF gene feature type intergenic mappings'],
+			['SunBurn', 'Sense Reads Mapping', 5,'Chado GFF gene feature type intergenic mappings'],
+			['SunBurn', 'Antisense Reads Mapping', 0,'Chado GFF gene feature type intergenic mappings'],
+		       );
+
+run_rna_seq('t/data/gffs_sams/intergenic_mapping_chado.sam','t/data/gffs_sams/intergenic_mapping_chado.gff', \@expected_results_library);
+##End intergenic mappings
+
+#=cut
+
+#Standard Protocol, Annot, reads in different strands
+@expected_results_library = (
+			['Clostridium_difficile_630_v1.9_00001', 'Total Reads Mapping', 3,'Annot GFF 3 reads mapping antisense'],
+			['Clostridium_difficile_630_v1.9_00001', 'Sense Reads Mapping', 0,'Annot GFF 3 reads mapping antisense'],
+			['Clostridium_difficile_630_v1.9_00001', 'Antisense Reads Mapping', 3,'Annot GFF 3 reads mapping antisense'],
+			['Clostridium_difficile_630_v1.9_00002', 'Total Reads Mapping', 0,'Annot GFF 3 reads mapping antisense'],
+			['Clostridium_difficile_630_v1.9_00002', 'Sense Reads Mapping', 0,'Annot GFF 3 reads mapping antisense'],
+			['Clostridium_difficile_630_v1.9_00002', 'Antisense Reads Mapping', 0,'Annot GFF 3 reads mapping antisense'],
+		       );
+
+run_rna_seq('t/data/gffs_sams/mapping_to_one_feature_antisense_annot.sam','t/data/gffs_sams/multipurpose_3_cds_positive_strand_annot.gff', \@expected_results_library);
+
+@expected_results_library = (
+			['Clostridium_difficile_630_v1.9_00001', 'Total Reads Mapping', 3,'Annot GFF 3 reads mapping antisense'],
+			['Clostridium_difficile_630_v1.9_00001', 'Sense Reads Mapping', 3,'Annot GFF 3 reads mapping antisense'],
+			['Clostridium_difficile_630_v1.9_00001', 'Antisense Reads Mapping', 0,'Annot GFF 3 reads mapping antisense'],
+			['Clostridium_difficile_630_v1.9_00002', 'Total Reads Mapping', 0,'Annot GFF 3 reads mapping antisense'],
+			['Clostridium_difficile_630_v1.9_00002', 'Sense Reads Mapping', 0,'Annot GFF 3 reads mapping antisense'],
+			['Clostridium_difficile_630_v1.9_00002', 'Antisense Reads Mapping', 0,'Annot GFF 3 reads mapping antisense'],
+		       );
+
+run_rna_seq('t/data/gffs_sams/mapping_to_one_feature_antisense_annot.sam','t/data/gffs_sams/multipurpose_3_cds_negative_strand_annot.gff', \@expected_results_library);
+
+@expected_results_library = (
+			['Clostridium_difficile_630_v1.9_00001', 'Total Reads Mapping', 3,'Annot GFF 3 reads mapping antisense'],
+			['Clostridium_difficile_630_v1.9_00001', 'Sense Reads Mapping', 3,'Annot GFF 3 reads mapping antisense'],
+			['Clostridium_difficile_630_v1.9_00001', 'Antisense Reads Mapping', 0,'Annot GFF 3 reads mapping antisense'],
+			['Clostridium_difficile_630_v1.9_00002', 'Total Reads Mapping', 0,'Annot GFF 3 reads mapping antisense'],
+			['Clostridium_difficile_630_v1.9_00002', 'Sense Reads Mapping', 0,'Annot GFF 3 reads mapping antisense'],
+			['Clostridium_difficile_630_v1.9_00002', 'Antisense Reads Mapping', 0,'Annot GFF 3 reads mapping antisense'],
+		       );
+
+run_rna_seq('t/data/gffs_sams/mapping_to_one_feature_sense_annot.sam','t/data/gffs_sams/multipurpose_3_cds_positive_strand_annot.gff', \@expected_results_library);
+
+@expected_results_library = (
+			['Clostridium_difficile_630_v1.9_00001', 'Total Reads Mapping', 3,'Annot GFF 3 reads mapping antisense'],
+			['Clostridium_difficile_630_v1.9_00001', 'Sense Reads Mapping', 0,'Annot GFF 3 reads mapping antisense'],
+			['Clostridium_difficile_630_v1.9_00001', 'Antisense Reads Mapping', 3,'Annot GFF 3 reads mapping antisense'],
+			['Clostridium_difficile_630_v1.9_00002', 'Total Reads Mapping', 0,'Annot GFF 3 reads mapping antisense'],
+			['Clostridium_difficile_630_v1.9_00002', 'Sense Reads Mapping', 0,'Annot GFF 3 reads mapping antisense'],
+			['Clostridium_difficile_630_v1.9_00002', 'Antisense Reads Mapping', 0,'Annot GFF 3 reads mapping antisense'],
+		       );
+
+run_rna_seq('t/data/gffs_sams/mapping_to_one_feature_sense_annot.sam','t/data/gffs_sams/multipurpose_3_cds_negative_strand_annot.gff', \@expected_results_library);
+##
+
 
 done_testing();
 
@@ -446,11 +581,81 @@ sub run_rna_seq {
     #print Dumper($expression_results);
     ok( -e $output_base_filename . '.corrected.bam',     'corrected bam' );
     ok( -e $output_base_filename . '.corrected.bam.bai', 'corrected bai' );
-    ok(
+ 
+
+=head
+
+   ok(
         -e $output_base_filename
           . '.corrected.bam.intergenic.DUMMY_CHADO_CHR.tab.gz',
         'intergenic gz'
     );
+
+=cut
+
+    ok( -e $output_base_filename . '.expression.csv', 'expression results' );
+
+    my $filename = $output_base_filename . '.expression.csv';
+
+    for my $set_of_expected_results(@$results_library) {
+      parseExpressionResultsFile ( $filename, $set_of_expected_results );
+    }
+    print "$output_base_filename\n";
+
+}
+
+sub run_rna_seq_strand_specific {
+
+    my ( $sam_file, $annotation_file, $results_library ) = @_;
+
+    my $bam_file = $sam_file;
+    $bam_file =~ s/sam$/bam/;
+
+    system("samtools view -bS $sam_file > $bam_file");
+
+    my $file_temp_obj = File::Temp->newdir( DIR => File::Spec->curdir(), CLEANUP => 1 );
+
+    my $output_base_filename = $file_temp_obj->dirname() . '/test_';
+
+    print " $output_base_filename\n";
+
+    my $protocol           = 'StrandSpecificProtocol';
+    my $intergenic_regions = 0;
+    my %filters            = ( mapping_quality => 1 );
+
+    my $test_name = $results_library->[0]->[3];
+    print "##########\nTEST: $test_name\n##########\n";
+    ok(
+        my $expression_results = Bio::RNASeq->new(
+            sequence_filename    => $bam_file,
+            annotation_filename  => $annotation_file,
+            filters              => \%filters,
+            protocol             => $protocol,
+            output_base_filename => $output_base_filename,
+            intergenic_regions   => $intergenic_regions,
+        ),
+        'expression_results object creation'
+    );
+
+    ok(
+        $expression_results->output_spreadsheet(),
+        'expression results spreadsheet creation'
+    );
+    #print Dumper($expression_results);
+    ok( -e $output_base_filename . '.corrected.bam',     'corrected bam' );
+    ok( -e $output_base_filename . '.corrected.bam.bai', 'corrected bai' );
+ 
+
+=head
+
+   ok(
+        -e $output_base_filename
+          . '.corrected.bam.intergenic.DUMMY_CHADO_CHR.tab.gz',
+        'intergenic gz'
+    );
+
+=cut
+
     ok( -e $output_base_filename . '.expression.csv', 'expression results' );
 
     my $filename = $output_base_filename . '.expression.csv';
