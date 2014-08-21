@@ -634,8 +634,8 @@ run_rna_seq('t/data/gffs_sams/mapping_to_one_feature_forward_strand_chado.sam','
 @expected_results_library = (
 			['GreatCurl', 'Total Reads Mapping', 3,'Chado GFF 3 reads on forward strand gene on negative strand'],
 			['GreatCurl', 'Sense Reads Mapping', 0,'Chado GFF 3 reads on forward strand gene on negative strand'],
-			['GreatCurl', 'Antisense Reads Mapping', 3,'Chado GFF 3 reads on forward strand gene on negative strand'],
-		       );
+			['GreatCurl', 'Antisense Reads Mapping', 3,'Chado GFF 3 reads on forward strand gene on negative strand'],	
+	       );
 
 run_rna_seq('t/data/gffs_sams/mapping_to_one_feature_forward_strand_chado.sam','t/data/gffs_sams/multipurpose_3_cds_negative_strand_chado.gff', \@expected_results_library);
 ##END Standard Protocol, Chado, reads in different strands
@@ -791,6 +791,28 @@ run_rna_seq_strand_specific('t/data/gffs_sams/mapping_to_one_feature_forward_str
 
 run_rna_seq_strand_specific('t/data/gffs_sams/mapping_to_one_feature_forward_strand_chado.sam','t/data/gffs_sams/multipurpose_3_cds_negative_strand_chado.gff', \@expected_results_library);
 ##END Strand Specific Protocol, Chado, reads in different strands
+
+
+@expected_results_library = (
+			['DUMMY_EMBL_CHR.1', 'Total Reads Mapping', 1,'EMBL GFF paired-end reads'],
+			['DUMMY_EMBL_CHR.1', 'Sense Reads Mapping', 1,'EMBL GFF paired-end reads'],
+			['DUMMY_EMBL_CHR.1', 'Antisense Reads Mapping', 0,'EMBL GFF paired-end reads'],
+			['DUMMY_EMBL_CHR.5', 'Total Reads Mapping', 1,'EMBL GFF paired-end reads'],
+			['DUMMY_EMBL_CHR.5', 'Sense Reads Mapping', 1,'EMBL GFF paired-end reads'],
+			['DUMMY_EMBL_CHR.5', 'Antisense Reads Mapping', 0,'EMBL GFF paired-end reads'],
+			['DUMMY_EMBL_CHR.9', 'Total Reads Mapping', 0,'EMBL GFF paired-end reads'],
+			['DUMMY_EMBL_CHR.9', 'Sense Reads Mapping', 0,'EMBL GFF paired-end reads'],
+			['DUMMY_EMBL_CHR.9', 'Antisense Reads Mapping', 0,'EMBL GFF paired-end reads'],
+			['DUMMY_EMBL_CHR.10', 'Total Reads Mapping', 0,'EMBL GFF paired-end reads'],
+			['DUMMY_EMBL_CHR.10', 'Sense Reads Mapping', 0,'EMBL GFF paired-end reads'],
+			['DUMMY_EMBL_CHR.10', 'Antisense Reads Mapping', 0,'EMBL GFF paired-end reads'],
+			['DUMMY_EMBL_CHR.11', 'Total Reads Mapping', 0,'EMBL GFF paired-end reads'],
+			['DUMMY_EMBL_CHR.11', 'Sense Reads Mapping', 0,'EMBL GFF paired-end reads'],
+			['DUMMY_EMBL_CHR.11', 'Antisense Reads Mapping', 0,'EMBL GFF paired-end reads'],
+		       );
+
+run_rna_seq('t/data/gffs_sams/paired_reads_mapping_embl.sam','t/data/gffs_sams/overlapping_genes_embl.gff', \@expected_results_library);
+
 
 
 done_testing();

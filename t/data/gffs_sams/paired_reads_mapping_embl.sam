@@ -1,0 +1,9 @@
+@HD	VN:1.0	SO:coordinate
+@SQ	SN:DUMMY_EMBL_CHR	LN:50	AS:DummyOrganism	UR:file:/lustre/scratch108/pathogen/pathpipe/refs/Plasmodium/chabaudi/Plasmodium_chabaudi_01Oct2010.fa	M5:9bbef99059e95f86f177463094544e07
+@RG	ID:Dummy	LB:B_1-RNA 5710450	SM:B_1-RNA	PI:450	CN:SC	PL:ILLUMINA	DS:ERP001696
+@PG	ID:byHand	VN:2.0.5	CL:Manually created DummyEmblOrganism
+something_to_map1	99	DUMMY_EMBL_CHR	11	50	5M	=	15	109	CTAAA	@@CDC	AS:i:0	XN:i:0	XM:i:0	XO:i:0	XG:i:0	NM:i:0	MD:Z:100	YT:Z:UU	NH:i:1	RG:Z::
+something_to_map1	163	DUMMY_EMBL_CHR	15	50	5M	=	11	109	AGTTT	@@CDC	AS:i:0	XN:i:0	XM:i:0	XO:i:0	XG:i:0	NM:i:0	MD:Z:100	YT:Z:UU	NH:i:1	RG:Z::
+something_to_map3	0	DUMMY_EMBL_CHR	17	50	5M	=	0	109	CTAAA	@@CDC	AS:i:0	XN:i:0	XM:i:0	XO:i:0	XG:i:0	NM:i:0	MD:Z:100	YT:Z:UU	NH:i:1	RG:Z::
+
+
