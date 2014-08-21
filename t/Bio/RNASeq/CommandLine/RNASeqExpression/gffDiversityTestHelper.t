@@ -492,48 +492,48 @@ run_rna_seq('t/data/gffs_sams/intergenic_mapping_chado.sam','t/data/gffs_sams/in
 
 #Standard Protocol, Annot, reads in different strands
 @expected_results_library = (
-			['Clostridium_difficile_630_v1.9_00001', 'Total Reads Mapping', 3,'Annot GFF 3 reads mapping antisense'],
-			['Clostridium_difficile_630_v1.9_00001', 'Sense Reads Mapping', 0,'Annot GFF 3 reads mapping antisense'],
-			['Clostridium_difficile_630_v1.9_00001', 'Antisense Reads Mapping', 3,'Annot GFF 3 reads mapping antisense'],
-			['Clostridium_difficile_630_v1.9_00002', 'Total Reads Mapping', 0,'Annot GFF 3 reads mapping antisense'],
-			['Clostridium_difficile_630_v1.9_00002', 'Sense Reads Mapping', 0,'Annot GFF 3 reads mapping antisense'],
-			['Clostridium_difficile_630_v1.9_00002', 'Antisense Reads Mapping', 0,'Annot GFF 3 reads mapping antisense'],
+			['Clostridium_difficile_630_v1.9_00001', 'Total Reads Mapping', 3,'Annot GFF 3 reads on reverse strand feature on positive strand'],
+			['Clostridium_difficile_630_v1.9_00001', 'Sense Reads Mapping', 0,'Annot GFF 3 reads on reverse strand feature on positive strand'],
+			['Clostridium_difficile_630_v1.9_00001', 'Antisense Reads Mapping', 3,'Annot GFF 3 reads on reverse strand feature on positive strand'],
+			['Clostridium_difficile_630_v1.9_00002', 'Total Reads Mapping', 0,'Annot GFF 3 reads on reverse strand feature on positive strand'],
+			['Clostridium_difficile_630_v1.9_00002', 'Sense Reads Mapping', 0,'Annot GFF 3 reads on reverse strand feature on positive strand'],
+			['Clostridium_difficile_630_v1.9_00002', 'Antisense Reads Mapping', 0,'Annot GFF 3 reads on reverse strand feature on positive strand'],
 		       );
 
-run_rna_seq('t/data/gffs_sams/mapping_to_one_feature_antisense_annot.sam','t/data/gffs_sams/multipurpose_3_cds_positive_strand_annot.gff', \@expected_results_library);
+run_rna_seq('t/data/gffs_sams/mapping_to_one_feature_reverse_strand_annot.sam','t/data/gffs_sams/multipurpose_3_cds_positive_strand_annot.gff', \@expected_results_library);
 
 @expected_results_library = (
-			['Clostridium_difficile_630_v1.9_00001', 'Total Reads Mapping', 3,'Annot GFF 3 reads mapping antisense'],
-			['Clostridium_difficile_630_v1.9_00001', 'Sense Reads Mapping', 3,'Annot GFF 3 reads mapping antisense'],
-			['Clostridium_difficile_630_v1.9_00001', 'Antisense Reads Mapping', 0,'Annot GFF 3 reads mapping antisense'],
-			['Clostridium_difficile_630_v1.9_00002', 'Total Reads Mapping', 0,'Annot GFF 3 reads mapping antisense'],
-			['Clostridium_difficile_630_v1.9_00002', 'Sense Reads Mapping', 0,'Annot GFF 3 reads mapping antisense'],
-			['Clostridium_difficile_630_v1.9_00002', 'Antisense Reads Mapping', 0,'Annot GFF 3 reads mapping antisense'],
+			['Clostridium_difficile_630_v1.9_00001', 'Total Reads Mapping', 3,'Annot GFF 3 reads on reverse strand feature on negative strand'],
+			['Clostridium_difficile_630_v1.9_00001', 'Sense Reads Mapping', 3,'Annot GFF 3 reads on reverse strand feature on negative strand'],
+			['Clostridium_difficile_630_v1.9_00001', 'Antisense Reads Mapping', 0,'Annot GFF 3 reads on reverse strand feature on negative strand'],
+			['Clostridium_difficile_630_v1.9_00002', 'Total Reads Mapping', 0,'Annot GFF 3 reads on reverse strand feature on negative strand'],
+			['Clostridium_difficile_630_v1.9_00002', 'Sense Reads Mapping', 0,'Annot GFF 3 reads on reverse strand feature on negative strand'],
+			['Clostridium_difficile_630_v1.9_00002', 'Antisense Reads Mapping', 0,'Annot GFF 3 reads on reverse strand feature on negative strand'],
 		       );
 
-run_rna_seq('t/data/gffs_sams/mapping_to_one_feature_antisense_annot.sam','t/data/gffs_sams/multipurpose_3_cds_negative_strand_annot.gff', \@expected_results_library);
+run_rna_seq('t/data/gffs_sams/mapping_to_one_feature_reverse_strand_annot.sam','t/data/gffs_sams/multipurpose_3_cds_negative_strand_annot.gff', \@expected_results_library);
 
 @expected_results_library = (
-			['Clostridium_difficile_630_v1.9_00001', 'Total Reads Mapping', 3,'Annot GFF 3 reads mapping antisense'],
-			['Clostridium_difficile_630_v1.9_00001', 'Sense Reads Mapping', 3,'Annot GFF 3 reads mapping antisense'],
-			['Clostridium_difficile_630_v1.9_00001', 'Antisense Reads Mapping', 0,'Annot GFF 3 reads mapping antisense'],
-			['Clostridium_difficile_630_v1.9_00002', 'Total Reads Mapping', 0,'Annot GFF 3 reads mapping antisense'],
-			['Clostridium_difficile_630_v1.9_00002', 'Sense Reads Mapping', 0,'Annot GFF 3 reads mapping antisense'],
-			['Clostridium_difficile_630_v1.9_00002', 'Antisense Reads Mapping', 0,'Annot GFF 3 reads mapping antisense'],
+			['Clostridium_difficile_630_v1.9_00001', 'Total Reads Mapping', 3,'Annot GFF 3 reads on forward strand feature on positive strand'],
+			['Clostridium_difficile_630_v1.9_00001', 'Sense Reads Mapping', 3,'Annot GFF 3 reads on forward strand feature on positive strand'],
+			['Clostridium_difficile_630_v1.9_00001', 'Antisense Reads Mapping', 0,'Annot GFF 3 reads on forward strand feature on positive strand'],
+			['Clostridium_difficile_630_v1.9_00002', 'Total Reads Mapping', 0,'Annot GFF 3 reads on forward strand feature on positive strand'],
+			['Clostridium_difficile_630_v1.9_00002', 'Sense Reads Mapping', 0,'Annot GFF 3 reads on forward strand feature on positive strand'],
+			['Clostridium_difficile_630_v1.9_00002', 'Antisense Reads Mapping', 0,'Annot GFF 3 reads on forward strand feature on positive strand'],
 		       );
 
-run_rna_seq('t/data/gffs_sams/mapping_to_one_feature_sense_annot.sam','t/data/gffs_sams/multipurpose_3_cds_positive_strand_annot.gff', \@expected_results_library);
+run_rna_seq('t/data/gffs_sams/mapping_to_one_feature_forward_strand_annot.sam','t/data/gffs_sams/multipurpose_3_cds_positive_strand_annot.gff', \@expected_results_library);
 
 @expected_results_library = (
-			['Clostridium_difficile_630_v1.9_00001', 'Total Reads Mapping', 3,'Annot GFF 3 reads mapping antisense'],
-			['Clostridium_difficile_630_v1.9_00001', 'Sense Reads Mapping', 0,'Annot GFF 3 reads mapping antisense'],
-			['Clostridium_difficile_630_v1.9_00001', 'Antisense Reads Mapping', 3,'Annot GFF 3 reads mapping antisense'],
-			['Clostridium_difficile_630_v1.9_00002', 'Total Reads Mapping', 0,'Annot GFF 3 reads mapping antisense'],
-			['Clostridium_difficile_630_v1.9_00002', 'Sense Reads Mapping', 0,'Annot GFF 3 reads mapping antisense'],
-			['Clostridium_difficile_630_v1.9_00002', 'Antisense Reads Mapping', 0,'Annot GFF 3 reads mapping antisense'],
+			['Clostridium_difficile_630_v1.9_00001', 'Total Reads Mapping', 3,'Annot GFF 3 reads on forward strand feature on negative strand'],
+			['Clostridium_difficile_630_v1.9_00001', 'Sense Reads Mapping', 0,'Annot GFF 3 reads on forward strand feature on negative strand'],
+			['Clostridium_difficile_630_v1.9_00001', 'Antisense Reads Mapping', 3,'Annot GFF 3 reads on forward strand feature on negative strand'],
+			['Clostridium_difficile_630_v1.9_00002', 'Total Reads Mapping', 0,'Annot GFF 3 reads on forward strand feature on negative strand'],
+			['Clostridium_difficile_630_v1.9_00002', 'Sense Reads Mapping', 0,'Annot GFF 3 reads on forward strand feature on negative strand'],
+			['Clostridium_difficile_630_v1.9_00002', 'Antisense Reads Mapping', 0,'Annot GFF 3 reads on forward strand feature on negative strand'],
 		       );
 
-run_rna_seq('t/data/gffs_sams/mapping_to_one_feature_sense_annot.sam','t/data/gffs_sams/multipurpose_3_cds_negative_strand_annot.gff', \@expected_results_library);
+run_rna_seq('t/data/gffs_sams/mapping_to_one_feature_forward_strand_annot.sam','t/data/gffs_sams/multipurpose_3_cds_negative_strand_annot.gff', \@expected_results_library);
 ##
 
 
