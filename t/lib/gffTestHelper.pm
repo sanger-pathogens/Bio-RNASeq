@@ -21,7 +21,7 @@ our $debug = 0;
 
 sub _run_rna_seq {
 
-    my ( $sam_file, $annotation_file, $results_library, $protocol ) = @_;
+    my ( $sam_file, $annotation_file, $results_library, $protocol, $chromosome ) = @_;
 
 
     open OLDOUT, '>&STDOUT';
@@ -82,7 +82,7 @@ sub _run_rna_seq {
 
         ok(
             -e $output_base_filename
-              . '.corrected.bam.intergenic.DUMMY_CHADO_CHR.tab.gz',
+              . ".corrected.bam.intergenic.$chromosome.tab.gz",
             'intergenic gz'
         );
 
@@ -112,17 +112,113 @@ sub _run_rna_seq {
 
 }
 
+sub _run_rna_seq_check_non_existance_of_a_feature {
+
+    my ( $sam_file, $annotation_file, $feature_names, $protocol ) = @_;
+
+
+    open OLDOUT, '>&STDOUT';
+    open OLDERR, '>&STDERR';
+
+    {
+
+      my $redirect_str_stout = '>/dev/null';
+      my $redirect_str_sterr = $redirect_str_stout;
+
+      $redirect_str_stout = '>&OLDOUT' if($debug);
+      $redirect_str_sterr = '>&OLDERR' if($debug);
+
+
+        local *STDOUT;
+        open STDOUT, $redirect_str_stout or warn "Can't open $redirect_str_stout: $!";
+        local *STDERR;
+      open STDERR, $redirect_str_sterr or warn "Can't open $redirect_str_sterr: $!";
+
+        my $bam_file = $sam_file;
+        $bam_file =~ s/sam$/bam/;
+        unlink($bam_file) if ( -e $bam_file );
+
+        `samtools view -bS $sam_file 2>/dev/null > $bam_file`;
+
+      
+        my $file_temp_obj =
+          File::Temp->newdir( DIR => File::Spec->curdir(), CLEANUP => ($debug ? 0 : 1) );
+
+        my $output_base_filename = $file_temp_obj->dirname() . '/test_';
+
+      print ($file_temp_obj->dirname(), "\n") if($debug);
+
+        my $intergenic_regions = 1;
+        my %filters = ( mapping_quality => 1 );
+      my $test_name = '';
+
+        ok(
+            my $expression_results = Bio::RNASeq->new(
+                sequence_filename    => $bam_file,
+                annotation_filename  => $annotation_file,
+                filters              => \%filters,
+                protocol             => $protocol,
+                output_base_filename => $output_base_filename,
+                intergenic_regions   => $intergenic_regions,
+            ),
+            $test_name . ' expression_results object creation'
+        );
+
+        ok( $expression_results->output_spreadsheet(),
+            $test_name . ' expression results spreadsheet creation' );
+
+        my $filename = $output_base_filename . '.expression.csv';
+
+        ok(
+            -e $filename,
+            $test_name . ' expression results'
+        );
+
+
+        for my $feature_name (@$feature_names) {
+	  my $file_content = read_file($filename);
+	  ok ( !( $file_content =~ m/$feature_name/ ), "$feature_name shouldn't exist" );
+        }
+
+        close STDOUT;
+        close STDERR;
+        unlink($bam_file);
+    }
+
+    ## Restore stdout.
+    open STDOUT, '>&OLDOUT' or die "Can't restore stdout: $!";
+    open STDERR, '>&OLDERR' or die "Can't restore stderr: $!";
+
+    # Avoid leaks by closing the independent copies.
+    close OLDOUT or die "Can't close OLDOUT: $!";
+    close OLDERR or die "Can't close OLDERR: $!";
+
+}
+
 sub run_rna_seq {
   
-  my ( $sam_file, $annotation_file, $results_library ) = @_;
-  return _run_rna_seq( $sam_file, $annotation_file, $results_library, 'StandardProtocol' );
+  my ( $sam_file, $annotation_file, $results_library, $chromosome ) = @_;
+  return _run_rna_seq( $sam_file, $annotation_file, $results_library, 'StandardProtocol', $chromosome );
 
 }
 
 sub run_rna_seq_strand_specific {
 
-  my ( $sam_file, $annotation_file, $results_library ) = @_;
-  return _run_rna_seq( $sam_file, $annotation_file, $results_library, 'StrandSpecificProtocol' );
+  my ( $sam_file, $annotation_file, $results_library, $chromosome ) = @_;
+  return _run_rna_seq( $sam_file, $annotation_file, $results_library, 'StrandSpecificProtocol', $chromosome );
+
+}
+
+sub run_rna_seq_check_non_existance_of_a_feature {
+
+  my ( $sam_file, $annotation_file, $feature_names ) = @_;
+  return _run_rna_seq_check_non_existance_of_a_feature( $sam_file, $annotation_file, $feature_names, 'StandardProtocol' );
+}
+
+sub run_rna_seq_check_non_existance_of_a_feature_strand_specific {
+
+  my ( $sam_file, $annotation_file, $feature_names ) = @_;
+  return _run_rna_seq_check_non_existance_of_a_feature( $sam_file, $annotation_file, $feature_names, 'StrandSpecificProtocol' );
 
 }
 
