@@ -10,7 +10,8 @@ use Cwd;
 
 BEGIN { unshift( @INC, './lib' ) }
 BEGIN { unshift( @INC, './t/lib' ) }
-#with 'TestMappingHelper';
+with 'gffTestHelper';
+
 
 BEGIN {
     use Test::Most;
@@ -19,7 +20,7 @@ BEGIN {
 
 my @expected_results_library;
 
-#=head
+
 
 #1 read mapping in the middle of CDS/gene
 #For Chado gff's we should test for the gene feature types and not for the CDS feature types
@@ -84,6 +85,7 @@ run_rna_seq('t/data/gffs_sams/one_read_mapping_one_gene_mammal.sam','t/data/gffs
 #END 1 read mapping
 
 
+
 #3 Reads mapping - 1 partly flanking to the left, 1 straight inside, 1 slightly flanking to the right
 #For Chado gff's we should test for the gene feature types and not for the CDS feature types
 @expected_results_library = (
@@ -96,6 +98,8 @@ run_rna_seq('t/data/gffs_sams/one_read_mapping_one_gene_mammal.sam','t/data/gffs
 		       );
 
 run_rna_seq('t/data/gffs_sams/mapping_to_one_feature_chado.sam','t/data/gffs_sams/multipurpose_3_cds_chado.gff', \@expected_results_library);
+
+
 
 @expected_results_library = (
 			['Clostridium_difficile_630_v1.9_00001', 'Total Reads Mapping', 3,'Annot GFF 3 reads mapping flanking'],
@@ -221,7 +225,7 @@ run_rna_seq('t/data/gffs_sams/split_read_mapping_to_2_cds_annot.sam','t/data/gff
 run_rna_seq('t/data/gffs_sams/split_read_mapping_to_2_cds_embl.sam','t/data/gffs_sams/split_reads_embl.gff', \@expected_results_library);
 ##END Split Reads
 
-#=cut
+#
 
 #Overlapping features
 #For Chado gff's we should test for the gene feature types and not for the CDS feature types. Including both for now. But the first ones should fail
@@ -257,9 +261,9 @@ run_rna_seq('t/data/gffs_sams/overlapping_genes_chado.sam','t/data/gffs_sams/ove
 
 run_rna_seq('t/data/gffs_sams/overlapping_genes_chado.sam','t/data/gffs_sams/overlapping_genes_chado.gff', \@expected_results_library);
 
-#=head
+#
 
-#=cut
+#
 
 @expected_results_library = (
 			['Clostridium_difficile_630_v1.9_00001', 'Total Reads Mapping', 2,'Annot GFF overlapping features'],
@@ -305,7 +309,7 @@ run_rna_seq('t/data/gffs_sams/overlapping_genes_annot.sam','t/data/gffs_sams/ove
 run_rna_seq('t/data/gffs_sams/overlapping_genes_embl.sam','t/data/gffs_sams/overlapping_genes_embl.gff', \@expected_results_library);
 ##END Overlapping features
 
-#=head
+#
 
 ##Overlapping in different frames of translation
 #For Chado gff's we should test for the gene feature types and not for the CDS feature types. Including both for now. But the first ones should fail
@@ -352,7 +356,7 @@ run_rna_seq('t/data/gffs_sams/overlapping_in_diff_frames_of_trans_chado.sam','t/
 
 run_rna_seq('t/data/gffs_sams/overlapping_in_diff_frames_of_trans_embl.sam','t/data/gffs_sams/overlapping_in_diff_frames_of_trans_embl.gff', \@expected_results_library);
 
-#=cut
+#
 
 @expected_results_library = (
 			['Clostridium_difficile_630_v1.9_00001', 'Total Reads Mapping', 4,'Annot GFF overlapping in diff frames of translation'],
@@ -368,9 +372,9 @@ run_rna_seq('t/data/gffs_sams/overlapping_in_diff_frames_of_trans_embl.sam','t/d
 
 run_rna_seq('t/data/gffs_sams/overlapping_in_diff_frames_of_trans_annot.sam','t/data/gffs_sams/overlapping_in_diff_frames_of_trans_annot.gff', \@expected_results_library);
 ##END of Overlapping in diff frames of translation
-#=cut
+#
 
-#=head
+#
 
 #Experimental tiny regions
 @expected_results_library = (
@@ -402,7 +406,7 @@ run_rna_seq('t/data/gffs_sams/tiny_chado.sam','t/data/gffs_sams/tiny_chado.gff',
 run_rna_seq('t/data/gffs_sams/overlap_simple_tiny_chado.sam','t/data/gffs_sams/overlap_simple_tiny_chado.gff', \@expected_results_library);
 ##END of tiny regions
 
-#=cut
+#
 
 ##Reads in intronic regions and at their boundaries
 #For Chado gff's we should test for the gene feature types and not for the CDS feature types. Including both for now. But the first ones should fail
@@ -439,7 +443,7 @@ run_rna_seq('t/data/gffs_sams/intronic_mapping_chado.sam','t/data/gffs_sams/intr
 
 run_rna_seq('t/data/gffs_sams/intronic_mapping_embl.sam','t/data/gffs_sams/intronic_mapping_embl.gff', \@expected_results_library);
 
-#=cut
+#
 
 @expected_results_library = (
 			['Clostridium_difficile_630_v1.9_00001', 'Total Reads Mapping', 4,'Annot GFF intronic mappings'],
@@ -488,7 +492,7 @@ run_rna_seq('t/data/gffs_sams/intergenic_mapping_chado.sam','t/data/gffs_sams/in
 run_rna_seq('t/data/gffs_sams/intergenic_mapping_chado.sam','t/data/gffs_sams/intergenic_mapping_chado.gff', \@expected_results_library);
 ##End intergenic mappings
 
-#=cut
+#
 
 #Standard Protocol, Annot, reads in different strands
 @expected_results_library = (
@@ -818,162 +822,3 @@ run_rna_seq('t/data/gffs_sams/paired_reads_mapping_embl.sam','t/data/gffs_sams/o
 done_testing();
 
 
-
-sub run_rna_seq {
-
-    my ( $sam_file, $annotation_file, $results_library ) = @_;
-
-    my $bam_file = $sam_file;
-    $bam_file =~ s/sam$/bam/;
-
-    system("samtools view -bS $sam_file > $bam_file");
-
-    my $file_temp_obj = File::Temp->newdir( DIR => File::Spec->curdir(), CLEANUP => 1 );
-
-    my $output_base_filename = $file_temp_obj->dirname() . '/test_';
-
-    print " $output_base_filename\n";
-
-    my $protocol           = 'StandardProtocol';
-    my $intergenic_regions = 0;
-    my %filters            = ( mapping_quality => 1 );
-
-    my $test_name = $results_library->[0]->[3];
-    print "##########\nTEST: $test_name\n##########\n";
-    ok(
-        my $expression_results = Bio::RNASeq->new(
-            sequence_filename    => $bam_file,
-            annotation_filename  => $annotation_file,
-            filters              => \%filters,
-            protocol             => $protocol,
-            output_base_filename => $output_base_filename,
-            intergenic_regions   => $intergenic_regions,
-        ),
-        'expression_results object creation'
-    );
-
-    ok(
-        $expression_results->output_spreadsheet(),
-        'expression results spreadsheet creation'
-    );
-    #print Dumper($expression_results);
-    ok( -e $output_base_filename . '.corrected.bam',     'corrected bam' );
-    ok( -e $output_base_filename . '.corrected.bam.bai', 'corrected bai' );
- 
-
-=head
-
-   ok(
-        -e $output_base_filename
-          . '.corrected.bam.intergenic.DUMMY_CHADO_CHR.tab.gz',
-        'intergenic gz'
-    );
-
-=cut
-
-    ok( -e $output_base_filename . '.expression.csv', 'expression results' );
-
-    my $filename = $output_base_filename . '.expression.csv';
-
-    for my $set_of_expected_results(@$results_library) {
-      parseExpressionResultsFile ( $filename, $set_of_expected_results );
-    }
-    print "$output_base_filename\n";
-
-}
-
-sub run_rna_seq_strand_specific {
-
-    my ( $sam_file, $annotation_file, $results_library ) = @_;
-
-    my $bam_file = $sam_file;
-    $bam_file =~ s/sam$/bam/;
-
-    system("samtools view -bS $sam_file > $bam_file");
-
-    my $file_temp_obj = File::Temp->newdir( DIR => File::Spec->curdir(), CLEANUP => 1 );
-
-    my $output_base_filename = $file_temp_obj->dirname() . '/test_';
-
-    print " $output_base_filename\n";
-
-    my $protocol           = 'StrandSpecificProtocol';
-    my $intergenic_regions = 0;
-    my %filters            = ( mapping_quality => 1 );
-
-    my $test_name = $results_library->[0]->[3];
-    print "##########\nTEST: $test_name\n##########\n";
-    ok(
-        my $expression_results = Bio::RNASeq->new(
-            sequence_filename    => $bam_file,
-            annotation_filename  => $annotation_file,
-            filters              => \%filters,
-            protocol             => $protocol,
-            output_base_filename => $output_base_filename,
-            intergenic_regions   => $intergenic_regions,
-        ),
-        'expression_results object creation'
-    );
-
-    ok(
-        $expression_results->output_spreadsheet(),
-        'expression results spreadsheet creation'
-    );
-    #print Dumper($expression_results);
-    ok( -e $output_base_filename . '.corrected.bam',     'corrected bam' );
-    ok( -e $output_base_filename . '.corrected.bam.bai', 'corrected bai' );
- 
-
-=head
-
-   ok(
-        -e $output_base_filename
-          . '.corrected.bam.intergenic.DUMMY_CHADO_CHR.tab.gz',
-        'intergenic gz'
-    );
-
-=cut
-
-    ok( -e $output_base_filename . '.expression.csv', 'expression results' );
-
-    my $filename = $output_base_filename . '.expression.csv';
-
-    for my $set_of_expected_results(@$results_library) {
-      parseExpressionResultsFile ( $filename, $set_of_expected_results );
-    }
-    print "$output_base_filename\n";
-
-}
-
-
-sub parseExpressionResultsFile {
-
-    my ( $filename, $set_of_expected_results ) = @_;
-
-
-    my $csv = Text::CSV->new();
-    open( my $fh, "<:encoding(utf8)", $filename ) or die("$filename: $!");
-
-    my $headers = $csv->getline($fh);
-
-    my $column_index = 0;
-    for my $header (@$headers) {
-
-        if ( $header eq $set_of_expected_results->[1] ) {
-            last;
-        }
-        $column_index++;
-    }
-
-    while ( my $row = $csv->getline($fh) ) {
-        unless ( $row->[1] eq $set_of_expected_results->[0] ) {
-            next;
-        }
-        is( $row->[$column_index], $set_of_expected_results->[2],
-            "match $set_of_expected_results->[1] - $set_of_expected_results->[0]" );
-        last;
-    }
-    $csv->eof or $csv->error_diag();
-    close $fh;
-
-}
