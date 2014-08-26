@@ -46,6 +46,20 @@ run_rna_seq('t/data/gffs_sams/mapping_to_one_feature_annot.sam','t/data/gffs_sam
 		       );
 
 run_rna_seq('t/data/gffs_sams/mapping_to_one_feature_embl.sam','t/data/gffs_sams/multipurpose_3_cds_embl.gff', \@expected_results_library);
+
+@expected_results_library = (
+			['ENSMUSG00000094722', 'Total Reads Mapping', 3,'Mammal GFF 3 reads mapping flanking'],
+			['ENSMUSG00000094722', 'Sense Reads Mapping', 3,'Mammal GFF 3 reads mapping flanking'],
+			['ENSMUSG00000094722', 'Antisense Reads Mapping', 0,'Mammal GFF 3 reads mapping flanking'],
+			['ENSMUSG00000094723', 'Total Reads Mapping', 0,'Mammal GFF 3 reads mapping flanking'],
+			['ENSMUSG00000094723', 'Sense Reads Mapping', 0,'Mammal GFF 3 reads mapping flanking'],
+			['ENSMUSG00000094723', 'Antisense Reads Mapping', 0,'Mammal GFF 3 reads mapping flanking'],
+		       );
+
+
+
+run_rna_seq('t/data/gffs_sams/mapping_to_one_feature_mammal.sam','t/data/gffs_sams/multipurpose_3_genes_mammal_gtf2gff3.gff', \@expected_results_library);
+
 #END 3 reads mapping
 
 done_testing();

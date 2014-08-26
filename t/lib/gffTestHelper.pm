@@ -17,19 +17,29 @@ BEGIN {
     use Bio::RNASeq::CommandLine::RNASeqExpression;
 }
 
+our $debug = 0;
+
 sub _run_rna_seq {
 
     my ( $sam_file, $annotation_file, $results_library, $protocol ) = @_;
+
 
     open OLDOUT, '>&STDOUT';
     open OLDERR, '>&STDERR';
 
     {
 
+      my $redirect_str_stout = '>/dev/null';
+      my $redirect_str_sterr = $redirect_str_stout;
+
+      $redirect_str_stout = '>&OLDOUT' if($debug);
+      $redirect_str_sterr = '>&OLDERR' if($debug);
+
+
         local *STDOUT;
-        open STDOUT, '>/dev/null' or warn "Can't open /dev/null: $!";
+        open STDOUT, $redirect_str_stout or warn "Can't open $redirect_str_stout: $!";
         local *STDERR;
-        open STDERR, '>/dev/null' or warn "Can't open /dev/null: $!";
+      open STDERR, $redirect_str_sterr or warn "Can't open $redirect_str_sterr: $!";
 
         my $bam_file = $sam_file;
         $bam_file =~ s/sam$/bam/;
@@ -37,10 +47,13 @@ sub _run_rna_seq {
 
         `samtools view -bS $sam_file 2>/dev/null > $bam_file`;
 
+      
         my $file_temp_obj =
-          File::Temp->newdir( DIR => File::Spec->curdir(), CLEANUP => 1 );
+          File::Temp->newdir( DIR => File::Spec->curdir(), CLEANUP => ($debug ? 0 : 1) );
 
         my $output_base_filename = $file_temp_obj->dirname() . '/test_';
+
+      print ($file_temp_obj->dirname(), "\n") if($debug);
 
         my $intergenic_regions = 1;
         my %filters = ( mapping_quality => 1 );
@@ -138,7 +151,7 @@ sub parseExpressionResultsFile {
             next;
         }
         is( $row->[$column_index], $set_of_expected_results->[2],
-            "match $set_of_expected_results->[1] - $set_of_expected_results->[0]" );
+            $set_of_expected_results->[3] . " - match $set_of_expected_results->[1] - $set_of_expected_results->[0]" );
         last;
     }
     $csv->eof or $csv->error_diag();
