@@ -1,22 +1,11 @@
 #!/usr/bin/env perl
 use Moose;
 use Data::Dumper;
-use File::Slurp;
-use File::Path qw( remove_tree);
-use File::Spec;
-use File::Temp qw/ tempdir /;
-use Text::CSV;
-use Cwd;
 
 BEGIN { unshift( @INC, './lib' ) }
 BEGIN { unshift( @INC, './t/lib' ) }
 with 'gffTestHelper';
 
-
-BEGIN {
-    use Test::Most;
-    use Bio::RNASeq::CommandLine::RNASeqExpression;
-}
 
 my @expected_results_library;
 

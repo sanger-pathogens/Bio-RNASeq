@@ -1,10 +1,21 @@
 package gffTestHelper;
 use Moose::Role;
 use Test::Most;
-use File::Slurp;
 use File::Compare;
 use Data::Dumper;
+use File::Slurp;
+use File::Path qw( remove_tree);
+use File::Spec;
+use File::Temp qw/ tempdir /;
+use Text::CSV;
+use Cwd;
 
+BEGIN { unshift( @INC, './lib' ) }
+BEGIN { unshift( @INC, './t/lib' ) }
+
+BEGIN {
+    use Bio::RNASeq::CommandLine::RNASeqExpression;
+}
 
 sub _run_rna_seq {
 
