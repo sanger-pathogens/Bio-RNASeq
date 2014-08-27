@@ -21,7 +21,7 @@ our $debug = 0;
 
 sub _run_rna_seq {
 
-    my ( $sam_file, $annotation_file, $results_library, $protocol, $chromosome ) = @_;
+    my ( $sam_file, $annotation_file, $results_library, $protocol, $chromosome, $test_name ) = @_;
 
 
     open OLDOUT, '>&STDOUT';
@@ -46,7 +46,6 @@ sub _run_rna_seq {
         unlink($bam_file) if ( -e $bam_file );
 
         `samtools view -bS $sam_file 2>/dev/null > $bam_file`;
-
       
         my $file_temp_obj =
           File::Temp->newdir( DIR => File::Spec->curdir(), CLEANUP => ($debug ? 0 : 1) );
@@ -57,8 +56,6 @@ sub _run_rna_seq {
 
         my $intergenic_regions = 1;
         my %filters = ( mapping_quality => 1 );
-
-        my $test_name = $results_library->[0]->[3];
 
         ok(
             my $expression_results = Bio::RNASeq->new(
@@ -95,7 +92,7 @@ sub _run_rna_seq {
         my $filename = $output_base_filename . '.expression.csv';
 
         for my $set_of_expected_results (@$results_library) {
-            parseExpressionResultsFile( $filename, $set_of_expected_results );
+            parseExpressionResultsFile( $filename, $set_of_expected_results, $test_name );
         }
 
         close STDOUT;
@@ -113,9 +110,9 @@ sub _run_rna_seq {
 
 }
 
-sub _run_rna_seq_check_non_existance_of_a_feature {
+sub _run_rna_seq_check_non_existence_of_a_feature {
 
-    my ( $sam_file, $annotation_file, $feature_names, $protocol ) = @_;
+    my ( $sam_file, $annotation_file, $feature_names, $protocol, $test_name ) = @_;
 
 
     open OLDOUT, '>&STDOUT';
@@ -198,35 +195,35 @@ sub _run_rna_seq_check_non_existance_of_a_feature {
 
 sub run_rna_seq {
   
-  my ( $sam_file, $annotation_file, $results_library, $chromosome ) = @_;
-  return _run_rna_seq( $sam_file, $annotation_file, $results_library, 'StandardProtocol', $chromosome );
+  my ( $sam_file, $annotation_file, $results_library, $chromosome, $test_name ) = @_;
+  return _run_rna_seq( $sam_file, $annotation_file, $results_library, 'StandardProtocol', $chromosome, $test_name );
 
 }
 
 sub run_rna_seq_strand_specific {
 
-  my ( $sam_file, $annotation_file, $results_library, $chromosome ) = @_;
-  return _run_rna_seq( $sam_file, $annotation_file, $results_library, 'StrandSpecificProtocol', $chromosome );
+  my ( $sam_file, $annotation_file, $results_library, $chromosome, $test_name ) = @_;
+  return _run_rna_seq( $sam_file, $annotation_file, $results_library, 'StrandSpecificProtocol', $chromosome, $test_name );
 
 }
 
-sub run_rna_seq_check_non_existance_of_a_feature {
+sub run_rna_seq_check_non_existence_of_a_feature {
 
-  my ( $sam_file, $annotation_file, $feature_names ) = @_;
-  return _run_rna_seq_check_non_existance_of_a_feature( $sam_file, $annotation_file, $feature_names, 'StandardProtocol' );
+  my ( $sam_file, $annotation_file, $feature_names, $test_name ) = @_;
+  return _run_rna_seq_check_non_existence_of_a_feature( $sam_file, $annotation_file, $feature_names, 'StandardProtocol', $test_name );
 }
 
-sub run_rna_seq_check_non_existance_of_a_feature_strand_specific {
+sub run_rna_seq_check_non_existence_of_a_feature_strand_specific {
 
-  my ( $sam_file, $annotation_file, $feature_names ) = @_;
-  return _run_rna_seq_check_non_existance_of_a_feature( $sam_file, $annotation_file, $feature_names, 'StrandSpecificProtocol' );
+  my ( $sam_file, $annotation_file, $feature_names, $test_name ) = @_;
+  return _run_rna_seq_check_non_existence_of_a_feature( $sam_file, $annotation_file, $feature_names, 'StrandSpecificProtocol', $test_name );
 
 }
 
 
 sub parseExpressionResultsFile {
 
-    my ( $filename, $set_of_expected_results ) = @_;
+    my ( $filename, $set_of_expected_results, $test_name ) = @_;
 
 
     my $csv = Text::CSV->new();
@@ -248,7 +245,7 @@ sub parseExpressionResultsFile {
             next;
         }
         is( $row->[$column_index], $set_of_expected_results->[2],
-            $set_of_expected_results->[3] . " - match $set_of_expected_results->[1] - $set_of_expected_results->[0]" );
+            $test_name . " - match $set_of_expected_results->[1] - $set_of_expected_results->[0]" );
         last;
     }
     $csv->eof or $csv->error_diag();
