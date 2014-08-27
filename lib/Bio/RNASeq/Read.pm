@@ -17,6 +17,7 @@ Extract a slice of reads for a sequence file within a specific region
 =cut
 
 use Moose;
+use File::Temp qw/ tempfile /;
 use Bio::RNASeq::Exceptions;
 
 has 'alignment_line' => ( is => 'rw', isa => 'Str',      required   => 1 );
@@ -32,6 +33,7 @@ has '_read_position' => ( is => 'rw', isa => 'Int',      lazy_build   => 1 );
 has 'read_strand'   => ( is => 'rw', isa => 'Int',      lazy_build   => 1 );
 has 'mapped_reads' => ( is => 'rw', isa => 'HashRef',  lazy_build   => 1 );
 has '_base_positions' => ( is => 'rw', isa => 'ArrayRef', lazy   => 1, builder => '_build__base_positions' );
+
 
 sub _build__read_details
 {
@@ -126,11 +128,27 @@ sub _does_read_pass_filters
 sub _build__base_positions {
 
   my ($self) = @_;
+
   my $bam_file_string = $self->_dummy_seq_line() . $self->alignment_line() . "\n";
  
-  my $mpileup_cmd = "echo '$bam_file_string' | samtools view -bS - | samtools mpileup - | awk '{if (\$5 ~ /[ACGTacgt]/) print \$0};' | awk '{print \$2}' | xargs";
+  my ($fh, $filename) = tempfile();
+  print {$fh} $bam_file_string;
+  close($fh);
 
-  my $output = `$mpileup_cmd`;
+  my $mpileup_cmd = "samtools view -bS $filename 2>/dev/null | samtools mpileup - 2>/dev/null | awk '{if (\$5 ~ /[ACGTacgt]/) print \$0};' | awk '{print \$2}' | xargs";
+  my $output = '';
+
+  open OLDERR, '>&STDERR';
+  {
+    local *STDERR;
+    open STDERR, '>/dev/null' or warn "Can't open >/dev/null: $!"; 
+    $output = `$mpileup_cmd`;
+
+    close STDERR;
+  }
+  open STDERR, '>&OLDERR' or die "Can't restore stderr: $!";
+  close OLDERR or die "Can't close OLDERR: $!";
+
   my @base_positions = split(/\s+/, $output);
   return \@base_positions;
 

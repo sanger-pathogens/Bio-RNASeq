@@ -92,7 +92,7 @@ sub _slice_stream {
           . $self->filename . " "
           . $self->feature->seq_id . ":"
           . $self->_window_start . "-"
-          . $self->_window_end . " |";
+          . $self->_window_end . " 2>/dev/null |";
     }
 
 }

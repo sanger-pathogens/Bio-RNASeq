@@ -17,7 +17,7 @@ BEGIN {
     use Bio::RNASeq::CommandLine::RNASeqExpression;
 }
 
-our $debug = 1;
+our $debug = 0;
 
 sub _run_rna_seq {
 

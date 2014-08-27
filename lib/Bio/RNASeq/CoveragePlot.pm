@@ -30,6 +30,8 @@ has '_output_file_handles'    => ( is => 'rw', isa => 'HashRef',  lazy_build => 
 has '_sequence_names'         => ( is => 'rw', isa => 'ArrayRef', lazy_build => 1 );
 has '_sequence_base_counters' => ( is => 'rw', isa => 'HashRef',  lazy_build => 1 );
 has '_sequence_information'   => ( is => 'rw', isa => 'HashRef',  lazy_build => 1 );
+has 'debug' => ( is => 'rw', isa => 'Bool', default => 0);
+
 
 sub _build__sequence_information
 {
@@ -74,7 +76,7 @@ sub _build__input_file_handle
   my $input_file_handle; 
   # TODO remove direct call to samtools and allow for filtering options
   # this only extracts the sequence name, base position, bases.
-  open($input_file_handle, '-|', $self->mpileup_cmd." -A -q ".$self->mapping_quality." ". $self->filename.' | awk \'{print $1"\t"$2"\t"$5}\'') || Bio::RNASeq::Exceptions::FailedToCreateMpileup->throw(error => "Failed to create mpileup for ".$self->filename );
+  open($input_file_handle, '-|', $self->mpileup_cmd." -A -q ".$self->mapping_quality." ". $self->filename . ($self->debug ? '' : " 2>/dev/null") . ' | awk \'{print $1"\t"$2"\t"$5}\'') || Bio::RNASeq::Exceptions::FailedToCreateMpileup->throw(error => "Failed to create mpileup for ".$self->filename );
   return $input_file_handle;
 }
 
