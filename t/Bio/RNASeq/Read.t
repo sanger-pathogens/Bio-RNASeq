@@ -175,8 +175,6 @@ ok my %mapped_reads7 = %{ $alignment_slice7->mapped_reads },
 is $mapped_reads7{sense},     1, 'Sense reads - single read in exon2';
 is $mapped_reads7{antisense}, 0, 'Antisense reads - single read in exon2';
 
-my $alignment_slice;
-my $mapped_reads;
 
 ok $alignment_slice = Bio::RNASeq::Read->new(
     alignment_line =>
