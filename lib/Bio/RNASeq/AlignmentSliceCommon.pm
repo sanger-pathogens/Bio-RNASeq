@@ -49,6 +49,8 @@ has '_slice_file_handle' => ( is => 'rw', lazy_build => 1 );
 has '_window_start' => ( is => 'rw', isa => 'Int', lazy_build => 1 );
 has '_window_end' => ( is => 'rw', isa => 'Int', lazy_build => 1 );
 has '_read_protocol_class' => ( is => 'rw', lazy_build => 1 );
+has 'debug' => ( is => 'rw', isa => 'Bool', default => 0);
+
 
 sub BUILD {
 	my ($self) = @_;
@@ -92,7 +94,7 @@ sub _slice_stream {
           . $self->filename . " "
           . $self->feature->seq_id . ":"
           . $self->_window_start . "-"
-          . $self->_window_end . " 2>/dev/null |";
+          . $self->_window_end . ($self->debug ? '' : " 2>/dev/null") . '|';
     }
 
 }
