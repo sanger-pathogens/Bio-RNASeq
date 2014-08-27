@@ -17,7 +17,7 @@ BEGIN {
     use Bio::RNASeq::CommandLine::RNASeqExpression;
 }
 
-our $debug = 0;
+our $debug = 1;
 
 sub _run_rna_seq {
 
@@ -64,6 +64,7 @@ sub _run_rna_seq {
             my $expression_results = Bio::RNASeq->new(
                 sequence_filename    => $bam_file,
                 annotation_filename  => $annotation_file,
+		window_margin => 0,
                 filters              => \%filters,
                 protocol             => $protocol,
                 output_base_filename => $output_base_filename,

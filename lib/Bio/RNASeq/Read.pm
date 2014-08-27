@@ -27,36 +27,29 @@ has 'gene_strand'    => ( is => 'rw', isa => 'Int',      required   => 1 );
 has 'filters'        => ( is => 'rw', isa => 'Maybe[HashRef]'            );
 
 has '_read_details'  => ( is => 'rw', isa => 'HashRef',  lazy_build   => 1 );
-has '_read_length'   => ( is => 'rw', isa => 'Int',      lazy_build   => 1 );
 has '_read_position' => ( is => 'rw', isa => 'Int',      lazy_build   => 1 );
 
 has 'read_strand'   => ( is => 'rw', isa => 'Int',      lazy_build   => 1 );
 has 'mapped_reads' => ( is => 'rw', isa => 'HashRef',  lazy_build   => 1 );
+has '_base_positions' => ( is => 'rw', isa => 'ArrayRef', lazy   => 1, builder => '_build__base_positions' );
 
 sub _build__read_details
 {
   my ($self) = @_;
   
-  my($qname, $flag, $rname, $read_position, $mapq, $cigar, $mrnm, $mpos, $isize, $seq, $qual) = split(/\t/,$self->alignment_line);
+  my($qname, $flag, $chromosome_name, $read_position, $mapq, $cigar, $mrnm, $mpos, $isize, $seq, $qual) = split(/\t/,$self->alignment_line);
   
   my $read_details = {
     mapping_quality => $mapq,
     cigar           => $cigar,
     read_position   => $read_position,
     flag            => $flag,
+    chromosome_name => $chromosome_name,
   };
   # hook to allow for reads to be altered for different protocols
   $self->_process_read_details($read_details);
   
   return $read_details;
-}
-
-sub _build__read_length
-{
-  my ($self) = @_;
-  my $read_length = 0;
-  $self->_read_details->{cigar} =~ s/(\d+)[MIS=X]/$read_length+=$1/eg;
-  return $read_length;
 }
 
 sub _build_read_strand
@@ -75,32 +68,30 @@ sub _build__read_position
 
 sub _build_mapped_reads
 {
-  my ($self) = @_;
-  my %mapped_reads ;
-  $mapped_reads{sense} = 0;
-  $mapped_reads{antisense} = 0;
-  
-  return \%mapped_reads unless( $self->_does_read_pass_filters() == 1 );
-  
-  foreach my $exon (@{$self->exons})
-  {
-    my($exon_start,$exon_end) = @{$exon};
-    if($self->_read_position <= $exon_end && ($self->_read_position + $self->_read_length - 1) >= $exon_start)
-    {
-      
-      if($self->read_strand == $self->gene_strand) 
-      {
-        $mapped_reads{sense}++;
-      }
-      else
-      {
-        $mapped_reads{antisense}++;
-      }
-      last;
+    my ($self) = @_;
+
+    my %mapped_reads;
+    $mapped_reads{sense}     = 0;
+    $mapped_reads{antisense} = 0;
+
+    return \%mapped_reads unless ( $self->_does_read_pass_filters() == 1 );
+
+    for my $base_position ( @{ $self->_base_positions } ) {
+        for my $exon ( @{ $self->exons } ) {
+            my ( $exon_start, $exon_end ) = @{$exon};
+            if ( $base_position >= $exon_start && $base_position < $exon_end ) {
+                if ( $self->read_strand == $self->gene_strand ) {
+                    $mapped_reads{sense}++;
+                }
+                else {
+                    $mapped_reads{antisense}++;
+                }
+		return \%mapped_reads;
+            }
+        }
     }
-  }
-  
-  return \%mapped_reads;
+
+    return \%mapped_reads;
 }
 
 sub _process_read_details
@@ -130,6 +121,28 @@ sub _does_read_pass_filters
   }
   
   return 1;
+}
+
+sub _build__base_positions {
+
+  my ($self) = @_;
+  my $bam_file_string = $self->_dummy_seq_line() . $self->alignment_line() . "\n";
+ 
+  my $mpileup_cmd = "echo '$bam_file_string' | samtools view -bS - | samtools mpileup - | awk '{if (\$5 ~ /[ACGTacgt]/) print \$0};' | awk '{print \$2}' | xargs";
+
+  my $output = `$mpileup_cmd`;
+  my @base_positions = split(/\s+/, $output);
+  return \@base_positions;
+
+}
+
+
+sub _dummy_seq_line {
+
+  my ($self) = @_;
+  
+  return '@SQ	SN:' . $self->_read_details->{chromosome_name} . '	LN:' . ( $self->_read_details->{read_position} + 1000000 ) . "\n";
+
 }
 
 # class method
