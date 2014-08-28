@@ -21,47 +21,52 @@ our $debug = 0;
 
 sub _run_rna_seq {
 
-    my ( $sam_file, $annotation_file, $results_library, $protocol, $chromosome, $test_name ) = @_;
-
+    my ( $sam_file, $annotation_file, $results_library, $protocol, $chromosome,
+        $test_name, $intergenic_regions )
+      = @_;
 
     open OLDOUT, '>&STDOUT';
     open OLDERR, '>&STDERR';
 
     {
 
-      my $redirect_str_stout = '>/dev/null';
-      my $redirect_str_sterr = $redirect_str_stout;
+        my $redirect_str_stout = '>/dev/null';
+        my $redirect_str_sterr = $redirect_str_stout;
 
-      $redirect_str_stout = '>&OLDOUT' if($debug);
-      $redirect_str_sterr = '>&OLDERR' if($debug);
-
+        $redirect_str_stout = '>&OLDOUT' if ($debug);
+        $redirect_str_sterr = '>&OLDERR' if ($debug);
 
         local *STDOUT;
-        open STDOUT, $redirect_str_stout or warn "Can't open $redirect_str_stout: $!";
+        open STDOUT, $redirect_str_stout
+          or warn "Can't open $redirect_str_stout: $!";
         local *STDERR;
-      open STDERR, $redirect_str_sterr or warn "Can't open $redirect_str_sterr: $!";
+        open STDERR, $redirect_str_sterr
+          or warn "Can't open $redirect_str_sterr: $!";
 
         my $bam_file = $sam_file;
         $bam_file =~ s/sam$/bam/;
         unlink($bam_file) if ( -e $bam_file );
 
         `samtools view -bS $sam_file 2>/dev/null > $bam_file`;
-      
-        my $file_temp_obj =
-          File::Temp->newdir( DIR => File::Spec->curdir(), CLEANUP => ($debug ? 0 : 1) );
+
+        my $file_temp_obj = File::Temp->newdir(
+            DIR     => File::Spec->curdir(),
+            CLEANUP => ( $debug ? 0 : 1 )
+        );
 
         my $output_base_filename = $file_temp_obj->dirname() . '/test_';
 
-      print ($file_temp_obj->dirname(), "\n") if($debug);
+        print( $file_temp_obj->dirname(), "\n" ) if ($debug);
 
-        my $intergenic_regions = 1;
+        ( $intergenic_regions ? 0 : 1 );
+
         my %filters = ( mapping_quality => 1 );
 
         ok(
             my $expression_results = Bio::RNASeq->new(
                 sequence_filename    => $bam_file,
                 annotation_filename  => $annotation_file,
-		window_margin => 0,
+                window_margin        => 0,
                 filters              => \%filters,
                 protocol             => $protocol,
                 output_base_filename => $output_base_filename,
@@ -82,7 +87,7 @@ sub _run_rna_seq {
             -e $output_base_filename
               . ".corrected.bam.intergenic.$chromosome.tab.gz",
             'intergenic gz'
-        );
+        ) unless ( $intergenic_regions == 0 );
 
         ok(
             -e $output_base_filename . '.expression.csv',
@@ -92,7 +97,8 @@ sub _run_rna_seq {
         my $filename = $output_base_filename . '.expression.csv';
 
         for my $set_of_expected_results (@$results_library) {
-            parseExpressionResultsFile( $filename, $set_of_expected_results, $test_name );
+            parseExpressionResultsFile( $filename, $set_of_expected_results,
+                $test_name );
         }
 
         close STDOUT;
@@ -112,7 +118,7 @@ sub _run_rna_seq {
 
 sub _run_rna_seq_check_non_existence_of_a_feature {
 
-    my ( $sam_file, $annotation_file, $feature_names, $protocol, $test_name ) = @_;
+    my ( $sam_file, $annotation_file, $feature_names, $protocol, $test_name, $intergenic_regions ) = @_;
 
 
     open OLDOUT, '>&STDOUT';
@@ -146,9 +152,10 @@ sub _run_rna_seq_check_non_existence_of_a_feature {
 
       print ($file_temp_obj->dirname(), "\n") if($debug);
 
-        my $intergenic_regions = 1;
+      ( $intergenic_regions ? 0 : 1 );
+
         my %filters = ( mapping_quality => 1 );
-      my $test_name = '';
+
 
         ok(
             my $expression_results = Bio::RNASeq->new(
@@ -175,7 +182,7 @@ sub _run_rna_seq_check_non_existence_of_a_feature {
 
         for my $feature_name (@$feature_names) {
 	  my $file_content = read_file($filename);
-	  ok ( !( $file_content =~ m/$feature_name/ ), "$feature_name shouldn't exist" );
+	  ok ( !( $file_content =~ m/$feature_name/ ), "$test_name - $feature_name shouldn't exist" );
         }
 
         close STDOUT;
@@ -195,28 +202,28 @@ sub _run_rna_seq_check_non_existence_of_a_feature {
 
 sub run_rna_seq {
   
-  my ( $sam_file, $annotation_file, $results_library, $chromosome, $test_name ) = @_;
-  return _run_rna_seq( $sam_file, $annotation_file, $results_library, 'StandardProtocol', $chromosome, $test_name );
+  my ( $sam_file, $annotation_file, $results_library, $chromosome, $test_name, $intergenic_regions ) = @_;
+  return _run_rna_seq( $sam_file, $annotation_file, $results_library, 'StandardProtocol', $chromosome, $test_name, $intergenic_regions );
 
 }
 
 sub run_rna_seq_strand_specific {
 
-  my ( $sam_file, $annotation_file, $results_library, $chromosome, $test_name ) = @_;
-  return _run_rna_seq( $sam_file, $annotation_file, $results_library, 'StrandSpecificProtocol', $chromosome, $test_name );
+  my ( $sam_file, $annotation_file, $results_library, $chromosome, $test_name, $intergenic_regions ) = @_;
+  return _run_rna_seq( $sam_file, $annotation_file, $results_library, 'StrandSpecificProtocol', $chromosome, $test_name, $intergenic_regions );
 
 }
 
 sub run_rna_seq_check_non_existence_of_a_feature {
 
-  my ( $sam_file, $annotation_file, $feature_names, $test_name ) = @_;
-  return _run_rna_seq_check_non_existence_of_a_feature( $sam_file, $annotation_file, $feature_names, 'StandardProtocol', $test_name );
+  my ( $sam_file, $annotation_file, $feature_names, $test_name, $intergenic_regions ) = @_;
+  return _run_rna_seq_check_non_existence_of_a_feature( $sam_file, $annotation_file, $feature_names, 'StandardProtocol', $test_name, $intergenic_regions );
 }
 
 sub run_rna_seq_check_non_existence_of_a_feature_strand_specific {
 
-  my ( $sam_file, $annotation_file, $feature_names, $test_name ) = @_;
-  return _run_rna_seq_check_non_existence_of_a_feature( $sam_file, $annotation_file, $feature_names, 'StrandSpecificProtocol', $test_name );
+  my ( $sam_file, $annotation_file, $feature_names, $test_name, $intergenic_regions ) = @_;
+  return _run_rna_seq_check_non_existence_of_a_feature( $sam_file, $annotation_file, $feature_names, 'StrandSpecificProtocol', $test_name, $intergenic_regions );
 
 }
 
@@ -224,7 +231,6 @@ sub run_rna_seq_check_non_existence_of_a_feature_strand_specific {
 sub parseExpressionResultsFile {
 
     my ( $filename, $set_of_expected_results, $test_name ) = @_;
-
 
     my $csv = Text::CSV->new();
     open( my $fh, "<:encoding(utf8)", $filename ) or die("$filename: $!");
@@ -245,7 +251,9 @@ sub parseExpressionResultsFile {
             next;
         }
         is( $row->[$column_index], $set_of_expected_results->[2],
-            $test_name . " - match $set_of_expected_results->[1] - $set_of_expected_results->[0]" );
+            $test_name
+              . " - match $set_of_expected_results->[1] - $set_of_expected_results->[0]"
+        );
         last;
     }
     $csv->eof or $csv->error_diag();
