@@ -46,19 +46,32 @@ USAGE
 	my @files;
 	for my $file( @{ $self->args } ) {
 
-	  push(@files, $file) if ( -e $file );
+	  if ( -e $file ) {
+	    push(@files, $file);
+	  }
+	  else {
+	    print "$file\tUnavailable\n";
+	  }
 
 	}
+
+	my %simplified_gff_gene_model_type = (
+					      'Bio::RNASeq::GeneModelHandlers::ChadoGeneModelHandler' => 'Chado',
+					      'Bio::RNASeq::GeneModelHandlers::CDSOnlyGeneModelHandler' => 'Bacteria',
+					      'Bio::RNASeq::GeneModelHandlers::GeneModelHandler' => 'Invalid',
+					      'Bio::RNASeq::GeneModelHandlers::EnsemblGeneModelHandler' => 'Ensembl'
+					     );
 
 	for my $file( @files ) {
 
 	  eval {
 	    
 	    my $gene_model_detector = Bio::RNASeq::GeneModelDetector->new( filename => $file );
-	    print "$file\t" . $gene_model_detector->gene_model_handler()->meta->name . "\n";   
+
+	    print "$file\t" . $simplified_gff_gene_model_type{ $gene_model_detector->gene_model_handler()->meta->name } . "\n";   
 
 	  };
-	  print "$file\tInvalid\n" if( $@ );
+	  print "$file\tError\n" if( $@ );
 	}
 }
 
