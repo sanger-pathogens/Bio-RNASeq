@@ -14,20 +14,20 @@ Represents a GFF from a GFF file
 =cut
 
 use Moose;
-use Bio::Tools::NonStandardGFF;
+use Bio::Tools::GFF;
 use Bio::RNASeq::Feature;
 #use Data::Dumper;
 
 has 'filename'          => ( is => 'rw', isa => 'Str',             required   => 1 );
 has 'features'          => ( is => 'rw', isa => 'HashRef',         lazy_build => 1 );
-has '_gff_parser'       => ( is => 'rw', isa => 'Bio::Tools::NonStandardGFF', lazy_build => 1 );
+has '_gff_parser'       => ( is => 'rw', isa => 'Bio::Tools::GFF', lazy_build => 1 );
 has 'sequence_lengths' => ( is => 'rw', isa => 'HashRef',         lazy_build => 1 );
 
 sub _build__gff_parser
 {
   my ($self) = @_;
 #  print "in _build__gff_parser\n";
-  Bio::Tools::NonStandardGFF->new(-gff_version => 3, -file => $self->filename);
+  Bio::Tools::GFF->new(-gff_version => 3, -file => $self->filename);
 }
 
 
