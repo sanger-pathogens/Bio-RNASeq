@@ -19,6 +19,7 @@ use Exception::Class (
 				   Bio::RNASeq::Exceptions::FailedToCreateMpileup => { description => 'Couldnt create an mpileup' },
 				   Bio::RNASeq::Exceptions::FailedToOpenFeaturesTabFileForWriting => { description => 'Couldnt write tab file' },
 				   Bio::RNASeq::Exceptions::InvalidTotalMappedReadsMethod => { description => 'Invalid total mapped reads method option' },
+				   Bio::RNASeq::Exceptions::NonExistentFile => { description => 'File doesnt exist' },
 );
 
 1;

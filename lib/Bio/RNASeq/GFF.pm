@@ -30,7 +30,6 @@ sub _build__gff_parser
   Bio::Tools::GFF->new(-gff_version => 3, -file => $self->filename);
 }
 
-
 sub _build_features
 {
   my ($self) = @_;
@@ -43,7 +42,7 @@ sub _build_features
     #print Dumper $raw_feature;
       last unless defined($raw_feature); # No more features
 
-      next if !($raw_feature->primary_tag eq 'CDS' ||   $raw_feature->primary_tag eq 'gene' ||   $raw_feature->primary_tag eq 'intron');
+      next if !($raw_feature->primary_tag eq 'CDS' ||   $raw_feature->primary_tag eq 'gene');
 
       my $feature_object = Bio::RNASeq::Feature->new(raw_feature => $raw_feature);
 
