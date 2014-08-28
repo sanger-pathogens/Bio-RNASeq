@@ -1,0 +1,26 @@
+##gff-version   3
+##sequence-region DUMMY_MAMMAL_CHR 1 10000
+DUMMY_MAMMAL_CHR	protein_coding	gene	528	3623	.	+	.	ID=Gene1;Name=AC125178.1
+DUMMY_MAMMAL_CHR	protein_coding	mRNA	528	3623	.	+	.	ID=mRNA1;Name=AC125178.1-201;Parent=Gene1
+DUMMY_MAMMAL_CHR	protein_coding	five_prime_UTR	3600	3623	.	-	.	ID=five_prime_UTR:mRNA1:1;Parent=mRNA1
+DUMMY_MAMMAL_CHR	protein_coding	start_codon	528	530	.	+	0	ID=start_codon:mRNA1:1;Parent=mRNA1
+DUMMY_MAMMAL_CHR	protein_coding	exon	528	814	.	+	.	ID=exon:mRNA1:1;Parent=mRNA1
+DUMMY_MAMMAL_CHR	protein_coding	exon	1480	2070	.	+	.	ID=exon:mRNA1:2;Parent=mRNA1
+DUMMY_MAMMAL_CHR	protein_coding	exon	3056	3623	.	+	.	ID=exon:mRNA1:3;Parent=mRNA1
+DUMMY_MAMMAL_CHR	protein_coding	CDS	528	814	.	+	0	ID=CDS:mRNA1:1;Parent=mRNA1
+DUMMY_MAMMAL_CHR	protein_coding	CDS	1480	2070	.	+	1	ID=CDS:mRNA1:2;Parent=mRNA1
+DUMMY_MAMMAL_CHR	protein_coding	CDS	3056	3623	.	+	1	ID=CDS:mRNA1:3;Parent=mRNA1
+DUMMY_MAMMAL_CHR	protein_coding	stop_codon	3621	3623	.	+	0	ID=stop_codon:mRNA1:1;Parent=mRNA1
+DUMMY_MAMMAL_CHR	protein_coding	three_prime_UTR	528	728	.	-	.	ID=three_prime_UTR:mRNA1:1;Parent=mRNA1
+DUMMY_MAMMAL_CHR	protein_coding	gene	820	4000	.	+	.	ID=Gene2;Name=AC125178.1
+DUMMY_MAMMAL_CHR	protein_coding	mRNA	820	4000	.	+	.	ID=mRNA2;Name=AC125178.1-201;Parent=Gene2
+DUMMY_MAMMAL_CHR	protein_coding	five_prime_UTR	3980	4000	.	-	.	ID=five_prime_UTR:mRNA2:1;Parent=mRNA2
+DUMMY_MAMMAL_CHR	protein_coding	start_codon	820	823	.	+	0	ID=start_codon:mRNA2:1;Parent=mRNA2
+DUMMY_MAMMAL_CHR	protein_coding	exon	820	1050	.	+	.	ID=exon:mRNA2:1;Parent=mRNA2
+DUMMY_MAMMAL_CHR	protein_coding	exon	2100	2800	.	+	.	ID=exon:mRNA2:2;Parent=mRNA2
+DUMMY_MAMMAL_CHR	protein_coding	exon	3700	4000	.	+	.	ID=exon:mRNA2:3;Parent=mRNA2
+DUMMY_MAMMAL_CHR	protein_coding	CDS	820	1050	.	+	0	ID=CDS:mRNA2:1;Parent=mRNA2
+DUMMY_MAMMAL_CHR	protein_coding	CDS	2100	2800	.	+	1	ID=CDS:mRNA2:2;Parent=mRNA2
+DUMMY_MAMMAL_CHR	protein_coding	CDS	3700	4000	.	+	1	ID=CDS:mRNA2:3;Parent=mRNA2
+DUMMY_MAMMAL_CHR	protein_coding	stop_codon	3997	4000	.	+	0	ID=stop_codon:mRNA2:1;Parent=mRNA2
+DUMMY_MAMMAL_CHR	protein_coding	three_prime_UTR	1000	1050	.	-	.	ID=three_prime_UTR:mRNA2:1;Parent=mRNA2

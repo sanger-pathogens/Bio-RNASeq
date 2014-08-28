@@ -22,54 +22,6 @@ my @expected_results_library;
 
 
 
-
-#
-
-#
-
-
-
-#
-
-
-
-
-
-##Intergenic mappings and their boundaries - Eukaryotic organisms only
-#For Chado gff's we should test for the gene feature types and not for the CDS feature types. Including both for now. But the first ones should fail
-@expected_results_library = (
-			['GreatCurl.1:exon:1', 'Total Reads Mapping', 0,'Chado GFF intergenic mappings'],
-			['GreatCurl.1:exon:1', 'Sense Reads Mapping', 0,'Chado GFF intergenic mappings'],
-			['GreatCurl.1:exon:1', 'Antisense Reads Mapping', 0,'Chado GFF intergenic mappings'],
-			['GreatCurl.2:exon:2', 'Total Reads Mapping', 4,'Chado GFF intergenic mappings'],
-			['GreatCurl.2:exon:2', 'Sense Reads Mapping', 4,'Chado GFF intergenic mappings'],
-			['GreatCurl.2:exon:2', 'Antisense Reads Mapping', 0,'Chado GFF intergenic mappings'],
-			['SunBurn.1:exon:1', 'Total Reads Mapping', 5,'Chado GFF intergenic mappings'],
-			['SunBurn.1:exon:1', 'Sense Reads Mapping', 5,'Chado GFF intergenic mappings'],
-			['SunBurn.1:exon:1', 'Antisense Reads Mapping', 0,'Chado GFF intergenic mappings'],
-			['SunBurn.2:exon:2', 'Total Reads Mapping', 0,'Chado GFF intergenic mappings'],
-			['SunBurn.2:exon:2', 'Sense Reads Mapping', 0,'Chado GFF intergenic mappings'],
-			['SunBurn.2:exon:2', 'Antisense Reads Mapping', 0,'Chado GFF intergenic mappings'],
-		       );
-
-run_rna_seq('t/data/gffs_sams/intergenic_mapping_chado.sam','t/data/gffs_sams/intergenic_mapping_chado.gff', \@expected_results_library);
-
-
-#Chado total mapped reads based on gene feture type
-@expected_results_library = (
-			['GreatCurl', 'Total Reads Mapping', 4,'Chado GFF gene feature type intergenic mappings'],
-			['GreatCurl', 'Sense Reads Mapping', 4,'Chado GFF gene feature type intergenic mappings'],
-			['GreatCurl', 'Antisense Reads Mapping', 0,'Chado GFF gene feature type intergenic mappings'],
-			['SunBurn', 'Total Reads Mapping', 5,'Chado GFF gene feature type intergenic mappings'],
-			['SunBurn', 'Sense Reads Mapping', 5,'Chado GFF gene feature type intergenic mappings'],
-			['SunBurn', 'Antisense Reads Mapping', 0,'Chado GFF gene feature type intergenic mappings'],
-		       );
-
-run_rna_seq('t/data/gffs_sams/intergenic_mapping_chado.sam','t/data/gffs_sams/intergenic_mapping_chado.gff', \@expected_results_library);
-##End intergenic mappings
-
-#
-
 #Standard Protocol, Annot, reads in different strands
 @expected_results_library = (
 			['Clostridium_difficile_630_v1.9_00001', 'Total Reads Mapping', 3,'Annot GFF 3 reads on reverse strand feature on positive strand'],
