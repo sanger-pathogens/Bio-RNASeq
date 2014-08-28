@@ -26,7 +26,12 @@ isa_ok(	$gene_model_detector->gene_model_handler(), 'Bio::RNASeq::GeneModelHandl
 
 isa_ok(	Bio::RNASeq::GeneModelDetector->new( filename => 't/data/gffs_sams/multipurpose_3_genes_mammal_gtf2gff3.gff' )->gene_model_handler(), 'Bio::RNASeq::GeneModelHandlers::EnsemblGeneModelHandler', 'An Ensembl GFF file should return an EnsemblGeneModelHandler' );
 
-isa_ok(	Bio::RNASeq::GeneModelDetector->new( filename => 't/data/gffs_sams/multipurpose_3_cds_chado.gff' )->gene_model_handler(), 'Bio::RNASeq::GeneModelHandlers::ChadoGeneModelHandler', 'An Chado GFF file should return a ChadoGeneModelHandler' );
+isa_ok(	Bio::RNASeq::GeneModelDetector->new( filename => 't/data/gffs_sams/multipurpose_3_cds_chado.gff' )->gene_model_handler(), 'Bio::RNASeq::GeneModelHandlers::ChadoGeneModelHandler', 'A Chado GFF file should return a ChadoGeneModelHandler' );
+
+isa_ok(	Bio::RNASeq::GeneModelDetector->new( filename => 't/data/gffs_sams/multipurpose_3_cds_annot.gff' )->gene_model_handler(), 'Bio::RNASeq::GeneModelHandlers::CDSOnlyGeneModelHandler', 'A Annotation Pipeline or EMBL GFF file should return a CDSOnlyGeneModelHandler' );
+
+isa_ok(	Bio::RNASeq::GeneModelDetector->new( filename => 't/data/gffs_sams/invalid_chado.gff' )->gene_model_handler(), 'Bio::RNASeq::GeneModelHandlers::GeneModelHandler', 'An invalid GFF file should return a GeneModelHandler' );
+
 
 
 done_testing();

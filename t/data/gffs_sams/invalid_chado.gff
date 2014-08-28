@@ -1,0 +1,7 @@
+##gff-version   3
+##sequence-region   DUMMY_CHADO_CHR 1 6000
+DUMMY_CHADO_CHR	chado	gene	1053	2474	.	+	.	ID=GreatCurl;Name=GreatCurl;feature_id=1;isObsolete=false;timelastmodified=16.02.2010 03:17:41 GMT
+DUMMY_CHADO_CHR	chado	CDS	1053	1500	.	+	0	ID=GreatCurl.1:exon:1;Parent=GreatCurl;colour=7;isObsolete=false;timelastmodified=16.02.2010 03:17:41 GMT
+DUMMY_CHADO_CHR	chado	CDS	1650	1900	.	+	2	ID=GreatCurl.2:exon:2;Parent=GreatCurl;colour=7;isObsolete=false;timelastmodified=16.02.2010 03:17:41 GMT
+DUMMY_CHADO_CHR	chado	CDS	2100	2474	.	+	0	ID=GreatCurl.3:exon:3;Parent=GreatCurl;colour=7;isObsolete=false;timelastmodified=16.02.2010 03:17:41 GMT
+DUMMY_CHADO_CHR	chado	polypeptide	1053	2474	.	+	0	ID=GreatCurl.1:pep;Derives_from=GreatCurl.1;colour=7;isObsolete=false;timelastmodified=16.02.2010 03:17:41 GMT
