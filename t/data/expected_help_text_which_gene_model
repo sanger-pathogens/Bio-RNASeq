@@ -1,0 +1,7 @@
+
+which_gene_model 1.gff 2.gff	
+Usage:
+  -h|help                    <print this message>
+
+This script takes in a list of GFF files and outputs the gene model each of them conform to.
+

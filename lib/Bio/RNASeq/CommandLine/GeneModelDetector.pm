@@ -27,6 +27,8 @@ sub BUILD {
 	$self->args,
 	'h|help'                                 => \$help,
     );
+
+	$self->help($help) if ( defined($help) );
 	
 }
 
