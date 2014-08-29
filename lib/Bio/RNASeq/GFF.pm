@@ -36,7 +36,7 @@ sub _build_gene_model_handler {
 sub _build__gff_parser
 {
   my ($self) = @_;
-#  print "in _build__gff_parser\n";
+
   Bio::Tools::GFF->new(-gff_version => 3, -file => $self->filename);
 }
 
@@ -52,7 +52,7 @@ sub _build_features
     #print Dumper $raw_feature;
       last unless defined($raw_feature); # No more features
 
-      next if !($raw_feature->primary_tag eq 'CDS' ||   $raw_feature->primary_tag eq 'gene');
+      next unless ($self->gene_model_handler->is_tag_of_interest( $raw_feature->primary_tag ));
 
       my $feature_object = Bio::RNASeq::Feature->new(raw_feature => $raw_feature);
 
