@@ -13,6 +13,7 @@ OldChadoFormat class for handling gene models where genes and exons are CDS feat
 use Moose;
 extends('Bio::RNASeq::GeneModelHandlers::GeneModelHandler');
 
+has 'tags_of_interest'          => ( is => 'rw', isa => 'ArrayRef', default => sub { ['CDS'] } );
 
 
 no Moose;

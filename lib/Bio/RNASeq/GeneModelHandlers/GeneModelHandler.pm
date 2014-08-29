@@ -12,7 +12,21 @@ Base class for handling gene models
 
 use Moose;
 
+has 'tags_of_interest'          => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
 
+
+
+sub is_tag_of_interest {
+
+  my ($self,$input_tag) = @_;
+  for my $tag( @{ $self->tags_of_interest() } ) {
+
+    if( $tag eq $input_tag ) {
+      return 1;
+    }
+  }
+  return 0;
+}
 
 
 no Moose;

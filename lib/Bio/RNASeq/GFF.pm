@@ -16,12 +16,22 @@ Represents a GFF from a GFF file
 use Moose;
 use Bio::Tools::GFF;
 use Bio::RNASeq::Feature;
+use Bio::RNASeq::GeneModelDetector;
 #use Data::Dumper;
 
 has 'filename'          => ( is => 'rw', isa => 'Str',             required   => 1 );
 has 'features'          => ( is => 'rw', isa => 'HashRef',         lazy_build => 1 );
 has '_gff_parser'       => ( is => 'rw', isa => 'Bio::Tools::GFF', lazy_build => 1 );
 has 'sequence_lengths' => ( is => 'rw', isa => 'HashRef',         lazy_build => 1 );
+has 'gene_model_handler' => ( is => 'rw', isa => 'Bio::RNASeq::GeneModelHandlers::GeneModelHandler', lazy =>1, builder => '_build_gene_model_handler' );
+
+sub _build_gene_model_handler {
+
+  my ($self) = @_;
+  return Bio::RNASeq::GeneModelDetector->new( filename=>$self->filename)->gene_model_handler();
+  
+
+}
 
 sub _build__gff_parser
 {

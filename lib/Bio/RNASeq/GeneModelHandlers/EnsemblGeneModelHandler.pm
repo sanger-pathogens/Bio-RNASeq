@@ -13,6 +13,8 @@ Ensembl class for handling gene models
 use Moose;
 extends('Bio::RNASeq::GeneModelHandlers::GeneModelHandler');
 
+has 'tags_of_interest'          => ( is => 'rw', isa => 'ArrayRef', default => sub { ['gene','mRNA','exon'] } );
+
 
 
 no Moose;

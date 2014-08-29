@@ -9,6 +9,11 @@ BEGIN {
     use_ok('Bio::RNASeq::GFF');
 }
 
+
+
+isa_ok(	Bio::RNASeq::GFF->new( filename => 't/data/gffs_sams/multipurpose_3_cds_chado.gff' )->gene_model_handler(), 'Bio::RNASeq::GeneModelHandlers::GeneModelHandler', 'A GFF file should return a GeneModelHandler' );
+
+
 ok my $rna_seq_gff = Bio::RNASeq::GFF->new(filename => 't/data/Citrobacter_rodentium_ICC168_v1_test.gff'), 'Initialise valid GFF file';
 ok $rna_seq_gff->features(), 'build features';
 
