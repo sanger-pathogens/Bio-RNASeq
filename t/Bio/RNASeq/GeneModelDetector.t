@@ -32,6 +32,8 @@ isa_ok(	Bio::RNASeq::GeneModelDetector->new( filename => 't/data/gffs_sams/multi
 
 isa_ok(	Bio::RNASeq::GeneModelDetector->new( filename => 't/data/gffs_sams/invalid_chado.gff' )->gene_model_handler(), 'Bio::RNASeq::GeneModelHandlers::GeneModelHandler', 'An invalid GFF file should return a GeneModelHandler' );
 
+isa_ok(	Bio::RNASeq::GeneModelDetector->new( filename => 't/data/gffs_sams/old_style_chado.gff' )->gene_model_handler(), 'Bio::RNASeq::GeneModelHandlers::OldChadoFormatGeneModelHandler', 'An old style GFF file should return a OldChadoFormatGeneModelHandler' );
+
 
 
 done_testing();

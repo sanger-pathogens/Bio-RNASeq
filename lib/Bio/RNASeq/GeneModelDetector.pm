@@ -22,6 +22,7 @@ use Bio::RNASeq::GeneModelHandlers::GeneModelHandler;
 use Bio::RNASeq::GeneModelHandlers::EnsemblGeneModelHandler;
 use Bio::RNASeq::GeneModelHandlers::ChadoGeneModelHandler;
 use Bio::RNASeq::GeneModelHandlers::CDSOnlyGeneModelHandler;
+use Bio::RNASeq::GeneModelHandlers::OldChadoFormatGeneModelHandler;
 
 
 has 'filename'          => ( is => 'rw', isa => 'Bio::RNASeq::File',             required   => 1 );
@@ -39,9 +40,12 @@ sub _build_gene_model_handler {
     elsif ( $self->_is_chado_gff() ) {
       return Bio::RNASeq::GeneModelHandlers::ChadoGeneModelHandler->new();
     }
+    elsif ( $self->_is_old_chado_format_gff() ) {
+      return Bio::RNASeq::GeneModelHandlers::OldChadoFormatGeneModelHandler->new();
+    }
     elsif ( $self->_is_cds_only_gff() ) {
       return Bio::RNASeq::GeneModelHandlers::CDSOnlyGeneModelHandler->new();
-    }
+    }    
     else {
       return Bio::RNASeq::GeneModelHandlers::GeneModelHandler->new();
     }
@@ -186,6 +190,46 @@ sub _is_cds_only_gff {
     
 
 }
+
+sub _is_old_chado_format_gff {
+
+    my ($self) = @_;
+
+    my ( $cds_id, $next_cds_parent, @junk );
+
+    my $number_of_features = 0;
+    my $gff_parser =
+      Bio::Tools::GFF->new( -gff_version => 3, -file => $self->filename );
+    while ( my $cds_feature = $gff_parser->next_feature() ) {
+
+      $number_of_features++;
+      return 0
+	if ( $number_of_features > $self->_maximum_number_of_features() );
+
+      next unless ( $cds_feature->primary_tag eq 'CDS' );
+      next unless ( $cds_feature->has_tag('ID') );
+      next if ( $cds_feature->has_tag('Parent') );
+
+      ( $cds_id, @junk ) = $cds_feature->get_tag_values('ID');
+
+      while ( my $next_cds_feature = $gff_parser->next_feature() ) {
+
+	$number_of_features++;
+	return 0
+	  if ( $number_of_features >
+	       $self->_maximum_number_of_features() );
+
+	next unless ( $next_cds_feature->primary_tag eq 'CDS' );
+	next unless ( $next_cds_feature->has_tag('Parent') );
+
+	( $next_cds_parent, @junk ) = $next_cds_feature->get_tag_values('Parent');
+
+	next unless ( $cds_id eq $next_cds_parent );
+	return 1;
+      }
+    }
+}
+
 
 no Moose;
 __PACKAGE__->meta->make_immutable;

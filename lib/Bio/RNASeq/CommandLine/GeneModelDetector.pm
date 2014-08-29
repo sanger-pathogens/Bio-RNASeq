@@ -61,7 +61,8 @@ USAGE
 					      'Bio::RNASeq::GeneModelHandlers::ChadoGeneModelHandler' => 'Chado',
 					      'Bio::RNASeq::GeneModelHandlers::CDSOnlyGeneModelHandler' => 'Bacteria',
 					      'Bio::RNASeq::GeneModelHandlers::GeneModelHandler' => 'Invalid',
-					      'Bio::RNASeq::GeneModelHandlers::EnsemblGeneModelHandler' => 'Ensembl'
+					      'Bio::RNASeq::GeneModelHandlers::EnsemblGeneModelHandler' => 'Ensembl',
+					      'Bio::RNASeq::GeneModelHandlers::OldChadoFormatGeneModelHandler' => 'OldChado'
 					     );
 
 	for my $file( @files ) {

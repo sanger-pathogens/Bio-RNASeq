@@ -1,0 +1,36 @@
+##gff-version 3
+##sequence-region Schisto_mansoni.Chr_1.unplaced.SC_0010 1 4176476
+Schisto_mansoni.Chr_1.unplaced.SC_0010	EMBL	CDS	1043973	1046287	.	+	0	ID=Schisto_mansoni.Chr_1.unplaced.SC_0010.248;codon_start=1;note=predicted by EVM2;note=pfam_scan%3BPfam:PF03248.8%3B%3BE()%3D6.1E-62%3Bscore%3D208.2%3Bquery 17-178%3Bdescription%3DRer1;note=iprscan%3BInterPro:IPR004932 : Retrieval of early ER protein Rer1%3BPfam:PF03248%3B%3Bscore%3D8.8E-76%3Bquery 5-179%3Bdescription%3DRetrieval of early ER protein Rer1;note=iprscan%3BInterPro:IPR004932 : Retrieval of early ER protein Rer1%3BPIRSF:PIRSF016013%3B%3Bscore%3D3.3E-81%3Bquery 1-182%3Bdescription%3DRetrieval of early ER protein Rer1;note=tmhmm%3B%3Bquery 1-184%3B;note=%3Bquery 58-110%3B;note=%3Bquery 155-184%3B;note=%3Bquery 35-57%3B;note=%3Bquery 111-133%3B;note=%3Bquery 137-154%3B;note=%3Bquery 1-34%3B;note=%3Bquery 134-136%3B;product=RER1 protein;locus_tag=Smp_019490.1
+Schisto_mansoni.Chr_1.unplaced.SC_0010	EMBL	CDS	1043973	1044041	.	+	0	Parent=Schisto_mansoni.Chr_1.unplaced.SC_0010.248
+Schisto_mansoni.Chr_1.unplaced.SC_0010	EMBL	CDS	1044079	1044183	.	+	0	Parent=Schisto_mansoni.Chr_1.unplaced.SC_0010.248
+Schisto_mansoni.Chr_1.unplaced.SC_0010	EMBL	CDS	1044222	1044315	.	+	0	Parent=Schisto_mansoni.Chr_1.unplaced.SC_0010.248
+Schisto_mansoni.Chr_1.unplaced.SC_0010	EMBL	CDS	1044355	1044427	.	+	0	Parent=Schisto_mansoni.Chr_1.unplaced.SC_0010.248
+Schisto_mansoni.Chr_1.unplaced.SC_0010	EMBL	CDS	1044463	1044598	.	+	0	Parent=Schisto_mansoni.Chr_1.unplaced.SC_0010.248
+Schisto_mansoni.Chr_1.unplaced.SC_0010	EMBL	CDS	1046213	1046287	.	+	0	Parent=Schisto_mansoni.Chr_1.unplaced.SC_0010.248
+Schisto_mansoni.Chr_1.unplaced.SC_0010	EMBL	CDS	1043973	1046287	.	+	0	ID=Schisto_mansoni.Chr_1.unplaced.SC_0010.255;codon_start=1;note=predicted by EVM2;note=pfam_scan%3BPfam:PF03248.8%3B%3BE()%3D1.5E-61%3Bscore%3D206.9%3Bquery 19-177%3Bdescription%3DRer1;note=iprscan%3BInterPro:IPR004932 : Retrieval of early ER protein Rer1%3BPfam:PF03248%3B%3Bscore%3D3.4E-74%3Bquery 5-178%3Bdescription%3DRetrieval of early ER protein Rer1;note=iprscan%3BInterPro:IPR004932 : Retrieval of early ER protein Rer1%3BPIRSF:PIRSF016013%3B%3Bscore%3D1.0E-79%3Bquery 1-181%3Bdescription%3DRetrieval of early ER protein Rer1;note=tmhmm%3B%3Bquery 1-183%3B;note=%3Bquery 57-109%3B;note=%3Bquery 154-183%3B;note=%3Bquery 34-56%3B;note=%3Bquery 110-132%3B;note=%3Bquery 136-153%3B;note=%3Bquery 1-33%3B;note=%3Bquery 133-135%3B;product=RER1 protein;locus_tag=Smp_019490.4
+Schisto_mansoni.Chr_1.unplaced.SC_0010	EMBL	CDS	1043973	1044041	.	+	0	Parent=Schisto_mansoni.Chr_1.unplaced.SC_0010.255
+Schisto_mansoni.Chr_1.unplaced.SC_0010	EMBL	CDS	1044082	1044183	.	+	0	Parent=Schisto_mansoni.Chr_1.unplaced.SC_0010.255
+Schisto_mansoni.Chr_1.unplaced.SC_0010	EMBL	CDS	1044222	1044315	.	+	0	Parent=Schisto_mansoni.Chr_1.unplaced.SC_0010.255
+Schisto_mansoni.Chr_1.unplaced.SC_0010	EMBL	CDS	1044355	1044427	.	+	0	Parent=Schisto_mansoni.Chr_1.unplaced.SC_0010.255
+Schisto_mansoni.Chr_1.unplaced.SC_0010	EMBL	CDS	1044463	1044598	.	+	0	Parent=Schisto_mansoni.Chr_1.unplaced.SC_0010.255
+Schisto_mansoni.Chr_1.unplaced.SC_0010	EMBL	CDS	1046213	1046287	.	+	0	Parent=Schisto_mansoni.Chr_1.unplaced.SC_0010.255
+Schisto_mansoni.Chr_1.unplaced.SC_0010	EMBL	three_prime_UTR	1046288	1046610	.	+	.	ID=Schisto_mansoni.Chr_1.unplaced.SC_0010.262;locus_tag=Smp_019490.1
+Schisto_mansoni.Chr_1.unplaced.SC_0010	EMBL	gap	1048014	1048213	.	+	.	ID=Schisto_mansoni.Chr_1.unplaced.SC_0010.263
+Schisto_mansoni.Chr_1.unplaced.SC_0010	EMBL	databank_entry	1048214	1056009	.	+	.	ID=Schisto_mansoni.Chr_1.unplaced.SC_0010.264
+Schisto_mansoni.Chr_1.unplaced.SC_0010	EMBL	gap	1056010	1056209	.	+	.	ID=Schisto_mansoni.Chr_1.unplaced.SC_0010.265
+Schisto_mansoni.Chr_1.unplaced.SC_0010	EMBL	databank_entry	1056210	1076295	.	+	.	ID=Schisto_mansoni.Chr_1.unplaced.SC_0010.266
+Schisto_mansoni.Chr_1.unplaced.SC_0010	EMBL	gap	1076296	1076495	.	+	.	ID=Schisto_mansoni.Chr_1.unplaced.SC_0010.267
+Schisto_mansoni.Chr_1.unplaced.SC_0010	EMBL	databank_entry	1076496	1098660	.	+	.	ID=Schisto_mansoni.Chr_1.unplaced.SC_0010.268
+Schisto_mansoni.Chr_1.unplaced.SC_0010	EMBL	tRNA	1090219	1090285	.	+	.	ID=Schisto_mansoni.Chr_1.unplaced.SC_0010.269;locus_tag=SmtRNA_00207_Gln_TTG.1.1
+Schisto_mansoni.Chr_1.unplaced.SC_0010	EMBL	tRNA	1098509	1098580	.	-	.	ID=Schisto_mansoni.Chr_1.unplaced.SC_0010.270;locus_tag=SmtRNA_00048_Pseudo_CGA.1.1
+Schisto_mansoni.Chr_1.unplaced.SC_0010	EMBL	gap	1098661	1098860	.	+	.	ID=Schisto_mansoni.Chr_1.unplaced.SC_0010.271
+Schisto_mansoni.Chr_1.unplaced.SC_0010	EMBL	databank_entry	1098861	1162345	.	+	.	ID=Schisto_mansoni.Chr_1.unplaced.SC_0010.272
+Schisto_mansoni.Chr_1.unplaced.SC_0010	EMBL	tRNA	1098998	1099068	.	+	.	ID=Schisto_mansoni.Chr_1.unplaced.SC_0010.273;locus_tag=SmtRNA_00278_Pseudo_CGA.1.1
+Schisto_mansoni.Chr_1.unplaced.SC_0010	EMBL	CDS	1100944	1105359	.	-	0	ID=Schisto_mansoni.Chr_1.unplaced.SC_0010.274;codon_start=1;note=predicted by EVM2;note=term%3Dannotation%3Bdate%3D20110828%3Bqualifier%3Dchanged from hypothetical protein to IPR001092 Basic helix-loop-helix dimerisation region bHLH%2Cdomain-containing protein%3BcuratorName%3Dap6@sanger.ac.uk;product=STARP antigen;locus_tag=Smp_132810
+Schisto_mansoni.Chr_1.unplaced.SC_0010	EMBL	CDS	1105165	1105359	.	-	0	Parent=Schisto_mansoni.Chr_1.unplaced.SC_0010.274
+Schisto_mansoni.Chr_1.unplaced.SC_0010	EMBL	CDS	1104059	1104154	.	-	0	Parent=Schisto_mansoni.Chr_1.unplaced.SC_0010.274
+Schisto_mansoni.Chr_1.unplaced.SC_0010	EMBL	CDS	1102594	1102687	.	-	0	Parent=Schisto_mansoni.Chr_1.unplaced.SC_0010.274
+Schisto_mansoni.Chr_1.unplaced.SC_0010	EMBL	CDS	1100944	1101953	.	-	0	Parent=Schisto_mansoni.Chr_1.unplaced.SC_0010.274
+##FASTA
+>Schisto_mansoni.Chr_1.unplaced.SC_0010
+ACGT
