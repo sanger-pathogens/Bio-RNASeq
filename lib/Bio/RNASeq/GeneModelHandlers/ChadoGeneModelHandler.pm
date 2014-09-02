@@ -1,5 +1,4 @@
-package
-Bio::RNASeq::GeneModelHandlers::ChadoGeneModelHandler;
+package Bio::RNASeq::GeneModelHandlers::ChadoGeneModelHandler;
 
 # ABSTRACT: Chado class for handling gene models
 
@@ -15,73 +14,75 @@ use Moose;
 use Bio::RNASeq::Exceptions;
 extends('Bio::RNASeq::GeneModelHandlers::GeneModelHandler');
 
-has 'tags_of_interest'          => ( is => 'rw', isa => 'ArrayRef', default => sub { ['gene','mRNA','CDS'] } );
+has 'tags_of_interest' => (
+    is      => 'rw',
+    isa     => 'ArrayRef',
+    default => sub { [ 'gene', 'mRNA', 'CDS' ] }
+);
 
 override 'gene_models' => sub {
 
+    my ($self) = @_;
 
+    my $features = super();
+    my %gene_id_lookup;
 
-  my ($self) = @_;
+    while ( my $raw_feature = $self->_gff_parser->next_feature() ) {
 
-  my $features = super();
-  my %gene_id_lookup;
+        last unless defined($raw_feature);    # No more features
 
-  while ( my $raw_feature = $self->_gff_parser->next_feature() ) {
+        next unless ( $self->is_tag_of_interest( $raw_feature->primary_tag ) );
 
-    last unless defined($raw_feature); # No more features
+        if ( $raw_feature->primary_tag eq 'gene' ) {
 
-    next unless ( $self->is_tag_of_interest( $raw_feature->primary_tag ) );
+            my $gene_feature_object =
+              Bio::RNASeq::Feature->new( raw_feature => $raw_feature );
 
-    if ( $raw_feature->primary_tag eq 'gene' ) {
+            Bio::RNASeq::Exceptions::DuplicateFeatureID->throw(
+                error => $self->filename . ' contains duplicate gene ids' )
+              if ( defined $features->{ $gene_feature_object->gene_id() } );
 
-      my $gene_feature_object =
-	Bio::RNASeq::Feature->new( raw_feature => $raw_feature );
+            $features->{ $gene_feature_object->gene_id } = $gene_feature_object
+              unless (
+                defined( $features->{ $gene_feature_object->gene_id } ) );
 
-      Bio::RNASeq::Exceptions::DuplicateFeatureID->throw(error => $self->filename . ' contains duplicate gene ids') if ( defined $features->{$gene_feature_object->gene_id()} );
+        }
 
+        elsif ( $raw_feature->primary_tag eq 'mRNA' ) {
 
-      $features->{ $gene_feature_object->gene_id } = $gene_feature_object unless( defined( $features->{ $gene_feature_object->gene_id } ) );
+            my ( $mrna_parent, $mrna_id, @junk );
+
+            next
+              unless ( $raw_feature->has_tag('ID')
+                && $raw_feature->has_tag('Parent') );
+
+            ( $mrna_id,     @junk ) = $raw_feature->get_tag_values('ID');
+            ( $mrna_parent, @junk ) = $raw_feature->get_tag_values('Parent');
+            $gene_id_lookup{$mrna_id} = $mrna_parent;
+
+        }
+        elsif ( $raw_feature->primary_tag eq 'CDS' ) {
+
+            my ( $cds_parent, @junk );
+
+            next
+              unless ( $raw_feature->has_tag('Parent') );
+
+            my $cds_feature_object =
+              Bio::RNASeq::Feature->new( raw_feature => $raw_feature );
+
+            ( $cds_parent, @junk ) = $raw_feature->get_tag_values('Parent');
+
+            next unless ( defined $gene_id_lookup{$cds_parent} );
+
+            $features->{ $gene_id_lookup{$cds_parent} }
+              ->add_discontinuous_feature($raw_feature);
+
+        }
 
     }
-
-    elsif ( $raw_feature->primary_tag eq 'mRNA' ) {
-
-      my ($mrna_parent, $mrna_id, @junk);
-
-      next
-	unless ( $raw_feature->has_tag('ID')
-		 && $raw_feature->has_tag('Parent') );
-
-	( $mrna_id, @junk ) = $raw_feature->get_tag_values('ID');
-	( $mrna_parent, @junk ) = $raw_feature->get_tag_values('Parent');
-	$gene_id_lookup{$mrna_id} = $mrna_parent; 
-
-    
-    }
-    elsif ( $raw_feature->primary_tag eq 'CDS' ) {
-
-      my ($cds_parent, @junk);
-
-      next
-	unless ( $raw_feature->has_tag('Parent') );
-
-      my $cds_feature_object =
-	Bio::RNASeq::Feature->new( raw_feature => $raw_feature );
-
-      ( $cds_parent, @junk ) = $raw_feature->get_tag_values('Parent');
-
-      next unless ( defined $gene_id_lookup{$cds_parent} );
-
-      $features->{ $gene_id_lookup{$cds_parent} }->add_discontinuous_feature($raw_feature);
-
-    
-    }
-
-  }
-  return $features;
+    return $features;
 };
-
-
 
 no Moose;
 __PACKAGE__->meta->make_immutable;

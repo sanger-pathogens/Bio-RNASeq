@@ -13,8 +13,8 @@ CDSOnly class for handling gene models
 use Moose;
 extends('Bio::RNASeq::GeneModelHandlers::GeneModelHandler');
 
-has 'tags_of_interest'          => ( is => 'rw', isa => 'ArrayRef', default => sub { ['CDS'] } );
-
+has 'tags_of_interest' =>
+  ( is => 'rw', isa => 'ArrayRef', default => sub { ['CDS'] } );
 
 override 'gene_models' => sub {
 
@@ -27,11 +27,7 @@ override 'gene_models' => sub {
         last unless defined($raw_feature);    # No more features
 
         next
-          unless (
-            $self->is_tag_of_interest(
-                $raw_feature->primary_tag
-            )
-          );
+          unless ( $self->is_tag_of_interest( $raw_feature->primary_tag ) );
 
         my $feature_object =
           Bio::RNASeq::Feature->new( raw_feature => $raw_feature );

@@ -13,33 +13,34 @@ OldChadoFormat class for handling gene models where genes and exons are CDS feat
 use Moose;
 extends('Bio::RNASeq::GeneModelHandlers::GeneModelHandler');
 
-has 'tags_of_interest'          => ( is => 'rw', isa => 'ArrayRef', default => sub { ['CDS'] } );
+has 'tags_of_interest' =>
+  ( is => 'rw', isa => 'ArrayRef', default => sub { ['CDS'] } );
 
 override 'gene_models' => sub {
 
-  my ($self) = @_;
+    my ($self) = @_;
 
-  my $features = super();
+    my $features = super();
 
-  while ( my $raw_feature = $self->_gff_parser->next_feature() ) {
+    while ( my $raw_feature = $self->_gff_parser->next_feature() ) {
 
-    if ( $self->is_tag_of_interest( $raw_feature->primary_tag ) ) {
+        if ( $self->is_tag_of_interest( $raw_feature->primary_tag ) ) {
 
-      my $feature_object =
-	Bio::RNASeq::Feature->new( raw_feature => $raw_feature );
+            my $feature_object =
+              Bio::RNASeq::Feature->new( raw_feature => $raw_feature );
 
-      if ( defined( $features->{ $feature_object->gene_id } ) ) {
-	$features->{ $feature_object->gene_id }
-	  ->add_discontinuous_feature($raw_feature);
-      }
-      else {
+            if ( defined( $features->{ $feature_object->gene_id } ) ) {
+                $features->{ $feature_object->gene_id }
+                  ->add_discontinuous_feature($raw_feature);
+            }
+            else {
 
-	$features->{ $feature_object->gene_id } = $feature_object;
-      }
+                $features->{ $feature_object->gene_id } = $feature_object;
+            }
 
+        }
     }
-  }
-  return $features;
+    return $features;
 };
 
 no Moose;
