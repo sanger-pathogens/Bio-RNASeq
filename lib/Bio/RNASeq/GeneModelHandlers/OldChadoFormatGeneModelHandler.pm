@@ -16,11 +16,11 @@ extends('Bio::RNASeq::GeneModelHandlers::GeneModelHandler');
 has 'tags_of_interest' =>
   ( is => 'rw', isa => 'ArrayRef', default => sub { ['CDS'] } );
 
-override 'gene_models' => sub {
+sub _build_gene_models {
 
     my ($self) = @_;
 
-    my $features = super();
+    my %features;
 
     while ( my $raw_feature = $self->_gff_parser->next_feature() ) {
 
@@ -29,19 +29,19 @@ override 'gene_models' => sub {
             my $feature_object =
               Bio::RNASeq::Feature->new( raw_feature => $raw_feature );
 
-            if ( defined( $features->{ $feature_object->gene_id } ) ) {
-                $features->{ $feature_object->gene_id }
+            if ( defined( $features{ $feature_object->gene_id } ) ) {
+                $features{ $feature_object->gene_id }
                   ->add_discontinuous_feature($raw_feature);
             }
             else {
 
-                $features->{ $feature_object->gene_id } = $feature_object;
+                $features{ $feature_object->gene_id } = $feature_object;
             }
 
         }
     }
-    return $features;
-};
+    return \%features;
+}
 
 no Moose;
 __PACKAGE__->meta->make_immutable;
