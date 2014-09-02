@@ -16,6 +16,8 @@ BEGIN {
 #my $sequence_filename   = 't/data/647029.pe.markdup.bam';
 #my $annotation_filename = 't/data/CD630_updated_171212.embl.34.gff';
 
+system('samtools view -bS t/data/gffs_sams/overlapping_genes_embl.sam > t/data/gffs_sams/overlapping_genes_embl.bam');
+
 my $sequence_filename   = 't/data/gffs_sams/overlapping_genes_embl.bam';
 my $annotation_filename = 't/data/gffs_sams/split_reads_embl.gff';
 
@@ -93,7 +95,9 @@ for my $protocol ( keys %protocols ) {
             close($exp_fh);
         }
     }
-}
+  }
+
+unlink($sequence_filename);
 
 $sequence_filename   = "t/data/647029.pe.markdup.bam";
 $annotation_filename = 't/data/Citrobacter_rodentium_ICC168_v1_test.gff';

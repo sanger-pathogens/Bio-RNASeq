@@ -44,30 +44,8 @@ sub _build_features
 {
   my ($self) = @_;
 
-  my %features;
+  return $self->gene_model_handler->gene_models();
 
-  while( my $raw_feature = $self->_gff_parser->next_feature())
-  {
-
-    #print Dumper $raw_feature;
-      last unless defined($raw_feature); # No more features
-
-      next unless ($self->gene_model_handler->is_tag_of_interest( $raw_feature->primary_tag ));
-
-      my $feature_object = Bio::RNASeq::Feature->new(raw_feature => $raw_feature);
-
-      if(defined($features{$feature_object->gene_id}))
-      {
-        $features{$feature_object->gene_id}->add_discontinuous_feature($raw_feature);
-      }
-      else
-      {
-        $features{$feature_object->gene_id} = $feature_object;
-      }
-
-  }
-
-  return \%features;
 }
 
 # create a hash with sequence names and the length of the sequence
