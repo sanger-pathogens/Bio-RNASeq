@@ -27,6 +27,12 @@ is( $ensembl_gene_model_handler->is_tag_of_interest('mRNA'), 1, 'mRNA is a valid
 is( $ensembl_gene_model_handler->is_tag_of_interest('exon'), 1, 'Exon is a valid type for Ensembl' );
 is( $ensembl_gene_model_handler->is_tag_of_interest('CDS'), 0, 'CDS is not a valid type for Ensembl' );
 
+ok( $ensembl_gene_model_handler->gene_models()->{'Gene1'}, 'Should be of type Feature' );
+is( $ensembl_gene_model_handler->gene_models()->{'Gene1'}->gene_start(), 528, 'Gene start should match');
+is( $ensembl_gene_model_handler->gene_models()->{'Gene1'}->gene_end(), 3623, 'Gene end should match');
+is( $ensembl_gene_model_handler->gene_models()->{'Gene1'}->gene_strand(), 1, 'Gene strand should match');
+is( $ensembl_gene_model_handler->gene_models()->{'Gene1'}->exon_length(), 1443, 'Exon length should match');
+is_deeply( $ensembl_gene_model_handler->gene_models()->{'Gene1'}->exons(), [ [528, 814], [1480, 2070], [3056, 3623] ], 'Exons should be the same');
 
 #throws_ok { Bio::RNASeq::GeneModelHandlers::ChadoGeneModelHandler->new( filename=>'t/data/gffs_sams/chado_duplicate_gene_ids.gff')->gene_models()} qr/duplicate/, 'Throw exception if there are duplicate gene ids in the gff file';
 ok( my $chado_gene_model_handler = Bio::RNASeq::GeneModelHandlers::ChadoGeneModelHandler->new( filename=>'t/data/gffs_sams/multipurpose_3_cds_chado.gff'), 'Chado Object initialised' );

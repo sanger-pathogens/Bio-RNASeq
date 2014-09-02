@@ -17,12 +17,13 @@ extends('Bio::RNASeq::GeneModelHandlers::GeneModelHandler');
 
 has 'tags_of_interest'          => ( is => 'rw', isa => 'ArrayRef', default => sub { ['gene','mRNA','CDS'] } );
 
+override 'gene_models' => sub {
 
-sub _build_gene_models {
+
 
   my ($self) = @_;
 
-  my %features;
+  my $features = super();
   my %gene_id_lookup;
 
   while ( my $raw_feature = $self->_gff_parser->next_feature() ) {
@@ -36,10 +37,10 @@ sub _build_gene_models {
       my $gene_feature_object =
 	Bio::RNASeq::Feature->new( raw_feature => $raw_feature );
 
-      Bio::RNASeq::Exceptions::DuplicateFeatureID->throw(error => $self->filename . ' contains duplicate gene ids') if ( defined $features{$gene_feature_object->gene_id()} );
+      Bio::RNASeq::Exceptions::DuplicateFeatureID->throw(error => $self->filename . ' contains duplicate gene ids') if ( defined $features->{$gene_feature_object->gene_id()} );
 
 
-      $features{ $gene_feature_object->gene_id } = $gene_feature_object unless( defined( $features{ $gene_feature_object->gene_id } ) );
+      $features->{ $gene_feature_object->gene_id } = $gene_feature_object unless( defined( $features->{ $gene_feature_object->gene_id } ) );
 
     }
 
@@ -71,14 +72,14 @@ sub _build_gene_models {
 
       next unless ( defined $gene_id_lookup{$cds_parent} );
 
-      $features{ $gene_id_lookup{$cds_parent} }->add_discontinuous_feature($raw_feature);
+      $features->{ $gene_id_lookup{$cds_parent} }->add_discontinuous_feature($raw_feature);
 
     
     }
 
   }
-  return \%features;
-}
+  return $features;
+};
 
 
 

@@ -16,9 +16,10 @@ use Bio::RNASeq::Types;
 use Bio::RNASeq::Feature;
 
 has 'filename'          => ( is => 'rw', isa => 'Bio::RNASeq::File',             required   => 1 );
-has 'tags_of_interest'          => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
-has 'gene_models'          => ( is => 'rw', isa => 'HashRef', lazy=> 1, builder => '_build_gene_models');
 has '_gff_parser'       => ( is => 'rw', isa => 'Bio::Tools::GFF', lazy_build => 1 );
+has 'tags_of_interest'          => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
+has 'gene_models'          => ( is => 'rw', isa => 'HashRef', default => sub { {} });
+
 
 sub is_tag_of_interest {
 
@@ -30,29 +31,6 @@ sub is_tag_of_interest {
     }
   }
   return 0;
-}
-
-sub _build_gene_models {
-
-  my ($self) = @_;
-
-  my %features;
-
-  while ( my $raw_feature = $self->_gff_parser->next_feature() ) {
-
-    last unless defined($raw_feature);    # No more features
-      
-    if ( $self->is_tag_of_interest( $raw_feature->primary_tag ) ) {
-
-
-	#Hook goes here for the various gene model handlers
-
-
-    }
-  }
-  return \%features;
-
-
 }
 
 
