@@ -20,6 +20,7 @@ use Exception::Class (
 				   Bio::RNASeq::Exceptions::FailedToOpenFeaturesTabFileForWriting => { description => 'Couldnt write tab file' },
 				   Bio::RNASeq::Exceptions::InvalidTotalMappedReadsMethod => { description => 'Invalid total mapped reads method option' },
 				   Bio::RNASeq::Exceptions::NonExistentFile => { description => 'File doesnt exist' },
+				   Bio::RNASeq::Exceptions::DuplicateFeatureID => { description => 'Duplicate feature id in gff file' },
 );
 
 1;

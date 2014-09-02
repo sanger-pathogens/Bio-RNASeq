@@ -36,9 +36,25 @@ sub _build_gene_models {
 
   my ($self) = @_;
 
-  return {};
+  my %features;
+
+  while ( my $raw_feature = $self->_gff_parser->next_feature() ) {
+
+    last unless defined($raw_feature);    # No more features
+      
+    if ( $self->is_tag_of_interest( $raw_feature->primary_tag ) ) {
+
+
+	#Hook goes here for the various gene model handlers
+
+
+    }
+  }
+  return \%features;
+
 
 }
+
 
 sub _build__gff_parser
 {

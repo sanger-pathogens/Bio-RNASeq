@@ -15,7 +15,6 @@ extends('Bio::RNASeq::GeneModelHandlers::GeneModelHandler');
 
 has 'tags_of_interest'          => ( is => 'rw', isa => 'ArrayRef', default => sub { ['CDS'] } );
 
-
 sub _build_gene_models {
 
     my ($self) = @_;
@@ -41,8 +40,6 @@ sub _build_gene_models {
             }
 
         }
-
-        #if ( $self->is_tag_of_interest( $raw_feature->_gsf_tag_hash ) ) {
 
     }
 

@@ -28,12 +28,21 @@ is( $ensembl_gene_model_handler->is_tag_of_interest('exon'), 1, 'Exon is a valid
 is( $ensembl_gene_model_handler->is_tag_of_interest('CDS'), 0, 'CDS is not a valid type for Ensembl' );
 
 
-ok( my $chado_gene_model_handler = Bio::RNASeq::GeneModelHandlers::ChadoGeneModelHandler->new( filename=>'t/data/gffs_sams/multipurpose_3_cds_chado.gff'), 'Object initialised' );
+#throws_ok { Bio::RNASeq::GeneModelHandlers::ChadoGeneModelHandler->new( filename=>'t/data/gffs_sams/chado_duplicate_gene_ids.gff')->gene_models()} qr/duplicate/, 'Throw exception if there are duplicate gene ids in the gff file';
+ok( my $chado_gene_model_handler = Bio::RNASeq::GeneModelHandlers::ChadoGeneModelHandler->new( filename=>'t/data/gffs_sams/multipurpose_3_cds_chado.gff'), 'Chado Object initialised' );
 is_deeply( $chado_gene_model_handler->tags_of_interest(), ['gene','mRNA','CDS'], 'Chado - Array of tags should be the same' ) ;
 is( $chado_gene_model_handler->is_tag_of_interest('gene'), 1, 'Gene is a valid type for Chado' );
 is( $chado_gene_model_handler->is_tag_of_interest('mRNA'), 1, 'mRNA is a valid type for Chado' );
 is( $chado_gene_model_handler->is_tag_of_interest('exon'), 0, 'Exon is not a valid type for Chado' );
 is( $chado_gene_model_handler->is_tag_of_interest('CDS'), 1, 'CDS is a valid type for Chado' );
+
+ok( $chado_gene_model_handler->gene_models()->{'GreatCurl'}, 'Should be of type Feature' );
+is( $chado_gene_model_handler->gene_models()->{'GreatCurl'}->gene_start(), 1053, 'Gene start should match');
+is( $chado_gene_model_handler->gene_models()->{'GreatCurl'}->gene_end(), 2474, 'Gene end should match');
+is( $chado_gene_model_handler->gene_models()->{'GreatCurl'}->gene_strand(), 1, 'Gene strand should match');
+is( $chado_gene_model_handler->gene_models()->{'GreatCurl'}->exon_length(), 1071, 'CDS length should match');
+is_deeply( $chado_gene_model_handler->gene_models()->{'GreatCurl'}->exons(), [ [1053, 1500], [1650, 1900], [2100, 2474] ], 'CDSs should be the same');
+
 
 ok( my $cds_only_gene_model_handler = Bio::RNASeq::GeneModelHandlers::CDSOnlyGeneModelHandler->new( filename=>'t/data/gffs_sams/multipurpose_3_cds_annot.gff'), 'Object initialised' );
 is_deeply( $cds_only_gene_model_handler->tags_of_interest(), ['CDS'], 'CDSOnly - Array of tags should be the same' ) ;

@@ -1,0 +1,4 @@
+##gff-version   3
+##sequence-region   DUMMY_CHADO_CHR 1 6000
+DUMMY_CHADO_CHR	chado	gene	1053	2474	.	+	.	ID=GreatCurl;Name=GreatCurl;feature_id=1;isObsolete=false;timelastmodified=16.02.2010 03:17:41 GMT
+DUMMY_CHADO_CHR	chado	gene	1053	2474	.	+	.	ID=GreatCurl;Parent=GreatCurl;feature_id=2;isObsolete=false;timelastmodified=16.02.2010 02:34:48 GMT
