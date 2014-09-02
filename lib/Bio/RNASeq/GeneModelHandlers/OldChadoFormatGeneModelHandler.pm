@@ -42,41 +42,6 @@ override 'gene_models' => sub {
   return $features;
 };
 
-=head
-
-sub _build_gene_models {
-
-    my ($self) = @_;
-
-    my %features;
-
-    while ( my $raw_feature = $self->_gff_parser->next_feature() ) {
-
-        last unless defined($raw_feature);    # No more features
-
-        if ( $self->is_tag_of_interest( $raw_feature->primary_tag ) ) {
-
-            my $feature_object =
-              Bio::RNASeq::Feature->new( raw_feature => $raw_feature );
-
-            if ( defined( $features{ $feature_object->gene_id } ) ) {
-                $features{ $feature_object->gene_id }
-                  ->add_discontinuous_feature($raw_feature);
-            }
-            else {
-
-                $features{ $feature_object->gene_id } = $feature_object;
-            }
-
-        }
-
-    }
-
-    return \%features;
-}
-
-=cut
-
 no Moose;
 __PACKAGE__->meta->make_immutable;
 1;
