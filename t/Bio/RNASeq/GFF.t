@@ -74,7 +74,7 @@ is $rna_seq_gff->features->{"non_cds_feature_id"}, undef, 'Dont parse non CDS fe
 is $rna_seq_gff->features->{"reverse_strand_id"}->gene_strand,  -1, 'reverse strand';
 is $rna_seq_gff->features->{"no_strand_identifier_id"}->gene_strand,  0, 'no strand identifier';
 
-my @expected_gene_ids = ('FN543502.13','FN543502.18','ROD_00071','continuous_feature_id','discontinuous_feature_id','no_strand_identifier_id','reverse_strand_id');
+my @expected_gene_ids = ('FN543502.13','FN543502.18','ROD_00071','continuous_feature_id','discontinuous_feature_id','discontinuous_feature_id2','no_strand_identifier_id','reverse_strand_id');
 
 is_deeply $rna_seq_gff->sorted_gene_ids, \@expected_gene_ids, 'sorting of gene ids';
 
