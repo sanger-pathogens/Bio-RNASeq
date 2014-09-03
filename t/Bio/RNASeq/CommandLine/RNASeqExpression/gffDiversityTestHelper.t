@@ -326,11 +326,11 @@ run_rna_seq_strand_specific('t/data/gffs_sams/mapping_to_one_feature_forward_str
 
 
 @expected_results_library = (
-			['DUMMY_EMBL_CHR.1', 'Total Reads Mapping', 1,'EMBL GFF paired-end reads'],
-			['DUMMY_EMBL_CHR.1', 'Sense Reads Mapping', 1,'EMBL GFF paired-end reads'],
+			['DUMMY_EMBL_CHR.1', 'Total Reads Mapping', 2,'EMBL GFF paired-end reads'],
+			['DUMMY_EMBL_CHR.1', 'Sense Reads Mapping', 2,'EMBL GFF paired-end reads'],
 			['DUMMY_EMBL_CHR.1', 'Antisense Reads Mapping', 0,'EMBL GFF paired-end reads'],
-			['DUMMY_EMBL_CHR.5', 'Total Reads Mapping', 1,'EMBL GFF paired-end reads'],
-			['DUMMY_EMBL_CHR.5', 'Sense Reads Mapping', 1,'EMBL GFF paired-end reads'],
+			['DUMMY_EMBL_CHR.5', 'Total Reads Mapping', 2,'EMBL GFF paired-end reads'],
+			['DUMMY_EMBL_CHR.5', 'Sense Reads Mapping', 2,'EMBL GFF paired-end reads'],
 			['DUMMY_EMBL_CHR.5', 'Antisense Reads Mapping', 0,'EMBL GFF paired-end reads'],
 			['DUMMY_EMBL_CHR.9', 'Total Reads Mapping', 0,'EMBL GFF paired-end reads'],
 			['DUMMY_EMBL_CHR.9', 'Sense Reads Mapping', 0,'EMBL GFF paired-end reads'],
