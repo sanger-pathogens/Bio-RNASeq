@@ -70,12 +70,6 @@ is $rna_seq_gff->features->{"continuous_feature_id"}->locus_tag,  "continuous_fe
 
 is $rna_seq_gff->features->{"non_cds_feature_id"}, undef, 'Dont parse non CDS features';
 
-# discontinuous feature should be linked up
-is $rna_seq_gff->features->{"discontinuous_feature_id"}->gene_start, 313, 'find gene start of CDS for discontinuous feature';
-is $rna_seq_gff->features->{"discontinuous_feature_id"}->gene_end,   7420, 'find gene end of CDS for discontinuous feature';
-is $rna_seq_gff->features->{"discontinuous_feature_id"}->exon_length, 3892, 'exon length for discontinuous feature';
-is_deeply($rna_seq_gff->features->{"discontinuous_feature_id"}->exons, [[313, 2775],[5990, 7420]]), 'discontinous exons match';
-
 # reverse strand
 is $rna_seq_gff->features->{"reverse_strand_id"}->gene_strand,  -1, 'reverse strand';
 is $rna_seq_gff->features->{"no_strand_identifier_id"}->gene_strand,  0, 'no strand identifier';
