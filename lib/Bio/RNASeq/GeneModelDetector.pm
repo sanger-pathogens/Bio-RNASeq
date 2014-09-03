@@ -35,19 +35,19 @@ sub _build_gene_model_handler {
 
     
     if ( $self->_is_ensembl_gff() ) {
-      return Bio::RNASeq::GeneModelHandlers::EnsemblGeneModelHandler->new();
+      return Bio::RNASeq::GeneModelHandlers::EnsemblGeneModelHandler->new( filename => $self->filename);
     }
     elsif ( $self->_is_chado_gff() ) {
-      return Bio::RNASeq::GeneModelHandlers::ChadoGeneModelHandler->new();
+      return Bio::RNASeq::GeneModelHandlers::ChadoGeneModelHandler->new( filename => $self->filename);
     }
     elsif ( $self->_is_old_chado_format_gff() ) {
-      return Bio::RNASeq::GeneModelHandlers::OldChadoFormatGeneModelHandler->new();
+      return Bio::RNASeq::GeneModelHandlers::OldChadoFormatGeneModelHandler->new( filename => $self->filename);
     }
     elsif ( $self->_is_cds_only_gff() ) {
-      return Bio::RNASeq::GeneModelHandlers::CDSOnlyGeneModelHandler->new();
+      return Bio::RNASeq::GeneModelHandlers::CDSOnlyGeneModelHandler->new( filename => $self->filename);
     }    
     else {
-      return Bio::RNASeq::GeneModelHandlers::GeneModelHandler->new();
+      return Bio::RNASeq::GeneModelHandlers::GeneModelHandler->new( filename => $self->filename);
     }
 
 }

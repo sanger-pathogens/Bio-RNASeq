@@ -28,13 +28,13 @@ has 'gene_model_handler' => ( is => 'rw', isa => 'Bio::RNASeq::GeneModelHandlers
 sub _build_gene_model_handler {
 
   my ($self) = @_;
-  return Bio::RNASeq::GeneModelDetector->new( filename=>$self->filename)->gene_model_handler();
+  return Bio::RNASeq::GeneModelDetector->new( filename=>$self->filename())->gene_model_handler();
   
 
 }
 
-sub _build__gff_parser
-{
+sub _build__gff_parser {
+
   my ($self) = @_;
 
   Bio::Tools::GFF->new(-gff_version => 3, -file => $self->filename);
