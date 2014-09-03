@@ -15,7 +15,7 @@ my (@expected_results_library, @feature_names);
 #Overlapping features
 #For Chado gff's we should test for the gene feature types and not for the CDS feature types. Including both for now. But the first ones should fail
 $test_name = 'Checking presence of unwanted features - overlapping features - Chado';
-@feature_names = qw(GreatCurl GreatCurl.1 GreatCurl.1:exon:1 GreatCurl.2:exon:2 GreatCurl.3:exon:3 GreatCurl.1:pep MightyLip MightyLip.1 MightyLip.1:exon:1 MightyLip.2:exon:2 MightyLip.1:pep);
+@feature_names = qw(GreatCurl.1 GreatCurl.1:exon:1 GreatCurl.2:exon:2 GreatCurl.3:exon:3 GreatCurl.1:pep MightyLip.1 MightyLip.1:exon:1 MightyLip.2:exon:2 MightyLip.1:pep);
 
 run_rna_seq_check_non_existence_of_a_feature( 't/data/gffs_sams/overlapping_genes_chado.sam','t/data/gffs_sams/overlapping_genes_chado.gff', \@feature_names, $test_name );
 run_rna_seq_check_non_existence_of_a_feature_strand_specific( 't/data/gffs_sams/overlapping_genes_chado.sam','t/data/gffs_sams/overlapping_genes_chado.gff', \@feature_names, $test_name );
