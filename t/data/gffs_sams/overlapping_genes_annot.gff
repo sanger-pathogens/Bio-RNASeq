@@ -1,0 +1,7 @@
+##gff-version 3
+##sequence-region DUMMY_ANNOT_CHR 1 50
+DUMMY_ANNOT_CHR	  Prodigal:2.60	CDS	10	16	.	+	0	ID=Clostridium_difficile_630_v1.9_00001;gene=dnaA
+DUMMY_ANNOT_CHR	  Prodigal:2.60	CDS	16	22	.	+	0	ID=Clostridium_difficile_630_v1.9_00002;gene=dnaF
+DUMMY_ANNOT_CHR	  Prodigal:2.60	CDS	22	28	.	+	0	ID=Clostridium_difficile_630_v1.9_00003;gene=dnaN
+DUMMY_ANNOT_CHR	  Prodigal:2.60	CDS	28	34	.	+	0	ID=Clostridium_difficile_630_v1.9_00004;gene=dnaC
+DUMMY_ANNOT_CHR	  Prodigal:2.60	CDS	34	40	.	+	0	ID=Clostridium_difficile_630_v1.9_00005;gene=dnaG

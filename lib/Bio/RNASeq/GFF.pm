@@ -14,51 +14,38 @@ Represents a GFF from a GFF file
 =cut
 
 use Moose;
-use Bio::Tools::NonStandardGFF;
+use Bio::Tools::GFF;
 use Bio::RNASeq::Feature;
+use Bio::RNASeq::GeneModelDetector;
 #use Data::Dumper;
 
 has 'filename'          => ( is => 'rw', isa => 'Str',             required   => 1 );
 has 'features'          => ( is => 'rw', isa => 'HashRef',         lazy_build => 1 );
-has '_gff_parser'       => ( is => 'rw', isa => 'Bio::Tools::NonStandardGFF', lazy_build => 1 );
+has '_gff_parser'       => ( is => 'rw', isa => 'Bio::Tools::GFF', lazy_build => 1 );
 has 'sequence_lengths' => ( is => 'rw', isa => 'HashRef',         lazy_build => 1 );
+has 'gene_model_handler' => ( is => 'rw', isa => 'Bio::RNASeq::GeneModelHandlers::GeneModelHandler', lazy =>1, builder => '_build_gene_model_handler' );
 
-sub _build__gff_parser
-{
+sub _build_gene_model_handler {
+
   my ($self) = @_;
-#  print "in _build__gff_parser\n";
-  Bio::Tools::NonStandardGFF->new(-gff_version => 3, -file => $self->filename);
+  return Bio::RNASeq::GeneModelDetector->new( filename=>$self->filename())->gene_model_handler();
+  
+
 }
 
+sub _build__gff_parser {
+
+  my ($self) = @_;
+
+  Bio::Tools::GFF->new(-gff_version => 3, -file => $self->filename);
+}
 
 sub _build_features
 {
   my ($self) = @_;
 
-  my %features;
+  return $self->gene_model_handler->gene_models();
 
-  while( my $raw_feature = $self->_gff_parser->next_feature())
-  {
-
-    #print Dumper $raw_feature;
-      last unless defined($raw_feature); # No more features
-
-      next if !($raw_feature->primary_tag eq 'CDS' ||   $raw_feature->primary_tag eq 'polypeptide' ||   $raw_feature->primary_tag eq 'intron');
-
-      my $feature_object = Bio::RNASeq::Feature->new(raw_feature => $raw_feature);
-
-      if(defined($features{$feature_object->gene_id}))
-      {
-        $features{$feature_object->gene_id}->add_discontinuous_feature($raw_feature);
-      }
-      else
-      {
-        $features{$feature_object->gene_id} = $feature_object;
-      }
-
-  }
-
-  return \%features;
 }
 
 # create a hash with sequence names and the length of the sequence

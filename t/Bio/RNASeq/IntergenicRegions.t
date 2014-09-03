@@ -16,22 +16,26 @@ my $rna_seq_gff = Bio::RNASeq::GFF->new(filename => 't/data/Citrobacter_rodentiu
 # valid intergenic region generation where some features are close by
 ok my $intergenic_regions = Bio::RNASeq::IntergenicRegions->new(
   features => $rna_seq_gff->features(),
-  window_margin => 50,
+  window_margin => 0,
   sequence_lengths => $rna_seq_gff->sequence_lengths
   ), 'initialise intergenic regions';
 
 ok my $features = $intergenic_regions->intergenic_features, 'create features';
-my @expected_keys = ('FN543502_intergenic_1_115','FN543502_intergenic_5048_5096','FN543502_intergenic_7471_7640','FN543502_intergenic_8695_8707','FN543502_intergenic_9396_30000');
+my @expected_keys =  ('FN543502_intergenic_1_165', 'FN543502_intergenic_232_312','FN543502_intergenic_4998_5146','FN543502_intergenic_5921_5989','FN543502_intergenic_7421_7690','FN543502_intergenic_8645_8757','FN543502_intergenic_9346_30000');
+
+
 my @actual_keys = sort keys(%{$features});
 
 is_deeply \@actual_keys, \@expected_keys, 'expected keys';
-is $features->{"FN543502_intergenic_7471_7640"}->gene_id, 'FN543502_intergenic_7471_7640', 'gene id';
-is $features->{"FN543502_intergenic_7471_7640"}->gene_start ,7471, 'gene start';
-is $features->{"FN543502_intergenic_7471_7640"}->gene_end ,7640, 'gene end';
-is $features->{"FN543502_intergenic_7471_7640"}->gene_strand ,1, 'gene strand';
-is $features->{"FN543502_intergenic_7471_7640"}->seq_id ,'FN543502', 'sequence id';
-my @expected_exons  = ([7471,7640]);
-is_deeply $features->{"FN543502_intergenic_7471_7640"}->exons, \@expected_exons, 'expected exons';
+is $features->{"FN543502_intergenic_7421_7690"}->gene_id, 'FN543502_intergenic_7421_7690', 'gene id';
+is $features->{"FN543502_intergenic_7421_7690"}->gene_start ,7421, 'gene start';
+is $features->{"FN543502_intergenic_7421_7690"}->gene_end ,7690, 'gene end';
+is $features->{"FN543502_intergenic_7421_7690"}->gene_strand ,1, 'gene strand';
+is $features->{"FN543502_intergenic_7421_7690"}->seq_id ,'FN543502', 'sequence id';
+my @expected_exons  = ([7421,7690]);
+is_deeply $features->{"FN543502_intergenic_7421_7690"}->exons, \@expected_exons, 'expected exons';
+
+
 
 
 # intergenic regions where there is a tiny window margin

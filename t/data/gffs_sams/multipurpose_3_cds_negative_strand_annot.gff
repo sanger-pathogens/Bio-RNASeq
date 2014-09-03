@@ -1,0 +1,7 @@
+##gff-version 3
+##sequence-region DUMMY_ANNOT_CHR 1 4000
+DUMMY_ANNOT_CHR	Prodigal:2.60	CDS	200	1000	.	-	0	ID=Clostridium_difficile_630_v1.9_00001;gene=dnaA
+DUMMY_ANNOT_CHR	Prodigal:2.60	CDS	1562	2668	.	-	0	ID=Clostridium_difficile_630_v1.9_00002;gene=dnaN
+DUMMY_ANNOT_CHR	Prodigal:2.60	CDS	2805	3511	.	-	0	ID=Clostridium_difficile_630_v1.9_00003;gene=dnaC
+DUMMY_ANNOT_CHR	Aragorn:1.2.36	tRNA	3511	3583	.	-	0	ID=Clostridium_difficile_630_v1.9_00005;inference=COORDINATES
+DUMMY_ANNOT_CHR	Infernal:1.1	ncRNA	3590	3775	.	-	0	ID=Clostridium_difficile_630_v1.9_00006;inference=COORDINATES

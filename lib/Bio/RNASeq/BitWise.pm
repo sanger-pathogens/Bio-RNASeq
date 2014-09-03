@@ -28,7 +28,7 @@ has '_sequence_data_file_handle'    => ( is => 'rw',               lazy_build =>
 has '_read_protocol_class'          => ( is => 'rw',               lazy_build => 1 );
 has '_output_file_handle'           => ( is => 'rw',               lazy_build => 1 );
 has '_total_mapped_reads'           => ( is => 'rw', isa => 'Int', lazy_build => 1 );
-
+has 'debug' => ( is => 'rw', isa => 'Bool', default => 0);
 
 sub update_bitwise_flags
 {
@@ -76,7 +76,7 @@ sub _build__output_file_handle
 {
   my ($self) = @_;
   my $output_file_handle; 
-  open($output_file_handle, '|- ', $self->samtools_exec." view -bS - > ". $self->output_filename) || Bio::RNASeq::Exceptions::FailedToCreateNewBAM->throw(error => "Couldnt open output file for writing ". $self->output_filename);
+  open($output_file_handle, '|- ', $self->samtools_exec." view -bS -" . ($self->debug ? '' : " 2>/dev/null") . "> ". $self->output_filename) || Bio::RNASeq::Exceptions::FailedToCreateNewBAM->throw(error => "Couldnt open output file for writing ". $self->output_filename);
   return $output_file_handle;
 }
 
@@ -91,7 +91,7 @@ sub _build__read_protocol_class
 sub _build__total_mapped_reads
 {
 	my ($self) = @_;
-	my $cmd = $self->samtools_exec . ' view -c -F 4 ' . $self->filename;
+	my $cmd = $self->samtools_exec . ' view -c -F 4 ' . $self->filename . ($self->debug ? '' : " 2>/dev/null");
 	
 	my $total_mapped_reads = `$cmd`;
 	$total_mapped_reads =~ s/\D//;
@@ -116,7 +116,7 @@ sub _sequence_data_stream
   }
   else
   {
-    return $self->samtools_exec." view -h ".$self->filename." |";
+    return $self->samtools_exec." view -h ".$self->filename . ($self->debug ? '' : " 2>/dev/null") . " |";
   }
 }
 

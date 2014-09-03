@@ -1,0 +1,13 @@
+##gff-version   3
+##sequence-region   DUMMY_CHADO_CHR 1 6000
+DUMMY_CHADO_CHR	chado	gene	1053	2474	.	+	.	ID=GreatCurl;Name=GreatCurl;feature_id=1;isObsolete=false;timelastmodified=16.02.2010 03:17:41 GMT
+DUMMY_CHADO_CHR	chado	mRNA	1053	2474	.	+	.	ID=GreatCurl.1;Parent=GreatCurl;feature_id=2;isObsolete=false;timelastmodified=16.02.2010 02:34:48 GMT
+DUMMY_CHADO_CHR	chado	CDS	1053	1500	.	+	0	ID=GreatCurl.1:exon:1;Parent=GreatCurl.1;colour=7;isObsolete=false;timelastmodified=16.02.2010 03:17:41 GMT
+DUMMY_CHADO_CHR	chado	CDS	1650	1900	.	+	2	ID=GreatCurl.2:exon:2;Parent=GreatCurl.1;colour=7;isObsolete=false;timelastmodified=16.02.2010 03:17:41 GMT
+DUMMY_CHADO_CHR	chado	CDS	2100	2474	.	+	0	ID=GreatCurl.3:exon:3;Parent=GreatCurl.1;colour=7;isObsolete=false;timelastmodified=16.02.2010 03:17:41 GMT
+DUMMY_CHADO_CHR	chado	polypeptide	1053	2474	.	+	0	ID=GreatCurl.1:pep;Derives_from=GreatCurl.1;colour=7;isObsolete=false;timelastmodified=16.02.2010 03:17:41 GMT
+DUMMY_CHADO_CHR	chado	pseudogene	3000	4500	.	+	.	ID=StrangeCurl;Name=StrangeCurl;feature_id=1;isObsolete=false;timelastmodified=16.02.2010 03:17:41 GMT
+DUMMY_CHADO_CHR	chado	pseudogenic_transcript	3000	4500	.	+	.	ID=StrangeCurl.1;Parent=StrangeCurl;feature_id=2;isObsolete=false;timelastmodified=16.02.2010 02:34:48 GMT
+DUMMY_CHADO_CHR	chado	pseudogenic_exon	3000	3500	.	+	0	ID=StrangeCurl.1:exon:1;Parent=StrangeCurl.1;colour=7;isObsolete=false;timelastmodified=16.02.2010 03:17:41 GMT
+DUMMY_CHADO_CHR	chado	pseudogenic_exon	3800	4000	.	+	0	ID=StrangeCurl.2:exon:2;Parent=StrangeCurl.1;colour=7;isObsolete=false;timelastmodified=16.02.2010 03:17:41 GMT
+DUMMY_CHADO_CHR	chado	pseudogenic_exon	4100	4500	.	+	0	ID=StrangeCurl.3:exon:3;Parent=StrangeCurl.1;colour=7;isObsolete=false;timelastmodified=16.02.2010 03:17:41 GMT

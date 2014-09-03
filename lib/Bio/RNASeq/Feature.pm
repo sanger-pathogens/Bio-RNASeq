@@ -25,6 +25,7 @@ has 'exons'         => ( is => 'rw', isa => 'ArrayRef',            lazy =>1, bui
 has 'locus_tag'     => ( is => 'rw', isa => 'Maybe[Str]',          lazy_build => 1 );
 has 'feature_type'  => ( is => 'rw', isa => 'Maybe[Str]',          lazy_build => 1 );
 
+
 sub _build_locus_tag
 {
   my ($self) = @_;
@@ -58,7 +59,6 @@ sub _build_exons
   my ($self) = @_;
   my @exons;
   push @exons, [$self->gene_start, $self->gene_end];
-
   return \@exons;
 }
 
@@ -67,7 +67,7 @@ sub _find_feature_id
   my ($self) = @_;
   my $gene_id;
   my @junk;
-  my @tag_names = ('ID', 'locus_tag', 'Parent');
+  my @tag_names = ('ID', 'locus_tag', 'Name', 'Parent');
   
   for my $tag_name (@tag_names)
   {
@@ -126,7 +126,7 @@ sub _build_gene_end
 sub _build_exon_length
 {
   my ($self) = @_;
-  ($self->gene_end - $self->gene_start + 1);
+  ($self->gene_end - $self->gene_start );
 }
 
 sub _filter_out_parent_features_from_exon_list

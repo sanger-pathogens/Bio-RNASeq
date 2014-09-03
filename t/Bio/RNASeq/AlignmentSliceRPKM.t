@@ -11,45 +11,35 @@ BEGIN {
 }
 use Bio::RNASeq::GFF;
 
-my $rna_seq_gff = Bio::RNASeq::GFF->new(filename => 't/data/Citrobacter_rodentium_ICC168_v1_test.gff');
-my $feature = $rna_seq_gff->features()->{continuous_feature_id};
+my $rna_seq_gff = Bio::RNASeq::GFF->new(filename => 't/data/gffs_sams/multipurpose_3_cds_embl.gff');
+my $feature = $rna_seq_gff->features()->{'DUMMY_EMBL_CHR.5'};
 $feature->gene_strand(1);
-my @exons;
-push @exons, [66630,66940];
-$feature->exons(\@exons);
-$feature->exon_length(50);
+
+my $cmd1 = "samtools view -bS t/data/gffs_sams/mapping_to_one_feature_embl.sam 2>/dev/null > t/data/gffs_sams/mapping_to_one_feature_embl.bam";
+
+system($cmd1);
+
+my $cmd2 = "samtools index t/data/gffs_sams/mapping_to_one_feature_embl.bam 2>/dev/null";
+
+system($cmd2);
 
 ok my $alignment_slice = Bio::RNASeq::AlignmentSliceRPKM->new(
-  filename => 't/data/rna_seq_bitwise_flags_set.bam',
-  window_margin => 10,
+  filename => 't/data/gffs_sams/mapping_to_one_feature_embl.bam',
+  window_margin => 0,
   total_mapped_reads => 10000,
   feature => $feature,
-  _input_slice_filename => "t/data/Citrobacter_rodentium_slice"
 ), 'initialise alignment slice';
-is $alignment_slice->_window_start, 156, 'start window';
-is $alignment_slice->_window_end, 241, 'end window';
-ok $alignment_slice->_slice_file_handle, 'file handle initialises okay';
-ok my $rpkm_values = $alignment_slice->rpkm_values, 'rpkm values';
-is $rpkm_values->{rpkm_sense}, 52000, 'rpkm sense';
-is $rpkm_values->{rpkm_antisense},0, 'rpkm antisense';
-is $rpkm_values->{mapped_reads_sense},26, 'mapped reads sense';
-is $rpkm_values->{mapped_reads_antisense},0, 'mapped reads antisense';
 
 
-=head
+is($alignment_slice->rpkm_values->{total_rpkm}, 271.24773960217, "Total RPKM check");
+is($alignment_slice->rpkm_values->{rpkm_sense}, 271.24773960217, "Sense RPKM check");
+is($alignment_slice->rpkm_values->{rpkm_antisense}, 0, "Antisense RPKM check");
+is($alignment_slice->rpkm_values->{total_mapped_reads}, 3, "Total mapped reads check");
+is($alignment_slice->rpkm_values->{mapped_reads_sense}, 3, "Sense mapped reads check");
+is($alignment_slice->rpkm_values->{mapped_reads_antisense}, 0, "Antisense mapped reads check");
 
-# invalid filehandle
-ok $alignment_slice = Bio::RNASeq::AlignmentSliceRPKM->new(
-  filename => 't/data/blah.bam',
-  total_mapped_reads => 10000,
-  window_margin => 10,
-  feature => $feature,
-  _input_slice_filename => "file_which_doesnt_exist"
-), 'initialise invalid alignment slice';
-
-throws_ok  {$alignment_slice->_slice_file_handle} qr/Cant view slice/ , 'invalid file should throw an error';
-
-=cut
+unlink('t/data/gffs_sams/mapping_to_one_feature_embl.bam');
+unlink('t/data/gffs_sams/mapping_to_one_feature_embl.bam.bai');
 
 done_testing();
 
