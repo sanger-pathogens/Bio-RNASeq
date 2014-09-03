@@ -25,6 +25,7 @@ has 'exons'         => ( is => 'rw', isa => 'ArrayRef',            lazy =>1, bui
 has 'locus_tag'     => ( is => 'rw', isa => 'Maybe[Str]',          lazy_build => 1 );
 has 'feature_type'  => ( is => 'rw', isa => 'Maybe[Str]',          lazy_build => 1 );
 
+
 sub _build_locus_tag
 {
   my ($self) = @_;
@@ -58,7 +59,6 @@ sub _build_exons
   my ($self) = @_;
   my @exons;
   push @exons, [$self->gene_start, $self->gene_end];
-
   return \@exons;
 }
 

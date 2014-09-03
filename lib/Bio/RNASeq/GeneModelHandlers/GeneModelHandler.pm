@@ -61,11 +61,8 @@ sub _three_layer_gene_model {
 
             Bio::RNASeq::Exceptions::DuplicateFeatureID->throw(
                 error => $self->filename . ' contains duplicate gene ids' )
-              if ( defined $features{ $gene_feature_object->gene_id() } );
+		if ( defined $features{ $gene_feature_object->gene_id() } );
 
-            $features{ $gene_feature_object->gene_id } = $gene_feature_object
-              unless (
-                defined( $features{ $gene_feature_object->gene_id } ) );
 
         }
 
@@ -94,14 +91,21 @@ sub _three_layer_gene_model {
 
             ( $exon_parent, @junk ) = $raw_feature->get_tag_values('Parent');
 
-            next unless ( defined $gene_id_lookup{$exon_parent} );
+            if( defined $gene_id_lookup{$exon_parent} && defined $features{ $gene_id_lookup{$exon_parent} } ) {
 
-            $features{ $gene_id_lookup{$exon_parent} }
-              ->add_discontinuous_feature($raw_feature);
+	      $features{ $gene_id_lookup{$exon_parent} }
+		->add_discontinuous_feature($raw_feature);
+	    }
+	    else {
+
+	      $features{ $gene_id_lookup{$exon_parent} } = $exon_feature_object;
+
+	    }
 
         }
 
     }
+
     return \%features;
 
 }
