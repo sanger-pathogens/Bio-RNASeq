@@ -31,8 +31,8 @@ ok my $alignment_slice = Bio::RNASeq::AlignmentSliceRPKM->new(
 ), 'initialise alignment slice';
 
 
-is($alignment_slice->rpkm_values->{total_rpkm}, 271.0027100271, "Total RPKM check");
-is($alignment_slice->rpkm_values->{rpkm_sense}, 271.0027100271, "Sense RPKM check");
+is($alignment_slice->rpkm_values->{total_rpkm}, 271.24773960217, "Total RPKM check");
+is($alignment_slice->rpkm_values->{rpkm_sense}, 271.24773960217, "Sense RPKM check");
 is($alignment_slice->rpkm_values->{rpkm_antisense}, 0, "Antisense RPKM check");
 is($alignment_slice->rpkm_values->{total_mapped_reads}, 3, "Total mapped reads check");
 is($alignment_slice->rpkm_values->{mapped_reads_sense}, 3, "Sense mapped reads check");
