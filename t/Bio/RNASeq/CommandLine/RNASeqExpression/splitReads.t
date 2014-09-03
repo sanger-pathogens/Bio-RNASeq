@@ -94,3 +94,5 @@ run_rna_seq( 't/data/gffs_sams/split_reads_mammal.sam','t/data/gffs_sams/multipu
 
 
 ##END Split Reads
+
+done_testing();
