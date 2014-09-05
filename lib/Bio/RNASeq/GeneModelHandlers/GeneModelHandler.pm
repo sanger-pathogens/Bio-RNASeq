@@ -66,17 +66,17 @@ sub _three_layer_gene_model {
 
         }
 
-        elsif ( $raw_feature->primary_tag eq 'mRNA' ) {
+        elsif ( $raw_feature->primary_tag eq 'mRNA' || $raw_feature->primary_tag eq 'transcript' ) {
 
-            my ( $mrna_parent, $mrna_id, @junk );
+	  my ( $middle_feature_parent, $middle_feature_id, @junk );
 
             next
               unless ( $raw_feature->has_tag('ID')
                 && $raw_feature->has_tag('Parent') );
 
-            ( $mrna_id,     @junk ) = $raw_feature->get_tag_values('ID');
-            ( $mrna_parent, @junk ) = $raw_feature->get_tag_values('Parent');
-            $gene_id_lookup{$mrna_id} = $mrna_parent;
+            ( $middle_feature_id,     @junk ) = $raw_feature->get_tag_values('ID');
+            ( $middle_feature_parent, @junk ) = $raw_feature->get_tag_values('Parent');
+            $gene_id_lookup{$middle_feature_id} = $middle_feature_parent;
 
         }
         elsif ( $raw_feature->primary_tag eq $self->exon_tag() ) {
