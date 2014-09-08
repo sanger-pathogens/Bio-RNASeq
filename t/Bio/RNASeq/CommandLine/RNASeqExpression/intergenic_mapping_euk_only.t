@@ -23,8 +23,8 @@ run_rna_seq_check_non_existence_of_a_feature_strand_specific( 't/data/gffs_sams/
 #Chado total mapped reads based on gene feture type
 $test_name = 'Chado GFF gene feature type intergenic mappings';
 @expected_results_library = (
-			['GreatCurl', 'Total Reads Mapping', 4],
-			['GreatCurl', 'Sense Reads Mapping', 4],
+			['GreatCurl', 'Total Reads Mapping', 3],
+			['GreatCurl', 'Sense Reads Mapping', 3],
 			['GreatCurl', 'Antisense Reads Mapping', 0],
 			['SunBurn', 'Total Reads Mapping', 5],
 			['SunBurn', 'Sense Reads Mapping', 5],

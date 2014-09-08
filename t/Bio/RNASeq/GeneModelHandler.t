@@ -14,6 +14,7 @@ BEGIN {
 }
 
 
+
 ok( my $generic_gene_model_handler = Bio::RNASeq::GeneModelHandlers::GeneModelHandler->new( filename=>'t/data/gffs_sams/multipurpose_3_genes_mammal_gtf2gff3.gff'), 'Object initialised' );
 is_deeply( $generic_gene_model_handler->tags_of_interest(), [], 'If GFF can\'t be detected, there are no tags of interest' ) ;
 is( $generic_gene_model_handler->is_tag_of_interest('CDS'), 0, 'There should be no tags of interest' );
@@ -21,7 +22,7 @@ is_deeply( $generic_gene_model_handler->gene_models(), {}, 'No gene models are r
 
 
 ok( my $ensembl_gene_model_handler = Bio::RNASeq::GeneModelHandlers::EnsemblGeneModelHandler->new( filename=>'t/data/gffs_sams/multipurpose_3_genes_mammal_gtf2gff3.gff'), 'Object initialised' );
-is_deeply( $ensembl_gene_model_handler->tags_of_interest(), ['gene','mRNA','exon'], 'Ensembl - Array of tags should be the same' ) ;
+is_deeply( $ensembl_gene_model_handler->tags_of_interest(), ['gene','mRNA','transcript','exon'], 'Ensembl - Array of tags should be the same' ) ;
 is( $ensembl_gene_model_handler->is_tag_of_interest('gene'), 1, 'Gene is a valid type for Ensembl' );
 is( $ensembl_gene_model_handler->is_tag_of_interest('mRNA'), 1, 'mRNA is a valid type for Ensembl' );
 is( $ensembl_gene_model_handler->is_tag_of_interest('exon'), 1, 'Exon is a valid type for Ensembl' );
@@ -34,7 +35,39 @@ is( $ensembl_gene_model_handler->gene_models()->{'Gene1'}->gene_strand(), 1, 'Ge
 is( $ensembl_gene_model_handler->gene_models()->{'Gene1'}->exon_length(), 1443, 'Exon length should match');
 is_deeply( $ensembl_gene_model_handler->gene_models()->{'Gene1'}->exons(), [ [528, 814], [1480, 2070], [3056, 3623] ], 'Exons should be the same');
 
-#throws_ok { Bio::RNASeq::GeneModelHandlers::ChadoGeneModelHandler->new( filename=>'t/data/gffs_sams/chado_duplicate_gene_ids.gff')->gene_models()} qr/duplicate/, 'Throw exception if there are duplicate gene ids in the gff file';
+
+ok( my $ensembl_gene_model_handler2 = Bio::RNASeq::GeneModelHandlers::EnsemblGeneModelHandler->new( filename=>'t/data/gffs_sams/mammal_gene_multiple_mrna.gff'), 'Object initialised' );
+is_deeply( $ensembl_gene_model_handler2->tags_of_interest(), ['gene','mRNA','transcript','exon'], 'Ensembl - Array of tags should be the same' ) ;
+is( $ensembl_gene_model_handler2->is_tag_of_interest('gene'), 1, 'Gene is a valid type for Ensembl' );
+is( $ensembl_gene_model_handler2->is_tag_of_interest('mRNA'), 1, 'mRNA is a valid type for Ensembl' );
+is( $ensembl_gene_model_handler2->is_tag_of_interest('transcript'), 1, 'transcript is a valid type for Ensembl' );
+is( $ensembl_gene_model_handler2->is_tag_of_interest('exon'), 1, 'Exon is a valid type for Ensembl' );
+is( $ensembl_gene_model_handler2->is_tag_of_interest('CDS'), 0, 'CDS is not a valid type for Ensembl' );
+
+ok( $ensembl_gene_model_handler2->gene_models()->{'Gene1'}, 'Should be of type Feature' );
+is( $ensembl_gene_model_handler2->gene_models()->{'Gene1'}->gene_start(), 528, 'Gene start should match');
+is( $ensembl_gene_model_handler2->gene_models()->{'Gene1'}->gene_end(), 9623, 'Gene end should match');
+is( $ensembl_gene_model_handler2->gene_models()->{'Gene1'}->gene_strand(), 1, 'Gene strand should match');
+is( $ensembl_gene_model_handler2->gene_models()->{'Gene1'}->exon_length(), 4329, 'Exon length should match');
+is_deeply( $ensembl_gene_model_handler2->gene_models()->{'Gene1'}->exons(), [ [528, 814], [1480, 2070], [3056, 3623], [4028, 4314], [4480, 5070], [6056, 6623], [7028, 7314], [7480, 8070], [9056, 9623] ], 'Exons should be the same');
+
+
+ok( my $ensembl_gene_model_handler3 = Bio::RNASeq::GeneModelHandlers::EnsemblGeneModelHandler->new( filename=>'t/data/gffs_sams/mm10_no_mrna_only_transcript.gff'), 'Object initialised' );
+is_deeply( $ensembl_gene_model_handler3->tags_of_interest(), ['gene','mRNA','transcript','exon'], 'Ensembl - Array of tags should be the same' ) ;
+is( $ensembl_gene_model_handler3->is_tag_of_interest('gene'), 1, 'gene is a valid type for Ensembl' );
+is( $ensembl_gene_model_handler3->is_tag_of_interest('mRNA'), 1, 'mRNA is a valid type for Ensembl' );
+is( $ensembl_gene_model_handler3->is_tag_of_interest('transcript'), 1, 'transcript is a valid type for Ensembl' );
+is( $ensembl_gene_model_handler3->is_tag_of_interest('exon'), 1, 'exon is a valid type for Ensembl' );
+is( $ensembl_gene_model_handler3->is_tag_of_interest('CDS'), 0, 'CDS is not a valid type for Ensembl' );
+
+ok( $ensembl_gene_model_handler3->gene_models()->{'ENSMUSG00000096707'}, 'Should be of type Feature' );
+is( $ensembl_gene_model_handler3->gene_models()->{'ENSMUSG00000096707'}->gene_start(), 8801136, 'Gene start should match');
+is( $ensembl_gene_model_handler3->gene_models()->{'ENSMUSG00000096707'}->gene_end(), 8825685, 'Gene end should match');
+is( $ensembl_gene_model_handler3->gene_models()->{'ENSMUSG00000096707'}->gene_strand(), -1, 'Gene strand should match');
+is( $ensembl_gene_model_handler3->gene_models()->{'ENSMUSG00000096707'}->exon_length(), 2406, 'Exon length should match');
+is_deeply( $ensembl_gene_model_handler3->gene_models()->{'ENSMUSG00000096707'}->exons(), [ [8825489, 8825685], [8822346, 8822638], [8813464, 8814276], [8811706, 8811933], [8805937, 8806060], [8801136, 8801892] ], 'Exons should be the same');
+
+
 ok( my $chado_gene_model_handler = Bio::RNASeq::GeneModelHandlers::ChadoGeneModelHandler->new( filename=>'t/data/gffs_sams/multipurpose_3_cds_chado.gff'), 'Chado Object initialised' );
 is_deeply( $chado_gene_model_handler->tags_of_interest(), ['gene','mRNA','CDS'], 'Chado - Array of tags should be the same' ) ;
 is( $chado_gene_model_handler->is_tag_of_interest('gene'), 1, 'Gene is a valid type for Chado' );

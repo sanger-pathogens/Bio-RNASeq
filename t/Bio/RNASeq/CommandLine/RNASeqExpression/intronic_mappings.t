@@ -25,8 +25,8 @@ run_rna_seq_check_non_existence_of_a_feature_strand_specific( 't/data/gffs_sams/
 #Chado total mapped reads based on gene feture type
 $test_name = 'Chado GFF gene feature type intronic mappings';
 @expected_results_library = (
-			['GreatCurl', 'Total Reads Mapping', 9],
-			['GreatCurl', 'Sense Reads Mapping', 9],
+			['GreatCurl', 'Total Reads Mapping', 10],
+			['GreatCurl', 'Sense Reads Mapping', 10],
 			['GreatCurl', 'Antisense Reads Mapping', 0],
 		       );
 
@@ -38,8 +38,8 @@ $test_name = 'EMBL GFF intronic mappings';
 			['DUMMY_EMBL_CHR.1', 'Total Reads Mapping', 4],
 			['DUMMY_EMBL_CHR.1', 'Sense Reads Mapping', 4],
 			['DUMMY_EMBL_CHR.1', 'Antisense Reads Mapping', 0],
-			['DUMMY_EMBL_CHR.5', 'Total Reads Mapping', 4],
-			['DUMMY_EMBL_CHR.5', 'Sense Reads Mapping', 4],
+			['DUMMY_EMBL_CHR.5', 'Total Reads Mapping', 6],
+			['DUMMY_EMBL_CHR.5', 'Sense Reads Mapping', 6],
 			['DUMMY_EMBL_CHR.5', 'Antisense Reads Mapping', 0],
 			    );
 
@@ -51,8 +51,8 @@ $test_name = 'Annot GFF intronic mappings';
 			['Clostridium_difficile_630_v1.9_00001', 'Total Reads Mapping', 4],
 			['Clostridium_difficile_630_v1.9_00001', 'Sense Reads Mapping', 4],
 			['Clostridium_difficile_630_v1.9_00001', 'Antisense Reads Mapping', 0],
-			['Clostridium_difficile_630_v1.9_00002', 'Total Reads Mapping', 4],
-			['Clostridium_difficile_630_v1.9_00002', 'Sense Reads Mapping', 4],
+			['Clostridium_difficile_630_v1.9_00002', 'Total Reads Mapping', 6],
+			['Clostridium_difficile_630_v1.9_00002', 'Sense Reads Mapping', 6],
 			['Clostridium_difficile_630_v1.9_00002', 'Antisense Reads Mapping', 0],
 		       );
 

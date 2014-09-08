@@ -57,7 +57,7 @@ sub _is_ensembl_gff {
 
   my ($self) = @_;
 
-  my ( $gene_id, $mrna_id, $mrna_parent, $exon_parent, @junk );
+  my ( $gene_id, $middle_feature_id, $middle_feature_parent, $exon_parent, @junk );
 
   my $number_of_features = 0;
   my $gff_parser = Bio::Tools::GFF->new(-gff_version => 3, -file => $self->filename);
@@ -71,18 +71,18 @@ sub _is_ensembl_gff {
 
     ($gene_id, @junk) = $gene_feature->get_tag_values('ID');
 
-    while ( my $mrna_feature = $gff_parser->next_feature() ) {
+    while ( my $middle_feature = $gff_parser->next_feature() ) {
 
       $number_of_features++;
       return 0 if ( $number_of_features > $self->_maximum_number_of_features() );
 
-      next unless ( $mrna_feature->primary_tag eq 'mRNA' );
-      next unless ( $mrna_feature->has_tag('ID') && $mrna_feature->has_tag('Parent') );
+      next unless ( $middle_feature->primary_tag eq 'mRNA' || $middle_feature->primary_tag eq 'transcript' );
+      next unless ( $middle_feature->has_tag('ID') && $middle_feature->has_tag('Parent') );
 
-      ($mrna_parent, @junk) = $mrna_feature->get_tag_values('Parent');
-      ($mrna_id, @junk) = $mrna_feature->get_tag_values('ID');
+      ($middle_feature_parent, @junk) = $middle_feature->get_tag_values('Parent');
+      ($middle_feature_id, @junk) = $middle_feature->get_tag_values('ID');
 
-      next unless( $gene_id eq $mrna_parent );
+      next unless( $gene_id eq $middle_feature_parent );
 
       while ( my $exon_feature = $gff_parser->next_feature() ) {
 
@@ -94,7 +94,7 @@ sub _is_ensembl_gff {
 	
 	($exon_parent, @junk) = $exon_feature->get_tag_values('Parent');
 	
-	next unless( $mrna_id eq $exon_parent );
+	next unless( $middle_feature_id eq $exon_parent );
 	return 1;
       }
     }

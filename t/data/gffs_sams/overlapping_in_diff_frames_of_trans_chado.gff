@@ -6,7 +6,7 @@ DUMMY_CHADO_CHR	chado	CDS	10	16	.	+	0	ID=GreatCurl.1:exon:1;Parent=GreatCurl.1;c
 DUMMY_CHADO_CHR	chado	CDS	18	23	.	+	0	ID=GreatCurl.2:exon:2;Parent=GreatCurl.1;colour=7;isObsolete=false;timelastmodified=16.02.2010 03:17:41 GMT
 DUMMY_CHADO_CHR	chado	polypeptide	10	23	.	+	0	ID=GreatCurl.1:pep;Derives_from=GreatCurl.1;colour=7;isObsolete=false;timelastmodified=16.02.2010 03:17:41 GMT
 ##
-DUMMY_CHADO_CHR	chado	gene	14	20	.	+	.	ID=SunBurn;Name=SunBurn;feature_id=1;isObsolete=false;timelastmodified=16.02.2010 03:17:41 GMT
-DUMMY_CHADO_CHR	chado	mRNA	14	20	.	+	.	ID=SunBurn.1;Parent=SunBurn;feature_id=2;isObsolete=false;timelastmodified=16.02.2010 02:34:48 GMT
+DUMMY_CHADO_CHR	chado	gene	14	20	.	+	.	ID=SunBurn;Name=SunBurn;feature_id=100;isObsolete=false;timelastmodified=16.02.2010 03:17:41 GMT
+DUMMY_CHADO_CHR	chado	mRNA	14	20	.	+	.	ID=SunBurn.1;Parent=SunBurn;feature_id=200;isObsolete=false;timelastmodified=16.02.2010 02:34:48 GMT
 DUMMY_CHADO_CHR	chado	CDS	14	20	.	+	0	ID=SunBurn.1:exon:1;Parent=SunBurn.1;colour=7;isObsolete=false;timelastmodified=16.02.2010 03:17:41 GMT
 DUMMY_CHADO_CHR	chado	polypeptide	14	20	.	+	0	ID=SunBurn.1:pep;Derives_from=SunBurn.1;colour=7;isObsolete=false;timelastmodified=16.02.2010 03:17:41 GMT

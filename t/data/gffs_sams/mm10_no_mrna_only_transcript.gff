@@ -1,0 +1,10 @@
+##gff-version 3
+##sequence-region 7 1 145441459
+7	unprocessed_pseudogene	gene	8801136	8825685	.	-	.	ID=ENSMUSG00000096707;Name=Vmn2r-ps44;Name=ENSMUSG00000096707
+7	unprocessed_pseudogene	transcript	8801136	8825685	.	-	.	ID=ENSMUST00000174053;Name=Vmn2r-ps44-001;Parent=ENSMUSG00000096707
+7	unprocessed_pseudogene	exon	8825489	8825685	.	-	.	ID=exon:ENSMUST00000174053:1;Parent=ENSMUST00000174053
+7	unprocessed_pseudogene	exon	8822346	8822638	.	-	.	ID=exon:ENSMUST00000174053:2;Parent=ENSMUST00000174053
+7	unprocessed_pseudogene	exon	8813464	8814276	.	-	.	ID=exon:ENSMUST00000174053:3;Parent=ENSMUST00000174053
+7	unprocessed_pseudogene	exon	8811706	8811933	.	-	.	ID=exon:ENSMUST00000174053:4;Parent=ENSMUST00000174053
+7	unprocessed_pseudogene	exon	8805937	8806060	.	-	.	ID=exon:ENSMUST00000174053:5;Parent=ENSMUST00000174053
+7	unprocessed_pseudogene	exon	8801136	8801892	.	-	.	ID=exon:ENSMUST00000174053:6;Parent=ENSMUST00000174053
