@@ -151,6 +151,21 @@ sub _build__expression_results {
 
     $self->_split_bam_by_chromosome;
     
+    my $pm = new Parallel::ForkManager($self->parallel_processes);
+
+    # Merge the results of each parallel process
+    $pm -> run_on_finish (
+      sub {
+        my ($pid, $exit_code, $ident, $exit_signal, $core_dump, $data_structure_reference) = @_;
+        # retrieve data structure from child
+        if (defined($data_structure_reference)) {  # children are not forced to send anything
+          push(@expression_results, $data_structure_reference->[0]);
+        } else {  # problems occuring during storage or retrieval will throw a warning
+          print qq|No message received from child process $pid!\n|;
+      }
+      }
+    );
+    
     for my $feature_id (sort {$self->_annotation_file->features->{$a}->seq_id cmp $self->_annotation_file->features->{$b}->seq_id}  keys %{ $self->_annotation_file->features } ) {
       my $alignment_slice1 = Bio::RNASeq::AlignmentSliceRPKM->new(
 								  filename           => $self->_temp_obj."/".$self->_annotation_file->features->{$feature_id}->seq_id.".bam",
@@ -170,8 +185,10 @@ sub _build__expression_results {
 	$self->_annotation_file->features->{$feature_id}->locus_tag;
       $alignment_slice_results->{feature_type} =
 	$self->_annotation_file->features->{$feature_id}->feature_type;
-      push( @expression_results, $alignment_slice_results );
+      
+      $pm->finish(0,$alignment_slice_results); # do the exit in the child process
     }
+    $pm->wait_all_children;
 
     if ( defined( $self->intergenic_regions )
 	 && $self->intergenic_regions == 1 ) {
