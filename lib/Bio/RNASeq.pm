@@ -18,6 +18,9 @@ Find the expression when given an input aligned file and an annotation file
 
 use Moose;
 use File::Temp qw/ tempdir /;
+use File::Path qw( remove_tree);
+use File::Spec;
+use Parallel::ForkManager;
 use Bio::RNASeq::GFF;
 use Bio::RNASeq::AlignmentSliceRPKM;
 use Bio::RNASeq::AlignmentSliceRPKMGeneModel;
@@ -31,6 +34,7 @@ use Bio::RNASeq::FeaturesTabFile;
 has 'sequence_filename'    => ( is => 'rw', isa => 'Str', required => 1 );
 has 'annotation_filename'  => ( is => 'rw', isa => 'Str', required => 1 );
 has 'output_base_filename' => ( is => 'rw', isa => 'Str', required => 1 );
+has 'parallel_processes'   => ( is => 'ro', isa => 'Int', default  => 1 );
 
 #optional input parameters
 has 'filters' => ( is => 'rw', isa => 'Maybe[HashRef]' );
@@ -52,6 +56,8 @@ has '_results_spreadsheet' => (
 );
 has '_expression_results' => ( is => 'rw', isa => 'ArrayRef', lazy_build => 1 );
 has '_temp_obj' => (is => 'rw', lazy => 1, builder => '_build__temp_obj' );
+has '_temp_dirname' => (is => 'rw', isa => 'Str', lazy => 1, builder => '_build__temp_dirname' );
+
 has '_sequence_validator' => (is => 'rw', isa => 'Bio::RNASeq::ValidateInputs', lazy => 1, builder => '_build__sequence_validator' );
 
 sub _build__sequence_validator
@@ -106,15 +112,26 @@ sub _build__temp_obj
   ); 
 }
 
+sub _build__temp_dirname
+{
+  my($self) = @_;
+  $self->_temp_obj->dirname;
+}
+
 sub _split_bam_by_chromosome
 {
   my($self) = @_;
+  my $pm = new Parallel::ForkManager($self->parallel_processes);
   
   for my $chromosome_name (keys %{$self->_sequence_validator->_actual_sequence_details})
   {
-    system("samtools view -hb ".$self->_corrected_sequence_filename." $chromosome_name > ".$self->_temp_obj."/".$chromosome_name.".bam");
-    system("samtools index ".$self->_temp_obj."/".$chromosome_name.".bam");
+     my $output_file = $self->_temp_dirname."/".$chromosome_name.".bam";
+     $pm->start and next; # fork here
+     system("samtools view -hb ".$self->_corrected_sequence_filename." $chromosome_name > ".$output_file);
+     system("samtools index $output_file");
+     $pm->finish;
   }
+  $pm->wait_all_children;
 }
 
 sub _build__expression_results {
@@ -133,6 +150,7 @@ sub _build__expression_results {
     my @expression_results_gene_model = ();
 
     $self->_split_bam_by_chromosome;
+    
     for my $feature_id (sort {$self->_annotation_file->features->{$a}->seq_id cmp $self->_annotation_file->features->{$b}->seq_id}  keys %{ $self->_annotation_file->features } ) {
       my $alignment_slice1 = Bio::RNASeq::AlignmentSliceRPKM->new(
 								  filename           => $self->_temp_obj."/".$self->_annotation_file->features->{$feature_id}->seq_id.".bam",
@@ -193,6 +211,7 @@ sub _build__expression_results {
     $self->_merge_expression_results( \@expression_results,
 				      \@expression_results_gene_model );
 
+    remove_tree($self->_temp_obj);
     return \@expression_results;
 }
 

@@ -24,7 +24,8 @@ sub _run_rna_seq {
     my ( $sam_file, $annotation_file, $results_library, $protocol, $chromosome,
         $test_name, $intergenic_regions )
       = @_;
-
+    $test_name ||='';
+    $intergenic_regions ||= 0;
     open OLDOUT, '>&STDOUT';
     open OLDERR, '>&STDERR';
 
