@@ -167,6 +167,7 @@ sub _build__expression_results {
     );
     
     for my $feature_id (sort {$self->_annotation_file->features->{$a}->seq_id cmp $self->_annotation_file->features->{$b}->seq_id}  keys %{ $self->_annotation_file->features } ) {
+      $pm->start and next; # fork here
       my $alignment_slice1 = Bio::RNASeq::AlignmentSliceRPKM->new(
 								  filename           => $self->_temp_obj."/".$self->_annotation_file->features->{$feature_id}->seq_id.".bam",
 								  total_mapped_reads => $total_mapped_reads,
