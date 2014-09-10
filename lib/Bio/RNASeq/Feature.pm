@@ -162,7 +162,7 @@ sub _update_exon_length_from_exon_list
 
 sub add_discontinuous_feature
 {
-  my ($self,$raw_feature) = @_;
+  my ($self,$raw_feature, $filter_parents) = @_;
   push @{$self->exons}, [$raw_feature->start, $raw_feature->end ];
   my $gene_start = ($raw_feature->start < $self->gene_start) ? $raw_feature->start : $self->gene_start;
   my $gene_end = ($raw_feature->end   > $self->gene_end) ? $raw_feature->end : $self->gene_end;
@@ -170,7 +170,7 @@ sub add_discontinuous_feature
   $self->gene_start($gene_start);
   $self->gene_end($gene_end);
   
-  $self->_filter_out_parent_features_from_exon_list();
+  $self->_filter_out_parent_features_from_exon_list() if($filter_parents);
   $self->_update_exon_length_from_exon_list();
   
   return;

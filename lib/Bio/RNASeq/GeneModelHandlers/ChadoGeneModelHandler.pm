@@ -17,7 +17,7 @@ extends('Bio::RNASeq::GeneModelHandlers::GeneModelHandler');
 has 'tags_of_interest' => (
     is      => 'rw',
     isa     => 'ArrayRef',
-    default => sub { [ 'gene', 'mRNA', 'CDS' ] }
+    default => sub { ['mRNA', 'CDS' ] }
 );
 
 has 'exon_tag' => ( is => 'rw', isa => 'Str', default => 'CDS' );

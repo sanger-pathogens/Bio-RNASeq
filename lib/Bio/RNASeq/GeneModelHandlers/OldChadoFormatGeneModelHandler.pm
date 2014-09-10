@@ -31,7 +31,7 @@ sub _build_gene_models {
 
             if ( defined( $features{ $feature_object->gene_id } ) ) {
                 $features{ $feature_object->gene_id }
-                  ->add_discontinuous_feature($raw_feature);
+                  ->add_discontinuous_feature($raw_feature, 1);
             }
             else {
 

@@ -16,7 +16,7 @@ extends('Bio::RNASeq::GeneModelHandlers::GeneModelHandler');
 has 'tags_of_interest' => (
     is      => 'rw',
     isa     => 'ArrayRef',
-    default => sub { [ 'gene', 'mRNA', 'transcript', 'exon' ] }
+    default => sub { ['mRNA', 'transcript', 'exon' ] }
 );
 
 has 'exon_tag' => ( is => 'rw', isa => 'Str', default => 'exon' );
