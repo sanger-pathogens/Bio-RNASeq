@@ -179,38 +179,6 @@ sub _build__expression_results {
 						       $total_mapped_reads );
     }
 
-    $self->_total_mapped_reads_gene_model_method( \@expression_results );
-
-    for my $feature_id ( keys %{ $self->_annotation_file->features } ) {
-      my $alignment_slice = Bio::RNASeq::AlignmentSliceRPKMGeneModel->new(
-									  filename           => $self->_corrected_sequence_filename,
-									  total_mapped_reads => $total_mapped_reads,
-									  total_mapped_reads_gene_model =>
-									  $self->total_mapped_reads_gene_model,
-									  feature       => $self->_annotation_file->features->{$feature_id},
-									  filters       => $self->filters,
-									  protocol      => $self->protocol,
-									  samtools_exec => $self->samtools_exec,
-									  window_margin => $self->window_margin,
-									 );
-      my $alignment_slice_results_gene_model = $alignment_slice->rpkm_values;
-      $alignment_slice_results_gene_model->{total_mapped_reads_gene_model} =
-	$self->total_mapped_reads_gene_model;
-      $alignment_slice_results_gene_model->{gene_id} = $feature_id;
-      $alignment_slice_results_gene_model->{seq_id} =
-	$self->_annotation_file->features->{$feature_id}->seq_id;
-      $alignment_slice_results_gene_model->{locus_tag} =
-	$self->_annotation_file->features->{$feature_id}->locus_tag;
-      $alignment_slice_results_gene_model->{feature_type} =
-	$self->_annotation_file->features->{$feature_id}->feature_type;
-
-      push( @expression_results_gene_model,
-	    $alignment_slice_results_gene_model );
-    }
-
-    $self->_merge_expression_results( \@expression_results,
-				      \@expression_results_gene_model );
-
     remove_tree($self->_temp_obj);
     return \@expression_results;
 }
