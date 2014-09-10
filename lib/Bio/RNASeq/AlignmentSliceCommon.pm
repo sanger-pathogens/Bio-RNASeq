@@ -120,20 +120,20 @@ sub _build__read_protocol_class {
 sub _build_rpkm_values {
     my ($self) = @_;
 	
-    my %rpkm_values;
-
-    $rpkm_values{mapped_reads_sense}     = 0;
-    $rpkm_values{mapped_reads_antisense} = 0;
-    $rpkm_values{mapped_reads_forward}   = 0;
-    $rpkm_values{mapped_reads_reverse}   = 0;
-    $rpkm_values{mapped_reads_forward_gene_model}   = 0;
-    $rpkm_values{mapped_reads_reverse_gene_model}   = 0;
-	$rpkm_values{mapped_reads_antisense_gene_model} = 0;
-	$rpkm_values{mapped_reads_sense_gene_model} = 0;
-    $rpkm_values{total_rpkm}             = 0;
-    $rpkm_values{total_mapped_reads}     = 0;
-    $rpkm_values{total_rpkm_gene_model}             = 0;
-    $rpkm_values{total_mapped_reads_gene_model}     = 0;
+    my %rpkm_values = (
+      mapped_reads_sense => 0,
+      mapped_reads_antisense => 0,
+      mapped_reads_forward => 0,
+      mapped_reads_reverse => 0,
+      mapped_reads_forward_gene_model => 0,
+      mapped_reads_reverse_gene_model => 0,
+      mapped_reads_antisense_gene_model => 0,
+      mapped_reads_sense_gene_model => 0,
+      total_rpkm => 0,
+      total_mapped_reads => 0,
+      total_rpkm_gene_model => 0,
+      total_mapped_reads_gene_model => 0,
+    );
 
 
     my $file_handle = $self->_slice_file_handle;
