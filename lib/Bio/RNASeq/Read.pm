@@ -17,6 +17,7 @@ Extract a slice of reads for a sequence file within a specific region
 =cut
 
 use Moose;
+use File::Spec;
 use File::Temp qw/ tempfile /;
 use Bio::RNASeq::Exceptions;
 
@@ -147,11 +148,11 @@ sub _build__base_positions {
 
   my $bam_file_string = $self->_dummy_seq_line() . $self->alignment_line() . "\n";
  
-  my ($fh, $filename) = tempfile();
+  my ($fh, $filename) = tempfile('tmpfileXXXXX', DIR     => File::Spec->curdir());
   print {$fh} $bam_file_string;
   close($fh);
 
-  my $mpileup_cmd = "samtools view -bS $filename 2>/dev/null | samtools mpileup - 2>/dev/null | awk '{if (\$5 ~ /[ACGTacgt]/) print \$2};' | xargs";
+  my $mpileup_cmd = "samtools view -buS $filename 2>/dev/null | samtools mpileup - 2>/dev/null | awk '{if (\$5 ~ /[ACGTacgt]/) print \$2};' | xargs";
   my $output = '';
 
   open OLDERR, '>&STDERR';
