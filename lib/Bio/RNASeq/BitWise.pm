@@ -116,7 +116,7 @@ sub _sequence_data_stream
   }
   else
   {
-    return $self->samtools_exec." view -h ".$self->filename . ($self->debug ? '' : " 2>/dev/null") . " |";
+    return $self->samtools_exec." view -h -F 4 ".$self->filename . ($self->debug ? '' : " 2>/dev/null") . " |";
   }
 }
 
