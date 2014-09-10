@@ -125,9 +125,25 @@ sub _does_read_pass_filters
   return 1;
 }
 
+sub _simple_positions
+{
+  my ($self,$read_length) = @_;
+  my @bases ;
+  for(my $i = $self->_read_position; $i < $self->_read_position+$read_length; $i++)
+  {
+    push(@bases, $i);
+  }
+  return \@bases;
+}
+
 sub _build__base_positions {
 
   my ($self) = @_;
+  
+  if( $self->_read_details->{cigar} =~ /^([\d]+)M$/)
+  {
+    return $self->_simple_positions($1);
+  }
 
   my $bam_file_string = $self->_dummy_seq_line() . $self->alignment_line() . "\n";
  
