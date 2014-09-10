@@ -148,7 +148,7 @@ sub _build__base_positions {
 
   my $bam_file_string = $self->_dummy_seq_line() . $self->alignment_line() . "\n";
  
-  my ($fh, $filename) = tempfile('tmpfileXXXXX', DIR     => File::Spec->curdir());
+  my ($fh, $filename) = tempfile();
   print {$fh} $bam_file_string;
   close($fh);
 
@@ -167,6 +167,7 @@ sub _build__base_positions {
   close OLDERR or die "Can't close OLDERR: $!";
 
   my @base_positions = split(/\s+/, $output);
+  unlink($filename) if(-e $filename);
   return \@base_positions;
 
 }
