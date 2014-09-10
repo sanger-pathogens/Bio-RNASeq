@@ -159,7 +159,7 @@ sub _build__expression_results {
         my ($pid, $exit_code, $ident, $exit_signal, $core_dump, $data_structure_reference) = @_;
         # retrieve data structure from child
         if (defined($data_structure_reference)) {  # children are not forced to send anything
-          push(@expression_results, $data_structure_reference->[0]);
+          push(@expression_results, $data_structure_reference);
         } else {  # problems occuring during storage or retrieval will throw a warning
           print qq|No message received from child process $pid!\n|;
       }
