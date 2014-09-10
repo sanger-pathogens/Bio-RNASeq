@@ -54,19 +54,7 @@ sub _three_layer_gene_model {
 
         next unless ( $self->is_tag_of_interest( $raw_feature->primary_tag ) );
 
-        if ( $raw_feature->primary_tag eq 'gene' ) {
-
-            my $gene_feature_object =
-              Bio::RNASeq::Feature->new( raw_feature => $raw_feature );
-
-            Bio::RNASeq::Exceptions::DuplicateFeatureID->throw(
-                error => $self->filename . ' contains duplicate gene ids' )
-		if ( defined $features{ $gene_feature_object->gene_id() } );
-
-
-        }
-
-        elsif ( $raw_feature->primary_tag eq 'mRNA' || $raw_feature->primary_tag eq 'transcript' ) {
+    if ( $raw_feature->primary_tag eq 'mRNA' || $raw_feature->primary_tag eq 'transcript' ) {
 
 	  my ( $middle_feature_parent, $middle_feature_id, @junk );
 

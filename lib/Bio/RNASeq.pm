@@ -18,6 +18,9 @@ Find the expression when given an input aligned file and an annotation file
 
 use Moose;
 use File::Temp qw/ tempdir /;
+use File::Path qw( remove_tree);
+use File::Spec;
+use Parallel::ForkManager;
 use Bio::RNASeq::GFF;
 use Bio::RNASeq::AlignmentSliceRPKM;
 use Bio::RNASeq::AlignmentSliceRPKMGeneModel;
@@ -31,6 +34,7 @@ use Bio::RNASeq::FeaturesTabFile;
 has 'sequence_filename'    => ( is => 'rw', isa => 'Str', required => 1 );
 has 'annotation_filename'  => ( is => 'rw', isa => 'Str', required => 1 );
 has 'output_base_filename' => ( is => 'rw', isa => 'Str', required => 1 );
+has 'parallel_processes'   => ( is => 'ro', isa => 'Int', default  => 1 );
 
 #optional input parameters
 has 'filters' => ( is => 'rw', isa => 'Maybe[HashRef]' );
@@ -52,6 +56,8 @@ has '_results_spreadsheet' => (
 );
 has '_expression_results' => ( is => 'rw', isa => 'ArrayRef', lazy_build => 1 );
 has '_temp_obj' => (is => 'rw', lazy => 1, builder => '_build__temp_obj' );
+has '_temp_dirname' => (is => 'rw', isa => 'Str', lazy => 1, builder => '_build__temp_dirname' );
+
 has '_sequence_validator' => (is => 'rw', isa => 'Bio::RNASeq::ValidateInputs', lazy => 1, builder => '_build__sequence_validator' );
 
 sub _build__sequence_validator
@@ -106,15 +112,26 @@ sub _build__temp_obj
   ); 
 }
 
+sub _build__temp_dirname
+{
+  my($self) = @_;
+  $self->_temp_obj->dirname;
+}
+
 sub _split_bam_by_chromosome
 {
   my($self) = @_;
+  my $pm = new Parallel::ForkManager($self->parallel_processes);
   
   for my $chromosome_name (keys %{$self->_sequence_validator->_actual_sequence_details})
   {
-    system("samtools view -hb ".$self->_corrected_sequence_filename." $chromosome_name > ".$self->_temp_obj."/".$chromosome_name.".bam");
-    system("samtools index ".$self->_temp_obj."/".$chromosome_name.".bam");
+     my $output_file = $self->_temp_dirname."/".$chromosome_name.".bam";
+     $pm->start and next; # fork here
+     system("samtools view -hb ".$self->_corrected_sequence_filename." $chromosome_name > ".$output_file);
+     system("samtools index $output_file");
+     $pm->finish;
   }
+  $pm->wait_all_children;
 }
 
 sub _build__expression_results {
@@ -133,7 +150,24 @@ sub _build__expression_results {
     my @expression_results_gene_model = ();
 
     $self->_split_bam_by_chromosome;
+    
+    my $pm = new Parallel::ForkManager($self->parallel_processes);
+
+    # Merge the results of each parallel process
+    $pm -> run_on_finish (
+      sub {
+        my ($pid, $exit_code, $ident, $exit_signal, $core_dump, $data_structure_reference) = @_;
+        # retrieve data structure from child
+        if (defined($data_structure_reference)) {  # children are not forced to send anything
+          push(@expression_results, $data_structure_reference);
+        } else {  # problems occuring during storage or retrieval will throw a warning
+          print qq|No message received from child process $pid!\n|;
+      }
+      }
+    );
+    
     for my $feature_id (sort {$self->_annotation_file->features->{$a}->seq_id cmp $self->_annotation_file->features->{$b}->seq_id}  keys %{ $self->_annotation_file->features } ) {
+      $pm->start and next; # fork here
       my $alignment_slice1 = Bio::RNASeq::AlignmentSliceRPKM->new(
 								  filename           => $self->_temp_obj."/".$self->_annotation_file->features->{$feature_id}->seq_id.".bam",
 								  total_mapped_reads => $total_mapped_reads,
@@ -152,8 +186,10 @@ sub _build__expression_results {
 	$self->_annotation_file->features->{$feature_id}->locus_tag;
       $alignment_slice_results->{feature_type} =
 	$self->_annotation_file->features->{$feature_id}->feature_type;
-      push( @expression_results, $alignment_slice_results );
+      
+      $pm->finish(0,$alignment_slice_results); # do the exit in the child process
     }
+    $pm->wait_all_children;
 
     if ( defined( $self->intergenic_regions )
 	 && $self->intergenic_regions == 1 ) {
@@ -161,38 +197,7 @@ sub _build__expression_results {
 						       $total_mapped_reads );
     }
 
-    $self->_total_mapped_reads_gene_model_method( \@expression_results );
-
-    for my $feature_id ( keys %{ $self->_annotation_file->features } ) {
-      my $alignment_slice = Bio::RNASeq::AlignmentSliceRPKMGeneModel->new(
-									  filename           => $self->_corrected_sequence_filename,
-									  total_mapped_reads => $total_mapped_reads,
-									  total_mapped_reads_gene_model =>
-									  $self->total_mapped_reads_gene_model,
-									  feature       => $self->_annotation_file->features->{$feature_id},
-									  filters       => $self->filters,
-									  protocol      => $self->protocol,
-									  samtools_exec => $self->samtools_exec,
-									  window_margin => $self->window_margin,
-									 );
-      my $alignment_slice_results_gene_model = $alignment_slice->rpkm_values;
-      $alignment_slice_results_gene_model->{total_mapped_reads_gene_model} =
-	$self->total_mapped_reads_gene_model;
-      $alignment_slice_results_gene_model->{gene_id} = $feature_id;
-      $alignment_slice_results_gene_model->{seq_id} =
-	$self->_annotation_file->features->{$feature_id}->seq_id;
-      $alignment_slice_results_gene_model->{locus_tag} =
-	$self->_annotation_file->features->{$feature_id}->locus_tag;
-      $alignment_slice_results_gene_model->{feature_type} =
-	$self->_annotation_file->features->{$feature_id}->feature_type;
-
-      push( @expression_results_gene_model,
-	    $alignment_slice_results_gene_model );
-    }
-
-    $self->_merge_expression_results( \@expression_results,
-				      \@expression_results_gene_model );
-
+    remove_tree($self->_temp_obj);
     return \@expression_results;
 }
 
