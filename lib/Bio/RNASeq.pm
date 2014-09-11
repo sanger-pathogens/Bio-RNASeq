@@ -120,8 +120,8 @@ sub _split_bam_by_chromosome {
         system( "samtools view -hb " . $self->_corrected_sequence_filename . " $chromosome_name > " . $output_file );
         system("samtools index $output_file");
 
-        # Only store every 10th base coordinate, then extend the gene start and end by 10 when prefiltering features
-        system("samtools view -bu $output_file 2>/dev/null | samtools mpileup - 2>/dev/null | awk '{print \$2};' | grep '0\$'  > $output_file.filtered.mpileup");
+        # Only store every 50th base coordinate, then extend the gene start and end by 50 when prefiltering features
+        system("samtools view -bu $output_file 2>/dev/null | samtools mpileup - 2>/dev/null | awk '{print \$2};' | grep '[05]0\$'  > $output_file.filtered.mpileup");
         $pm->finish;
     }
     $pm->wait_all_children;
@@ -133,26 +133,36 @@ sub flag_features_with_no_annotation {
     my ($self) = @_;
 
     my %features_by_seq_id;
+    my $offset = 50;
 
     for my $feature ( values %{ $self->_annotation_file->features } ) {
-        push( @{ $features_by_seq_id{ $feature->seq_id } }, $feature );
+        $features_by_seq_id{ $feature->seq_id }->{ $feature->gene_id } = $feature;
     }
 
     for my $chromosome_name ( keys %{ $self->_sequence_validator->_actual_sequence_details } ) {
         my $bases_with_mapping_file = $self->_temp_dirname . "/" . $chromosome_name . ".bam.filtered.mpileup";
-        my @base_coordinates        = read_file($bases_with_mapping_file, chomp => 1);
+        my @base_coordinates = read_file( $bases_with_mapping_file, chomp => 1 );
+
+        my @sorted_feature_keys =
+          sort { $features_by_seq_id{$chromosome_name}->{$a}->gene_start <=> $features_by_seq_id{$chromosome_name}->{$b}->gene_start } keys %{ $features_by_seq_id{$chromosome_name} };
 
         for my $base_coord (@base_coordinates) {
-            for my $feature ( @{ $features_by_seq_id{$chromosome_name} } ) {
-                next if ( $feature->reads_mapping == 1 );
-                if ( $base_coord >= $feature->gene_start - 10 && $base_coord < $feature->gene_end + 10 ) {
-                    $feature->reads_mapping(1);
+            last if ( @sorted_feature_keys == 0 );
+            next if ( $self->_annotation_file->features->{$sorted_feature_keys[0]}->gene_start - $offset > $base_coord );
+            if ( $self->_annotation_file->features->{ $sorted_feature_keys[0] }->gene_end + $offset < $base_coord ) {
+                shift(@sorted_feature_keys);
+            }
+            for my $gene_id (@sorted_feature_keys) {
+                if ( $base_coord >= $self->_annotation_file->features->{$gene_id}->gene_start - $offset && $base_coord < $self->_annotation_file->features->{$gene_id}->gene_end + $offset ) {
+                    $self->_annotation_file->features->{$gene_id}->reads_mapping(1);
+                    delete( $features_by_seq_id{ $self->_annotation_file->features->{$gene_id}->seq_id }->{$gene_id} );
                     next;
                 }
             }
         }
+
+        return 1;
     }
-    return 1;
 }
 
 sub _build__expression_results {
@@ -197,7 +207,7 @@ sub _build__expression_results {
 
         my $alignment_slice_results;
         if ( $self->_annotation_file->features->{$feature_id}->reads_mapping == 0 ) {
-            $alignment_slice_results                 = Bio::RNASeq::AlignmentSliceRPKM->_default_rpkm_values;
+            $alignment_slice_results = Bio::RNASeq::AlignmentSliceRPKM->_default_rpkm_values;
         }
         else {
 

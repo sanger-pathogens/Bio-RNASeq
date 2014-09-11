@@ -88,7 +88,7 @@ sub _three_layer_gene_model {
 	    else {
 
 	      $features{ $gene_id_lookup{$exon_parent} } = $exon_feature_object;
-
+        $features{ $gene_id_lookup{$exon_parent} }->gene_id($gene_id_lookup{$exon_parent});
 	    }
 
         }
