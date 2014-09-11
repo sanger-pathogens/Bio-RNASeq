@@ -120,8 +120,8 @@ sub _split_bam_by_chromosome {
         system( "samtools view -hb " . $self->_corrected_sequence_filename . " $chromosome_name > " . $output_file );
         system("samtools index $output_file");
 
-        # Only store every 50th base coordinate, then extend the gene start and end by 50 when prefiltering features
-        system("samtools view -bu $output_file 2>/dev/null | samtools mpileup - 2>/dev/null | awk '{print \$2};' | grep '[05]0\$'  > $output_file.filtered.mpileup");
+        # Only store every 20th base coordinate, then extend the gene start and end by 20 when prefiltering features
+        system("samtools view -bu $output_file 2>/dev/null | samtools mpileup - 2>/dev/null | awk '{print \$2};' | grep '[02468]0\$'  > $output_file.filtered.mpileup");
         $pm->finish;
     }
     $pm->wait_all_children;
@@ -133,7 +133,7 @@ sub flag_features_with_no_annotation {
     my ($self) = @_;
 
     my %features_by_seq_id;
-    my $offset = 50;
+    my $offset = 20;
 
     for my $feature ( values %{ $self->_annotation_file->features } ) {
         $features_by_seq_id{ $feature->seq_id }->{ $feature->gene_id } = $feature;
