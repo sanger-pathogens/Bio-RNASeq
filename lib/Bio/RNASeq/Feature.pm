@@ -24,6 +24,7 @@ has 'exons'         => ( is => 'rw', isa => 'ArrayRef',            lazy =>1, bui
 
 has 'locus_tag'     => ( is => 'rw', isa => 'Maybe[Str]',          lazy_build => 1 );
 has 'feature_type'  => ( is => 'rw', isa => 'Maybe[Str]',          lazy_build => 1 );
+has 'reads_mapping' => ( is => 'rw', isa => 'Bool',                default => 0 );
 
 
 sub _build_locus_tag

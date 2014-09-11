@@ -83,6 +83,7 @@ sub _three_layer_gene_model {
 
 	      $features{ $gene_id_lookup{$exon_parent} }
 		->add_discontinuous_feature($raw_feature);
+		$features{ $gene_id_lookup{$exon_parent} }->gene_id($gene_id_lookup{$exon_parent});
 	    }
 	    else {
 
