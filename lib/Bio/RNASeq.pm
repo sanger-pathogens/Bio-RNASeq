@@ -152,10 +152,12 @@ sub flag_features_with_no_annotation {
             if ( $self->_annotation_file->features->{ $sorted_feature_keys[0] }->gene_end + $offset < $base_coord ) {
                 shift(@sorted_feature_keys);
             }
+            
             for my $gene_id (@sorted_feature_keys) {
+              last if ( $self->_annotation_file->features->{$gene_id}->gene_start - $offset > $base_coord );
+              next if($self->_annotation_file->features->{$gene_id}->reads_mapping == 1);
                 if ( $base_coord >= $self->_annotation_file->features->{$gene_id}->gene_start - $offset && $base_coord < $self->_annotation_file->features->{$gene_id}->gene_end + $offset ) {
                     $self->_annotation_file->features->{$gene_id}->reads_mapping(1);
-                    delete( $features_by_seq_id{ $self->_annotation_file->features->{$gene_id}->seq_id }->{$gene_id} );
                     next;
                 }
             }
