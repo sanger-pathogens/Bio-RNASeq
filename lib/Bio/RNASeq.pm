@@ -162,9 +162,8 @@ sub flag_features_with_no_annotation {
                 }
             }
         }
-
-        return 1;
     }
+   return 1;
 }
 
 sub _build__expression_results {
