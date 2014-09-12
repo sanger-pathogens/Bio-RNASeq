@@ -55,7 +55,7 @@ sub BUILD {
 	'c|no_coverage_plots'                    => \$no_coverage_plots,
 	'i|intergenic_regions'                   => \$intergenic_regions,
 	'b|bitwise_flag'                         => \$bitwise_flag,
-	'k|parallel_processes'                   => \$parallel_processes,
+	'k|parallel_processes=i'                 => \$parallel_processes,
 	'h|help'                                 => \$help,
     );
 	
