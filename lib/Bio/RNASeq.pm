@@ -183,7 +183,7 @@ sub _build__expression_results {
 
     $self->_split_bam_by_chromosome;
 
-    my $pm = Parallel::ForkManager->new( $self->parallel_processes );
+    my $pm = Parallel::ForkManager->new( $self->parallel_processes, $self->_temp_dirname );
 
     # Merge the results of each parallel process
     $pm->run_on_finish(
