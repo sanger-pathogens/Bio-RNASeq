@@ -33,7 +33,7 @@ is( $ensembl_gene_model_handler->gene_models()->{'Gene1'}->gene_end(), 3623, 'Ge
 is( $ensembl_gene_model_handler->gene_models()->{'Gene1'}->gene_strand(), 1, 'Gene strand should match');
 is( $ensembl_gene_model_handler->gene_models()->{'Gene1'}->exon_length(), 1443, 'Exon length should match');
 is_deeply( $ensembl_gene_model_handler->gene_models()->{'Gene1'}->exons(), [ [528, 814], [1480, 2070], [3056, 3623] ], 'Exons should be the same');
-
+is($ensembl_gene_model_handler->_awk_filter, 'awk \'BEGIN {FS="\t"};{ if ($3 ~/gene|stop_codon|start_codon|three_prime_UTR|five_prime_UTR|CDS/) ; else print $0;}\' ', 'awk filter for ensembl');
 
 ok( my $ensembl_gene_model_handler2 = Bio::RNASeq::GeneModelHandlers::EnsemblGeneModelHandler->new( filename=>'t/data/gffs_sams/mammal_gene_multiple_mrna.gff'), 'Object initialised' );
 is_deeply( $ensembl_gene_model_handler2->tags_of_interest(), ['mRNA','transcript','exon'], 'Ensembl - Array of tags should be the same' ) ;
