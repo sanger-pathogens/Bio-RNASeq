@@ -109,7 +109,7 @@ sub _three_layer_gene_model {
 # Parsing a GFF file with perl is slow, so filter out tags we know we dont need
 sub _build__awk_filter {
     my ($self) = @_;
-    my $regex_tags_ignore = join('|',$self->tags_to_ignore);
+    my $regex_tags_ignore = join('|',@{$self->tags_to_ignore});
     return
         'awk \'BEGIN {FS="\t"};{ if ($3 ~/'
       . $regex_tags_ignore 
