@@ -183,7 +183,7 @@ sub _build__expression_results {
 
     $self->_split_bam_by_chromosome;
 
-    my $pm = new Parallel::ForkManager( $self->parallel_processes );
+    my $pm = Parallel::ForkManager->new( $self->parallel_processes );
 
     # Merge the results of each parallel process
     $pm->run_on_finish(
@@ -203,18 +203,20 @@ sub _build__expression_results {
     $self->flag_features_with_no_annotation();
 
     for my $feature_id ( sort { $self->_annotation_file->features->{$a}->seq_id cmp $self->_annotation_file->features->{$b}->seq_id } keys %{ $self->_annotation_file->features } ) {
-       
+      my $alignment_slice_results;
+      if ( $self->_annotation_file->features->{$feature_id}->reads_mapping == 0 ) {
+          $alignment_slice_results = Bio::RNASeq::AlignmentSliceRPKM->_default_rpkm_values;
+          $alignment_slice_results->{gene_id}      = $feature_id;
+          $alignment_slice_results->{seq_id}       = $self->_annotation_file->features->{$feature_id}->seq_id;
+          $alignment_slice_results->{locus_tag}    = $self->_annotation_file->features->{$feature_id}->locus_tag;
+          $alignment_slice_results->{feature_type} = $self->_annotation_file->features->{$feature_id}->feature_type;
+          push( @expression_results, $alignment_slice_results);
+      }
+    }
 
+    for my $feature_id ( sort { $self->_annotation_file->features->{$a}->seq_id cmp $self->_annotation_file->features->{$b}->seq_id } keys %{ $self->_annotation_file->features } ) {
         my $alignment_slice_results;
-        if ( $self->_annotation_file->features->{$feature_id}->reads_mapping == 0 ) {
-            $alignment_slice_results = Bio::RNASeq::AlignmentSliceRPKM->_default_rpkm_values;
-            $alignment_slice_results->{gene_id}      = $feature_id;
-            $alignment_slice_results->{seq_id}       = $self->_annotation_file->features->{$feature_id}->seq_id;
-            $alignment_slice_results->{locus_tag}    = $self->_annotation_file->features->{$feature_id}->locus_tag;
-            $alignment_slice_results->{feature_type} = $self->_annotation_file->features->{$feature_id}->feature_type;
-            push( @expression_results, $alignment_slice_results);
-        }
-        else {
+        if ( $self->_annotation_file->features->{$feature_id}->reads_mapping != 0 ) {
            $pm->start and next;                               # fork here
             srand();
             my $alignment_slice1 = Bio::RNASeq::AlignmentSliceRPKM->new(
