@@ -20,6 +20,16 @@ has 'tags_of_interest' => (
     default => sub { ['mRNA', 'CDS' ] }
 );
 
+
+has 'tags_to_ignore' => 
+(
+    is      => 'rw',
+    isa     => 'ArrayRef',
+     default => sub { ['centromere','gap','gene', 'ncRNA','polypeptide','pseudogene','pseudogenic_exon','pseudogenic_transcript','region','repeat_region','rRNA','snoRNA','snRNA','tRNA',
+     ] }
+  );
+
+
 has 'exon_tag' => ( is => 'rw', isa => 'Str', default => 'CDS' );
 
 sub _build_gene_models {

@@ -17,9 +17,16 @@ use Bio::RNASeq::Feature;
 
 has 'filename'          => ( is => 'rw', isa => 'Bio::RNASeq::File',             required   => 1 );
 has '_gff_parser'       => ( is => 'rw', isa => 'Bio::Tools::GFF', lazy_build => 1 );
-has 'tags_of_interest'          => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
-has 'gene_models'          => ( is => 'rw', isa => 'HashRef', lazy => 1, builder => '_build_gene_models');
-has 'exon_tag' => ( is => 'rw', isa => 'Str', default => 'CDS' );
+has 'tags_of_interest'  => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
+has 'gene_models'       => ( is => 'rw', isa => 'HashRef', lazy => 1, builder => '_build_gene_models');
+has 'exon_tag'          => ( is => 'rw', isa => 'Str', default => 'CDS' );
+has '_awk_filter'       => ( is => 'ro', isa => 'Str',             lazy    => 1, builder => '_build__awk_filter' );
+has 'tags_to_ignore'    => 
+(
+  is      => 'rw',
+  isa     => 'ArrayRef',
+   default => sub { ['stop_codon', 'start_codon', 'three_prime_UTR', 'five_prime_UTR'] }
+);
 
 sub _build_gene_models {
 
@@ -99,12 +106,23 @@ sub _three_layer_gene_model {
 
 }
 
+# Parsing a GFF file with perl is slow, so filter out tags we know we dont need
+sub _build__awk_filter {
+    my ($self) = @_;
+    my $regex_tags_ignore = join('|',$self->tags_to_ignore);
+    return
+        'awk \'BEGIN {FS="\t"};{ if ($3 ~/'
+      . $regex_tags_ignore 
+      . '/) ; else print $0;}\' ';
+}
+
 
 sub _build__gff_parser
 {
   my ($self) = @_;
-
-  Bio::Tools::GFF->new(-gff_version => 3, -file => $self->filename);
+  open( my $fh, '-|', $self->_awk_filter. " ".$self->filename ) or die "Couldnt open GFF file";
+  my $gff_parser = Bio::Tools::GFF->new( -fh => $fh, gff_version => 3 );
+  return $gff_parser;
 }
 
 
