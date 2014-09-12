@@ -16,6 +16,13 @@ extends('Bio::RNASeq::GeneModelHandlers::GeneModelHandler');
 has 'tags_of_interest' =>
   ( is => 'rw', isa => 'ArrayRef', default => sub { ['CDS'] } );
 
+has 'tags_to_ignore' => 
+(
+    is      => 'rw',
+    isa     => 'ArrayRef',
+     default => sub { ['gap','sequence_feature','repeat_region','databank_entry','ncRNA','rRNA','tRNA'] }
+  );
+
 sub _build_gene_models {
 
     my ($self) = @_;
@@ -32,6 +39,8 @@ sub _build_gene_models {
             if ( defined( $features{ $feature_object->gene_id } ) ) {
                 $features{ $feature_object->gene_id }
                   ->add_discontinuous_feature($raw_feature, 1);
+                  $features{ $feature_object->gene_id}->gene_id( $feature_object->gene_id);
+              		
             }
             else {
 
