@@ -146,21 +146,6 @@ is $mapped_reads5{sense}, 0, 'identified mapped reads complex filter fail';
 is $mapped_reads5{antisense}, 0,
   'identified antisense read complex filter fail';
 
-# unmapped reads fail
-ok my $alignment_slice6 = Bio::RNASeq::Read->new(
-    alignment_line =>
-'IL25_4928:3:53:7118:13952#4	7	FN543502	66737	60	54M	=	66903	220	GGGGGGCGTTTTCCGGCGATTCTTTACTGTACATATCCAGTTGACCGTTCGGGA	BBBBBBBBBBBBBBBB@B9=B@BBBF@@@@@@@@@@@@@@@@@@?>@?@?@@B?	XT:A:U	NM:i:1	SM:i:37	AM:i:37	X0:i:1	X1:i:0	XM:i:1	XO:i:0	XG:i:0	MD:Z:0C53	RG:Z:4928_3#4',
-    gene_strand => 1,
-    exons       => [ [ 66337, 66937 ], [ 4, 5 ] ]
-  ),
-  'initialise';
-ok my %mapped_reads6 = %{ $alignment_slice6->mapped_reads },
-  'build the mapped reads does not pass unmapped read';
-is $mapped_reads6{sense}, 0,
-  'identified mapped reads does not pass unmapped read';
-is $mapped_reads6{antisense}, 0,
-  'identified antisense read does not pass unmapped read';
-
 #
 ok my $alignment_slice7 = Bio::RNASeq::Read->new(
     alignment_line =>

@@ -106,11 +106,6 @@ sub _does_read_pass_filters
 {
   my ($self) = @_;
   
-  # filter unmapped read
-  if( ($self->_read_details->{flag} & 4) == 4)
-  {
-  	return 0;
-  }
   return 1 unless(defined($self->filters));
   
   if(defined($self->filters->{mapping_quality}) && ($self->_read_details->{mapping_quality}  <= $self->filters->{mapping_quality}) )
@@ -131,7 +126,7 @@ sub _simple_positions
   my ($self,$read_length) = @_;
   my @bases;
   my $final_position = $self->_read_position+$read_length;
-  for(my $i = $self->_read_position; $i < $final_position; $i+=$self->_base_position_interval)
+  for(my $i = $self->_read_position; $i < $final_position; $i+=($self->_base_position_interval*2))
   {
     push(@bases, $i);
   }
@@ -141,7 +136,7 @@ sub _simple_positions
 
 sub _simple_positions_with_gap
 {
-  my ($self,$first_read_length, $gap_length, $second_read_length) = @_;
+  my ($self,$first_read_length, $gap_length, $middle_char, $second_read_length) = @_;
   my @bases;
 
   my $first_final_position =   $self->_read_position+$first_read_length;
@@ -150,8 +145,26 @@ sub _simple_positions_with_gap
     push(@bases, $i);
   }
   
-  my $final_position = $self->_read_position + $first_read_length +  $gap_length + $second_read_length; 
-  for(my $i = $self->_read_position+$first_read_length+$gap_length ; $i < $final_position; $i+=$self->_base_position_interval)
+  my $final_position; 
+  my $second_starting_position;
+  
+  if($middle_char eq 'N')
+  {
+    $final_position = $self->_read_position + $first_read_length +  $gap_length + $second_read_length; 
+    $second_starting_position = $self->_read_position+$first_read_length+$gap_length;
+  }
+  elsif($middle_char eq 'I')
+  {
+    $final_position = $self->_read_position + $first_read_length + $second_read_length + $gap_length; 
+    $second_starting_position = $self->_read_position+$first_read_length;
+  }
+  elsif($middle_char eq 'D')
+  {
+    $final_position = $self->_read_position + $first_read_length +  $second_read_length - $gap_length; 
+    $second_starting_position = $self->_read_position+$first_read_length;
+  }
+  
+  for(my $i = $second_starting_position ; $i < $final_position; $i+=$self->_base_position_interval)
   {
     push(@bases, $i);
   }  
@@ -195,9 +208,9 @@ sub _build__base_positions {
   {
     return $self->_simple_positions($1);
   }
-  elsif( $self->_read_details->{cigar} =~ /^([\d]+)M([\d]+)N([\d]+)M$/)
+  elsif( $self->_read_details->{cigar} =~ /^([\d]+)M([\d]+)([IDN])([\d]+)M$/)
   {
-    return $self->_simple_positions_with_gap($1, $2, $3);
+    return $self->_simple_positions_with_gap($1, $2, $3, $4);
   }
   else
   {
