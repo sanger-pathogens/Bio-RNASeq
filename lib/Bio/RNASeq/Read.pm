@@ -34,7 +34,7 @@ has '_read_position' => ( is => 'rw', isa => 'Int',      lazy_build   => 1 );
 has 'read_strand'   => ( is => 'rw', isa => 'Int',      lazy_build   => 1 );
 has 'mapped_reads' => ( is => 'rw', isa => 'HashRef',  lazy_build   => 1 );
 has '_base_positions' => ( is => 'rw', isa => 'ArrayRef', lazy   => 1, builder => '_build__base_positions' );
-
+has '_base_position_interval' => ( is => 'rw', isa => 'Int', default => 2 );
 
 sub _build__read_details
 {
@@ -129,23 +129,38 @@ sub _does_read_pass_filters
 sub _simple_positions
 {
   my ($self,$read_length) = @_;
-  my @bases ;
-  for(my $i = $self->_read_position; $i < $self->_read_position+$read_length; $i++)
+  my @bases;
+  my $final_position = $self->_read_position+$read_length;
+  for(my $i = $self->_read_position; $i < $final_position; $i+=$self->_base_position_interval)
   {
     push(@bases, $i);
   }
   return \@bases;
 }
 
-sub _build__base_positions {
 
-  my ($self) = @_;
-  
-  if( $self->_read_details->{cigar} =~ /^([\d]+)M$/)
+sub _simple_positions_with_gap
+{
+  my ($self,$first_read_length, $gap_length, $second_read_length) = @_;
+  my @bases;
+
+  my $first_final_position =   $self->_read_position+$first_read_length;
+  for(my $i = $self->_read_position; $i < $first_final_position; $i+=$self->_base_position_interval)
   {
-    return $self->_simple_positions($1);
+    push(@bases, $i);
   }
+  
+  my $final_position = $self->_read_position + $first_read_length +  $gap_length + $second_read_length; 
+  for(my $i = $self->_read_position+$first_read_length+$gap_length ; $i < $final_position; $i+=$self->_base_position_interval)
+  {
+    push(@bases, $i);
+  }  
+  return \@bases;
+}
 
+sub _complex_base_positions
+{
+  my ($self) = @_;
   my $bam_file_string = $self->_dummy_seq_line() . $self->alignment_line() . "\n";
  
   my ($fh, $filename) = tempfile();
@@ -168,8 +183,26 @@ sub _build__base_positions {
 
   my @base_positions = split(/\s+/, $output);
   unlink($filename) if(-e $filename);
+  
   return \@base_positions;
+}
 
+sub _build__base_positions {
+
+  my ($self) = @_;
+  
+  if( $self->_read_details->{cigar} =~ /^([\d]+)M$/)
+  {
+    return $self->_simple_positions($1);
+  }
+  elsif( $self->_read_details->{cigar} =~ /^([\d]+)M([\d]+)N([\d]+)M$/)
+  {
+    return $self->_simple_positions_with_gap($1, $2, $3);
+  }
+  else
+  {
+    return $self->_complex_base_positions();
+  }
 }
 
 
