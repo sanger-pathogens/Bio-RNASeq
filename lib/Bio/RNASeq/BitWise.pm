@@ -42,12 +42,11 @@ sub update_bitwise_flags
       }
     else
       {
-	if($line =~ /^([^\t]+\t)([\d]+)(\t.+)$/ )
+	if($line =~ /^([^\t]+\t)([\d]+)(\t[^\t]+\t[^\t]+\t[^\t]+\t[^\t]+\t[^\t]+\t[^\t]+\t[^\t]+\t[^\t]+\t[^\t]+)\t.+$/ )
 	  {
 	    my $start_of_line = $1;
 	    my $flag = $2;
 	    my $end_of_line = $3;
-
 	    $flag = $self->_read_protocol_class->_calculate_bitwise_flag($flag);
 	    print {$self->_output_file_handle} $start_of_line.$flag.$end_of_line."\n" ;
 	  }
