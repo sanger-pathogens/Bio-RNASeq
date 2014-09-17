@@ -50,10 +50,6 @@ sub update_bitwise_flags
 	    $flag = $self->_read_protocol_class->_calculate_bitwise_flag($flag);
 	    print {$self->_output_file_handle} $start_of_line.$flag.$end_of_line."\n" ;
 	  }
-	else
-	  {
-	    print {$self->_output_file_handle} $line;
-	  }
 
       }
   }
