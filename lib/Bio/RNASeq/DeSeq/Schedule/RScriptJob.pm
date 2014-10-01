@@ -1,13 +1,14 @@
 package Bio::RNASeq::DeSeq::Schedule::RScriptJob;
 
 use Moose;
+use Capture::Tiny ':all';
 
 has 'rscript_path'   => ( is => 'rw', isa => 'Str', required => 1 );
 has 'job_name'   => ( is => 'rw', isa => 'Str', required => 1 );
 has 'log_error_path'   => ( is => 'rw', isa => 'Str', required => 1 );
 has 'mode'   => ( is => 'rw', isa => 'Str', default => '' );
 
-has 'bsub_command' => ( is => 'rw', isa => 'Str' );
+has 'r_session_log' => ( is => 'rw', isa => 'Str' );
 
 
 sub submit_deseq_job {
@@ -18,9 +19,12 @@ sub submit_deseq_job {
   if ($self->mode eq 'test') {
 
     my $command = $self->rscript_path;
-    my $r_session_log;
-    $r_session_log .= `$command 2>/dev/null`;
-    print "$r_session_log\n";
+
+    my ($stdout, $stderr, $exit) = capture {
+      system( $command );
+    };
+    $self->r_session_log($stderr);
+
 
   } else {
 

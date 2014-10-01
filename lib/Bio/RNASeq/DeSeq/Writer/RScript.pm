@@ -11,7 +11,7 @@ has 'mode'   => ( is => 'rw', isa => 'Str', default => '' );
 has 'rscript' => ( is => 'rw', isa => 'Str' );
 has 'rscript_fh' => ( is => 'rw', isa => 'FileHandle' );
 has 'rscript_name' => ( is => 'rw', isa => 'Str' );
-has 'exit_c' => ( is => 'rw', isa => 'Bool', default => 1 );
+has 'exit_code' => ( is => 'rw', isa => 'Bool', default => 1 );
 
 sub run {
 
@@ -53,7 +53,7 @@ sub _create_r_script {
   my ( $self ) = @_;
 
   my $rscript_name = $self->deseq_file . '.r';
-  open ( my $fh, '>',  $rscript_name);
+  $self->exit_code(0) unless open ( my $fh, '>',  $rscript_name);
 
   $self->rscript_fh( $fh );
 

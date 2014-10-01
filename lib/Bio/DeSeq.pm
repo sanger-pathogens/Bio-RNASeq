@@ -44,7 +44,7 @@ sub run {
 							       );
   $rscript_writer->run;
 
-  die "Couldn't write R script" unless ( $rscript_writer->exit_c );
+  die "Couldn't write R script" unless ( $rscript_writer->exit_code );
 
   $self->rscript_path('./' . $rscript_writer->rscript_name);
 
@@ -55,7 +55,6 @@ sub run {
 								mode => $self->mode,
 							       );
   $deseq_job->submit_deseq_job();
-
   
 
 }
