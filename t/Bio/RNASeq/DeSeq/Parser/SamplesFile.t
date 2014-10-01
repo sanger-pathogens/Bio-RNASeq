@@ -14,4 +14,7 @@ BEGIN {
     use_ok('Bio::RNASeq::DeSeq::Parser::SamplesFile');
 }
 
+
+throws_ok { Bio::RNASeq::DeSeq::Parser::SamplesFile->new( samples_file => 'non_existent_samples_file' ) } qr/Validation failed/, 'Throw exception if file doesnt exist';
+
 done_testing();

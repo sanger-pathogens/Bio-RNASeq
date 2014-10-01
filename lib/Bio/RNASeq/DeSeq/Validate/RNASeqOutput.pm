@@ -9,7 +9,6 @@ package Bio::RNASeq::DeSeq::Validate::RNASeqOutput;
 
 use Moose;
 use List::MoreUtils qw(uniq);
-use Data::Dumper;
 
 has 'file_number'   => ( is => 'rw', isa => 'Int', required => 1 );
 has 'genes'   => ( is => 'rw', isa => 'ArrayRef', required => 1 );

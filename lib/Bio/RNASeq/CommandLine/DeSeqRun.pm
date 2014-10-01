@@ -18,24 +18,27 @@ has 'help'        => ( is => 'rw', isa => 'Bool',     default  => 0 );
 has 'samples_file' => ( is => 'rw', isa => 'Str' );
 has 'deseq_file'   => ( is => 'rw', isa => 'Str' );
 has 'read_count_a_index'   => ( is => 'rw', isa => 'Int', default => 1 );
+has 'mode'   => ( is => 'rw', isa => 'Str', default => '' );
 
 sub BUILD {
 
     my ($self) = @_;
 
-    my ( $samples_file, $deseq_file, $expression_file_column, $help );
+    my ( $samples_file, $deseq_file, $expression_file_column, $mode, $help );
 
     GetOptionsFromArray(
 			$self->args,
 			'i|input=s' => \$samples_file,
 			'o|output=s'   => \$deseq_file,
 			'c|column:i' =>\$expression_file_column,
+			'm|mode:s' =>\$mode,
 			'h|help'           => \$help,
     );
 
     $self->samples_file($samples_file) if ( defined($samples_file) );
     $self->deseq_file($deseq_file)     if ( defined($deseq_file) );
     $self->read_count_a_index($expression_file_column - 1)     if ( defined($expression_file_column) );
+    $self->mode($mode) if ( defined($mode) );
 
 }
 
@@ -71,6 +74,7 @@ USAGE
 				      samples_file => $self->samples_file,
 				      deseq_file   => $self->deseq_file,
 				      read_count_a_index => $self->read_count_a_index,
+				      mode => $self->mode,
 				     );
 
     $deseq_setup->run;
@@ -78,4 +82,6 @@ USAGE
 
 }
 
+no Moose;
+__PACKAGE__->meta->make_immutable;
 1;
