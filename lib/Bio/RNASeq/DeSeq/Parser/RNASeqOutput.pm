@@ -15,7 +15,7 @@ has 'samples' => ( is => 'rw', isa => 'HashRef', required => 1 );
 has 'read_count_a_index'   => ( is => 'rw', isa => 'Int', required => 1 );
 
 has 'gene_universe'   => ( is => 'rw', isa => 'ArrayRef', default => sub { [] } );
-has 'exit_c' => ( is => 'rw', isa => 'Bool', default => 1 );
+has 'exit_code' => ( is => 'rw', isa => 'Bool', default => 1 );
 
 sub get_read_counts {
 
@@ -42,12 +42,13 @@ sub get_read_counts {
 								    genes => \@genes,
 								   );
 
-    $self->exit_c(0) unless $validator->is_gene_universe_in_all_files();
+    $self->exit_code(0) unless $validator->is_gene_universe_in_all_files();
 
     my @gene_universe = sort( uniq(@genes) );
     $self->gene_universe( \@gene_universe );
 }
 
-
+no Moose;
+__PACKAGE__->meta->make_immutable;
 1;
 

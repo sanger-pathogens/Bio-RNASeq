@@ -10,6 +10,6 @@ countTable = thisCountTable[, pairedSamples]
 condition = thisDesign$condition[ pairedSamples ]
 cds = newCountDataSet( countTable, condition )
 cds = estimateSizeFactors( cds )
-cds = estimateDispersions(cds)
+cds = estimateDispersions(cds, fitType="local")
 res = nbinomTest( cds, "untreated", "treated" )
 write.csv( res, file="deseq_test_result_table.csv")

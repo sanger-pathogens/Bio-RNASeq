@@ -6,6 +6,7 @@ has 'deseq_file' => ( is => 'rw', isa => 'Str', required => 1 );
 has 'deseq_ff' => ( is => 'rw', isa => 'Str', required => 1 );
 has 'r_conditions' => ( is => 'rw', isa => 'Str', required => 1 );
 has 'r_lib_types' => ( is => 'rw', isa => 'Str', required => 1 );
+has 'mode'   => ( is => 'rw', isa => 'Str', default => '' );
 
 has 'rscript' => ( is => 'rw', isa => 'Str' );
 has 'rscript_fh' => ( is => 'rw', isa => 'FileHandle' );
@@ -37,7 +38,9 @@ sub _set_rscript {
   $rscript .= 'condition = thisDesign$condition[ pairedSamples ]' . "\n";
   $rscript .= qq/cds = newCountDataSet( countTable, condition )\n/;
   $rscript .= qq/cds = estimateSizeFactors( cds )\n/;
-  $rscript .= qq/cds = estimateDispersions(cds)\n/;
+
+  $rscript .= $self->mode eq 'test' ? qq/cds = estimateDispersions(cds, fitType="local")\n/ : qq/cds = estimateDispersions(cds)\n/; #Do local fit if running in test mode
+
   $rscript .= qq/res = nbinomTest( cds, "untreated", "treated" )\n/;
   $rscript .= 'write.csv( res, file="' . $self->deseq_file . '_result_table.csv")' . "\n";
 

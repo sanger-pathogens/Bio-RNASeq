@@ -125,7 +125,7 @@ sub mock_execute_script_and_check_multiple_file_output {
 		    "Expected output file exists $expected_output_file_name" );
 
 		if ( $actual_output_file_name ne 'empty_file' ) {
-		  
+		  print ($actual_output_file_name,"\t",$expected_output_file_name,"\n");
 		  ok(compare($actual_output_file_name,$expected_output_file_name) == 0, "Files are equal");
 
 		}
