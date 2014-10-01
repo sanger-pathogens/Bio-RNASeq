@@ -3,7 +3,7 @@ package  Bio::RNASeq::DeSeq::Writer::RScript;
 use Moose;
 
 has 'deseq_file' => ( is => 'rw', isa => 'Str', required => 1 );
-has 'deseq_ff' => ( is => 'rw', isa => 'Str', required => 1 );
+has 'deseq_file_path' => ( is => 'rw', isa => 'Str', required => 1 );
 has 'r_conditions' => ( is => 'rw', isa => 'Str', required => 1 );
 has 'r_lib_types' => ( is => 'rw', isa => 'Str', required => 1 );
 has 'mode'   => ( is => 'rw', isa => 'Str', default => '' );
@@ -28,7 +28,7 @@ sub _set_rscript {
 
   my $rscript = '#!/usr/bin/env Rscript' . "\n";
   $rscript .= 'library(DESeq)' . "\n";
-  $rscript .= 'thisCountTable = read.table( "' . $self->deseq_ff . '", header=TRUE, row.names=1 )' . "\n";
+  $rscript .= 'thisCountTable = read.table( "' . $self->deseq_file_path . '", header=TRUE, row.names=1 )' . "\n";
   $rscript .= 'thisDesign = data.frame(' . "\n";
   $rscript .= 'row.names = colnames(thisCountTable),' . "\n";
   $rscript .= 'condition = ' . $self->r_conditions . ",\n";
@@ -69,5 +69,6 @@ sub _create_r_script {
   
 }
 
-
+no Moose;
+__PACKAGE__->meta->make_immutable;
 1;

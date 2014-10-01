@@ -6,8 +6,8 @@ use Bio::RNASeq::DeSeq::Validate::DeseqOutputFilePath;
 has 'deseq_file' => ( is => 'rw', isa => 'Str', required => 1 );
 has 'samples'  => ( is => 'rw', isa => 'HashRef', required => 1 );
 has 'gene_universe'    => ( is => 'rw', isa => 'ArrayRef', required => 1 );
+has 'deseq_file_path' => ( is => 'rw', isa => 'Str', lazy => 1, builder => '_build_file_path');
 
-has 'deseq_ff' => ( is => 'rw', isa => 'Str');
 has 'deseq_fh' => ( is => 'rw', isa => 'FileHandle' );
 has 'r_conditions' => ( is => 'rw', isa => 'Str' );
 has 'r_lib_types' => ( is => 'rw', isa => 'Str' );
@@ -17,10 +17,8 @@ sub run {
 
   my ($self) = @_;
   
-  $self->_create_ff;
-
   my $validator = Bio::RNASeq::DeSeq::Validate::DeseqOutputFilePath->new(
-									 deseq_ff => $self->deseq_ff,
+									 deseq_file_path => $self->deseq_file_path,
 									);
   if ( $validator->is_path_valid ) {
 
@@ -43,7 +41,7 @@ sub _write {
   my $r_conditions = q/c( /;
   my $r_lib_types = q/c( /;
 
-  open( my $fh, '>', $self->deseq_ff );
+  open( my $fh, '>', $self->deseq_file_path );
 
   my $file_content = "gene_id\t";
 
@@ -86,14 +84,16 @@ sub _write {
 
 }
 
-sub _create_ff {
+sub _build_file_path {
 
   my ($self) = @_;
 
-  my $deseq_ff = './' . $self->deseq_file;
+  my $deseq_file_path = './' . $self->deseq_file;
 
-  $self->deseq_ff($deseq_ff);
+  return $deseq_file_path;
 
 }
 
+no Moose;
+__PACKAGE__->meta->make_immutable;
 1;

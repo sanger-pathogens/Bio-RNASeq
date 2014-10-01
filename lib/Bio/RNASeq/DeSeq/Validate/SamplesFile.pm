@@ -185,8 +185,6 @@ sub _set_lines {
   my $max_lines;
   if ( $out =~ m/(\d+)/ ) {
     $max_lines = $1;
-  } elsif ( $out =~ m/^wc:/ ) {
-    die "File $file does not exist\n";
   }
 
   unless ( $max_lines == 0 ) {
@@ -197,4 +195,6 @@ sub _set_lines {
 
 }
 
+no Moose;
+__PACKAGE__->meta->make_immutable;
 1;

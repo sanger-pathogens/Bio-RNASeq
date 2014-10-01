@@ -33,11 +33,11 @@ sub run {
 
   die "Couldn't write DeSeq input file" unless ( $dsi_writer->exit_code );
 
-  $self->job_log_error_path( $dsi_writer->deseq_ff );
+  $self->job_log_error_path( $dsi_writer->deseq_file_path );
 
   my $rscript_writer = Bio::RNASeq::DeSeq::Writer::RScript->new(
 								deseq_file => $self->deseq_file,
-								deseq_ff => $dsi_writer->deseq_ff, 
+								deseq_file_path => $dsi_writer->deseq_file_path, 
 								r_conditions => $dsi_writer->r_conditions,
 								r_lib_types => $dsi_writer->r_lib_types,
 								mode => $self->mode,
@@ -88,8 +88,6 @@ sub _prepare_deseq_setup {
     $self->samples( $rso->samples );
     $self->gene_universe( $rso->gene_universe );
 }
-
-
 
 no Moose;
 __PACKAGE__->meta->make_immutable;

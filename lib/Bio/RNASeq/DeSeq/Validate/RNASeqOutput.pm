@@ -37,6 +37,6 @@ sub is_gene_universe_in_all_files {
   }
 }
 
-
-
+no Moose;
+__PACKAGE__->meta->make_immutable;
 1;
