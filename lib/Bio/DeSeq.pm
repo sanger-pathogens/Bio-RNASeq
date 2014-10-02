@@ -29,7 +29,7 @@ sub run {
 								   gene_universe => $self->gene_universe,
 								  );
 
-  $dsi_writer->run;
+  $dsi_writer->run();
 
   $self->job_log_error_path( $dsi_writer->deseq_file_path );
 
@@ -40,9 +40,7 @@ sub run {
 								r_lib_types => $dsi_writer->r_lib_types,
 								mode => $self->mode,
 							       );
-  $rscript_writer->run;
-
-  die "Couldn't write R script" unless ( $rscript_writer->exit_code );
+  $rscript_writer->run();
 
   $self->rscript_path('./' . $rscript_writer->rscript_name);
 

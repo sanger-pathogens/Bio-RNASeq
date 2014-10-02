@@ -3,10 +3,11 @@ package Bio::RNASeq::DeSeq::Writer::DeseqInputFile;
 use Moose;
 use Bio::RNASeq::Exceptions;
 use Bio::RNASeq::DeSeq::Validate::DeseqOutputFilePath;
+use Bio::RNASeq::Types;
 
 has 'deseq_file' => ( is => 'rw', isa => 'Str', required => 1 );
-has 'samples'  => ( is => 'rw', isa => 'HashRef', required => 1 );
-has 'gene_universe'    => ( is => 'rw', isa => 'ArrayRef', required => 1 );
+has 'samples'  => ( is => 'rw', isa => 'Bio::RNASeq::DeSeq::SamplesHashRef', required => 1 );
+has 'gene_universe'    => ( is => 'rw', isa => 'Bio::RNASeq::DeSeq::GeneUniverseArrayRef', required => 1 );
 has 'deseq_file_path' => ( is => 'rw', isa => 'Str', lazy => 1, builder => '_build_file_path');
 
 has 'deseq_fh' => ( is => 'rw', isa => 'FileHandle' );

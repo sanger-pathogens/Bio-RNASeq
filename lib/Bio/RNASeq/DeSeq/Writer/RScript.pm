@@ -11,7 +11,6 @@ has 'mode'   => ( is => 'rw', isa => 'Str', default => '' );
 has 'rscript' => ( is => 'rw', isa => 'Str' );
 has 'rscript_fh' => ( is => 'rw', isa => 'FileHandle' );
 has 'rscript_name' => ( is => 'rw', isa => 'Str' );
-has 'exit_code' => ( is => 'rw', isa => 'Bool', default => 1 );
 
 sub run {
 
