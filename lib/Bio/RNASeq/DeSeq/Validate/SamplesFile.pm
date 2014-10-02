@@ -2,13 +2,16 @@ package Bio::RNASeq::DeSeq::Validate::SamplesFile;
 
 use Moose;
 use List::MoreUtils qw(uniq);
+use Bio::RNASeq::Types;
+use Bio::RNASeq::Exceptions;
 
-has 'samples_file' => ( is => 'rw', isa => 'Str', required => 1 );
 
-has 'samples'   => ( is => 'rw', isa => 'Bio::RNASeq::DeSeq::SamplesHashRef', default => sub { {} } );
-has 'content'   => ( is => 'rw', isa => 'HashRef' );
-has 'conditions' => ( is => 'rw', isa => 'ArrayRef' );
-has 'lib_types' => ( is => 'rw', isa => 'ArrayRef' );
+has 'samples_file' => ( is => 'rw', isa => 'Bio::RNASeq::File', required => 1 );
+
+has 'samples'   => ( is => 'rw', isa => 'Bio::RNASeq::DeSeq::SamplesHashRef');
+has 'content'   => ( is => 'rw', isa => 'Bio::RNASeq::DeSeq::SamplesContentHashRef' );
+has 'conditions' => ( is => 'rw', isa => 'Bio::RNASeq::DeSeq::SamplesConditionsArrayRef' );
+has 'lib_types' => ( is => 'rw', isa => 'Bio::RNASeq::DeSeq::SamplesSeqLibraryArrayRef' );
 has 'max_lines' => ( is => 'rw', isa => 'Int' );
 
 sub is_samples_file_valid {

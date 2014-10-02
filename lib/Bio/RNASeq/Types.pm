@@ -18,6 +18,15 @@ subtype 'Bio::RNASeq::File',
 subtype 'Bio::RNASeq::DeSeq::SamplesHashRef',
   as 'HashRef';
 
+subtype 'Bio::RNASeq::DeSeq::SamplesContentHashRef',
+  as 'HashRef';
+
+subtype 'Bio::RNASeq::DeSeq::SamplesConditionsArrayRef',
+  as 'ArrayRef';
+
+subtype 'Bio::RNASeq::DeSeq::SamplesSeqLibraryArrayRef',
+  as 'ArrayRef';
+
 no Moose;
 no Moose::Util::TypeConstraints;
 __PACKAGE__->meta->make_immutable;
