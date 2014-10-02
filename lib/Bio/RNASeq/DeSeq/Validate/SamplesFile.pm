@@ -5,7 +5,7 @@ use List::MoreUtils qw(uniq);
 
 has 'samples_file' => ( is => 'rw', isa => 'Str', required => 1 );
 
-has 'samples'   => ( is => 'rw', isa => 'HashRef', default => sub { {} } );
+has 'samples'   => ( is => 'rw', isa => 'Bio::RNASeq::DeSeq::SamplesHashRef', default => sub { {} } );
 has 'content'   => ( is => 'rw', isa => 'HashRef' );
 has 'conditions' => ( is => 'rw', isa => 'ArrayRef' );
 has 'lib_types' => ( is => 'rw', isa => 'ArrayRef' );

@@ -69,8 +69,8 @@ sub mock_execute_script_and_check_output {
 	      }
 	  }
 
-        #close STDOUT;
-	#close STDERR;
+        close STDOUT;
+	close STDERR;
       }
 
 

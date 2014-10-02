@@ -1,0 +1,7 @@
+t/data/rna_seq_output_files/red1_expression.csv,red,1
+t/data/rna_seq_output_files/red2_expression.csv,red,2
+t/data/rna_seq_output_files/green1_expression.csv,green,1
+t/data/rna_seq_output_files/green2_expression.csv,green,2
+t/data/rna_seq_output_files/blue1_expression.csv,blue,1
+t/data/rna_seq_output_files/blue2_expression.csv,blue,2
+

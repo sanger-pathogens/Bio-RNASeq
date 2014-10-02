@@ -15,6 +15,9 @@ subtype 'Bio::RNASeq::File',
   as 'Str',
   where { -e $_ };
 
+subtype 'Bio::RNASeq::DeSeq::SamplesHashRef',
+  as 'HashRef';
+
 no Moose;
 no Moose::Util::TypeConstraints;
 __PACKAGE__->meta->make_immutable;

@@ -63,16 +63,7 @@ sub _prepare_deseq_setup {
 
     my ($self) = @_;
 
-    my $parser =
-      Bio::RNASeq::DeSeq::Parser::SamplesFile->new(
-						   samples_file => $self->samples_file
-						  );
-
-    $parser->parse();
-
-    die "Samples file passed by the -i option is invalid" unless ( $parser->exit_code );
-
-    $self->samples( $parser->samples );
+    $self->samples( Bio::RNASeq::DeSeq::Parser::SamplesFile->new( samples_file => $self->samples_file )->samples() );
 
 
     my $rso =
