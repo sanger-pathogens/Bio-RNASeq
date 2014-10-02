@@ -3,8 +3,6 @@ package Bio::RNASeq::DeSeq::Validate::SamplesFile;
 use Moose;
 use List::MoreUtils qw(uniq);
 use Bio::RNASeq::Types;
-use Bio::RNASeq::Exceptions;
-
 
 has 'samples_file' => ( is => 'rw', isa => 'Bio::RNASeq::File', required => 1 );
 

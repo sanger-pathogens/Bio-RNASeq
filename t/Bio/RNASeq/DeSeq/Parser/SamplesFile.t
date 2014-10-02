@@ -23,7 +23,7 @@ ok( $good_samples_parser->samples(), 'Validating valid samples file');
 
 ok( my $bad_samples_parser = Bio::RNASeq::DeSeq::Parser::SamplesFile->new( samples_file => 't/data/bad_samples_file'), 'Invalid samples file object initialised' );
 
-throws_ok { $bad_samples_parser->samples() } qr/Validation failed/, 'Throw exception if invalid samples file is invalid';
+throws_ok { $bad_samples_parser->samples() } qr/Samples file passed by the -i option is invalid/, 'Throw exception if invalid samples file is invalid';
 
 
 done_testing();

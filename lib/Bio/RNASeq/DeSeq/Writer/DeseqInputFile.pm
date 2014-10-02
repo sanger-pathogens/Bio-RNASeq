@@ -1,6 +1,7 @@
 package Bio::RNASeq::DeSeq::Writer::DeseqInputFile;
 
 use Moose;
+use Bio::RNASeq::Exceptions;
 use Bio::RNASeq::DeSeq::Validate::DeseqOutputFilePath;
 
 has 'deseq_file' => ( is => 'rw', isa => 'Str', required => 1 );
@@ -11,7 +12,6 @@ has 'deseq_file_path' => ( is => 'rw', isa => 'Str', lazy => 1, builder => '_bui
 has 'deseq_fh' => ( is => 'rw', isa => 'FileHandle' );
 has 'r_conditions' => ( is => 'rw', isa => 'Str' );
 has 'r_lib_types' => ( is => 'rw', isa => 'Str' );
-has 'exit_code' => ( is => 'rw', isa => 'Bool', default => 1 );
 
 sub run {
 
@@ -28,8 +28,7 @@ sub run {
   }
   else {
 
-    my $exception = 'The file path specified in the -d option => ' . $self->deseq_file . ' , does not exist';
-    die "$exception";
+    Bio::RNASeq::Exceptions::NonExistentFile->throw( error => 'Non existent file');
 
   }
 }

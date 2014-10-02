@@ -19,7 +19,7 @@ sub _build_samples {
     return($validator->samples);
   }
   else {
-    return 0;
+    Bio::RNASeq::Exceptions::InvalidSamplesFile->throw( error => 'Samples file passed by the -i option is invalid' );
   }
 }
 

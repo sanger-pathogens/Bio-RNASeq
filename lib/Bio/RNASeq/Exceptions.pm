@@ -22,6 +22,7 @@ use Exception::Class (
 				   Bio::RNASeq::Exceptions::NonExistentFile => { description => 'File doesnt exist' },
 				   Bio::RNASeq::Exceptions::DuplicateFeatureID => { description => 'Duplicate feature id in gff file' },
 				   Bio::RNASeq::Exceptions::InvalidSamplesFile => { description => 'Samples file passed by the -i option is invalid' },
+				   Bio::RNASeq::Exceptions::InvalidGeneUniverse => { description => 'Expression files dont share the same set of genomic features' },
 );
 
 1;

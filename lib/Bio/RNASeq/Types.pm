@@ -27,6 +27,9 @@ subtype 'Bio::RNASeq::DeSeq::SamplesConditionsArrayRef',
 subtype 'Bio::RNASeq::DeSeq::SamplesSeqLibraryArrayRef',
   as 'ArrayRef';
 
+subtype 'Bio::RNASeq::DeSeq::GeneUniverseArrayRef',
+  as 'ArrayRef';
+
 no Moose;
 no Moose::Util::TypeConstraints;
 __PACKAGE__->meta->make_immutable;

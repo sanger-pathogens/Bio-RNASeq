@@ -31,8 +31,6 @@ sub run {
 
   $dsi_writer->run;
 
-  die "Couldn't write DeSeq input file" unless ( $dsi_writer->exit_code );
-
   $self->job_log_error_path( $dsi_writer->deseq_file_path );
 
   my $rscript_writer = Bio::RNASeq::DeSeq::Writer::RScript->new(
@@ -72,12 +70,8 @@ sub _prepare_deseq_setup {
 						    read_count_a_index => $self->read_count_a_index,
 						   );
 
-    $rso->get_read_counts();
-
-    die "The sample files defined in the sample file provided by the -i option don't share the same gene universe" unless ( $rso->exit_code );
-
-    $self->samples( $rso->samples );
-    $self->gene_universe( $rso->gene_universe );
+    $self->gene_universe( $rso->gene_universe() );
+    $self->samples( $rso->samples() );
 }
 
 no Moose;
