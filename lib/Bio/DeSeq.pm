@@ -40,7 +40,8 @@ sub run {
 								r_lib_types => $dsi_writer->r_lib_types,
 								mode => $self->mode,
 							       );
-  $rscript_writer->run();
+  $rscript_writer->set_r_script();
+  $rscript_writer->write_r_script();
 
   $self->rscript_path('./' . $rscript_writer->rscript_name);
 

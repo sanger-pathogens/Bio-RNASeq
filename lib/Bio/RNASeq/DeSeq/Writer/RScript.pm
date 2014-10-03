@@ -12,16 +12,8 @@ has 'rscript' => ( is => 'rw', isa => 'Str' );
 has 'rscript_fh' => ( is => 'rw', isa => 'FileHandle' );
 has 'rscript_name' => ( is => 'rw', isa => 'Str' );
 
-sub run {
 
-  my ( $self ) = @_;
-
-  $self->_set_rscript();
-  $self->_create_r_script();
-
-}
-
-sub _set_rscript {
+sub set_r_script {
 
   my ( $self ) = @_;
 
@@ -47,7 +39,7 @@ sub _set_rscript {
 
 }
 
-sub _create_r_script {
+sub write_r_script {
 
   my ( $self ) = @_;
 
