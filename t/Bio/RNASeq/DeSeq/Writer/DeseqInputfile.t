@@ -14,5 +14,6 @@ BEGIN {
     use_ok('Bio::RNASeq::DeSeq::Writer::DeseqInputFile');
 }
 
+throws_ok { Bio::RNASeq::DeSeq::Writer::DeseqInputFile->new( deseq_file => 'blah/non_existent_samples_file', samples => {}, gene_universe => [] )->run() } qr/Non existent file/, 'Throw exception if filepath doesnt exist';
 
-throws_ok { Bio::RNASeq::DeSeq::Writer::DeseqInputFile->new( deseq_file => 'non_existent_samples_file', samples => {}, gene_universe => [] ) } qr/Validation failed/, 'Throw exception if file doesnt exist';
+done_testing();

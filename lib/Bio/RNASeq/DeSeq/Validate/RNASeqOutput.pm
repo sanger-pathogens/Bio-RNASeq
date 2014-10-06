@@ -10,6 +10,7 @@ package Bio::RNASeq::DeSeq::Validate::RNASeqOutput;
 use Moose;
 use List::MoreUtils qw(uniq);
 
+
 has 'file_number'   => ( is => 'rw', isa => 'Int', required => 1 );
 has 'genes'   => ( is => 'rw', isa => 'ArrayRef', required => 1 );
 
@@ -28,15 +29,12 @@ sub is_gene_universe_in_all_files {
     if ( $unique_counts[0] == $self->file_number ) {
       return 1;
     }
-    else {
-      return 0;
-    }
   }
   else {
     return 0;
   }
 }
 
-
-
+no Moose;
+__PACKAGE__->meta->make_immutable;
 1;

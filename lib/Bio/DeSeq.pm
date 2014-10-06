@@ -29,24 +29,21 @@ sub run {
 								   gene_universe => $self->gene_universe,
 								  );
 
-  $dsi_writer->run;
+  $dsi_writer->run();
 
-  die "Couldn't write DeSeq input file" unless ( $dsi_writer->exit_code );
-
-  $self->job_log_error_path( $dsi_writer->deseq_ff );
+  $self->job_log_error_path( $dsi_writer->deseq_file_path );
 
   my $rscript_writer = Bio::RNASeq::DeSeq::Writer::RScript->new(
 								deseq_file => $self->deseq_file,
-								deseq_ff => $dsi_writer->deseq_ff, 
+								deseq_file_path => $dsi_writer->deseq_file_path, 
 								r_conditions => $dsi_writer->r_conditions,
 								r_lib_types => $dsi_writer->r_lib_types,
 								mode => $self->mode,
 							       );
-  $rscript_writer->run;
+  $rscript_writer->set_r_script();
+  $rscript_writer->write_r_script();
 
-  die "Couldn't write R script" unless ( $rscript_writer->exit_code );
-
-  $self->rscript_path('./' . $rscript_writer->rscript_name);
+  $self->rscript_path('./' . $rscript_writer->rscript_name . ' 2>/dev/null');
 
   my $deseq_job = Bio::RNASeq::DeSeq::Schedule::RScriptJob->new(
 								job_name => $self->deseq_file,
@@ -54,6 +51,9 @@ sub run {
 								rscript_path => $self->rscript_path,
 								mode => $self->mode,
 							       );
+  if ( $self->mode eq 'test') {
+    $deseq_job->bsub_command();
+  }
   $deseq_job->submit_deseq_job();
   
 
@@ -63,16 +63,7 @@ sub _prepare_deseq_setup {
 
     my ($self) = @_;
 
-    my $parser =
-      Bio::RNASeq::DeSeq::Parser::SamplesFile->new(
-						   samples_file => $self->samples_file
-						  );
-
-    $parser->parse();
-
-    die "Samples file passed by the -i option is invalid" unless ( $parser->exit_code );
-
-    $self->samples( $parser->samples );
+    $self->samples( Bio::RNASeq::DeSeq::Parser::SamplesFile->new( samples_file => $self->samples_file )->samples() );
 
 
     my $rso =
@@ -81,15 +72,9 @@ sub _prepare_deseq_setup {
 						    read_count_a_index => $self->read_count_a_index,
 						   );
 
-    $rso->get_read_counts();
-
-    die "The sample files defined in the sample file provided by the -i option don't share the same gene universe" unless ( $rso->exit_code );
-
-    $self->samples( $rso->samples );
-    $self->gene_universe( $rso->gene_universe );
+    $self->gene_universe( $rso->gene_universe() );
+    $self->samples( $rso->samples() );
 }
-
-
 
 no Moose;
 __PACKAGE__->meta->make_immutable;
