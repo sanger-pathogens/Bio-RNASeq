@@ -43,7 +43,7 @@ sub run {
   $rscript_writer->set_r_script();
   $rscript_writer->write_r_script();
 
-  $self->rscript_path('./' . $rscript_writer->rscript_name);
+  $self->rscript_path('./' . $rscript_writer->rscript_name . ' 2>/dev/null');
 
   my $deseq_job = Bio::RNASeq::DeSeq::Schedule::RScriptJob->new(
 								job_name => $self->deseq_file,
@@ -51,6 +51,9 @@ sub run {
 								rscript_path => $self->rscript_path,
 								mode => $self->mode,
 							       );
+  if ( $self->mode eq 'test') {
+    $deseq_job->bsub_command();
+  }
   $deseq_job->submit_deseq_job();
   
 

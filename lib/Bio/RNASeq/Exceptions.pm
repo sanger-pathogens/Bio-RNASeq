@@ -23,6 +23,8 @@ use Exception::Class (
 				   Bio::RNASeq::Exceptions::DuplicateFeatureID => { description => 'Duplicate feature id in gff file' },
 				   Bio::RNASeq::Exceptions::InvalidSamplesFile => { description => 'Samples file passed by the -i option is invalid' },
 				   Bio::RNASeq::Exceptions::InvalidGeneUniverse => { description => 'Expression files dont share the same set of genomic features' },
+				   Bio::RNASeq::Exceptions::FailedBsubCommand => { description => 'Bsub command failed' },
+
 );
 
 1;
