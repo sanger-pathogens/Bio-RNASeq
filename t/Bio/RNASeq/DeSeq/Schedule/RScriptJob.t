@@ -48,8 +48,8 @@ ok( $deseq_job = Bio::RNASeq::DeSeq::Schedule::RScriptJob->new(
 
 ok( $deseq_job->submit_deseq_job(), 'Run valid local R session');
 
-my $actual_output_file_path = 't/data/deseq_test_results_table.csv';
-my $expected_output_file_path = './new_deseq_test_result_table.csv';
+my $expected_output_file_path = 't/data/deseq_test_results_table.csv';
+my $actual_output_file_path = './new_deseq_test_result_table.csv';
 
 is(compare($actual_output_file_path,$expected_output_file_path), 0, "Files are equal");
 
