@@ -18,7 +18,7 @@ my $rscript = Bio::RNASeq::DeSeq::Writer::RScript->new(
     deseq_file      => 'deseq_test',
     deseq_file_path => 'tester/deseq_test',
     r_conditions    => 'c( "treated","treated","treated","untreated","untreated")',
-    r_lib_types     => 'c( "paired-end","paired-end","paired-end","paired-end","paired-end"',
+    r_lib_types     => 'c( "paired-end","paired-end","paired-end","paired-end","paired-end")',
     mode            => 'test'
 );
 
@@ -30,7 +30,7 @@ thisCountTable = read.table( "tester/deseq_test", header=TRUE, row.names=1 )
 thisDesign = data.frame(
 row.names = colnames(thisCountTable),
 condition = c( "treated","treated","treated","untreated","untreated"),
-libType = c( "paired-end","paired-end","paired-end","paired-end","paired-end")
+libType = c( "paired-end","paired-end","paired-end","paired-end","paired-end"))
 pairedSamples = thisDesign$libType == "paired-end"
 countTable = thisCountTable[, pairedSamples]
 condition = thisDesign$condition[ pairedSamples ]
@@ -48,7 +48,7 @@ $rscript = Bio::RNASeq::DeSeq::Writer::RScript->new(
     deseq_file      => 'deseq_test',
     deseq_file_path => 'tester/deseq_test',
     r_conditions    => 'c( "treated","treated","treated","untreated","untreated")',
-    r_lib_types     => 'c( "paired-end","paired-end","paired-end","paired-end","paired-end"'
+    r_lib_types     => 'c( "paired-end","paired-end","paired-end","paired-end","paired-end")'
 );
 
 $rscript->set_r_script();
@@ -59,7 +59,7 @@ thisCountTable = read.table( "tester/deseq_test", header=TRUE, row.names=1 )
 thisDesign = data.frame(
 row.names = colnames(thisCountTable),
 condition = c( "treated","treated","treated","untreated","untreated"),
-libType = c( "paired-end","paired-end","paired-end","paired-end","paired-end")
+libType = c( "paired-end","paired-end","paired-end","paired-end","paired-end"))
 pairedSamples = thisDesign$libType == "paired-end"
 countTable = thisCountTable[, pairedSamples]
 condition = thisDesign$condition[ pairedSamples ]
