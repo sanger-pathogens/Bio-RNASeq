@@ -17,7 +17,7 @@ sub set_r_script {
 
   my ( $self ) = @_;
 
-  my $rscript = '#!/software/pathogen/external/apps/usr/local/bin/R' . "\n";
+  my $rscript = '#!/usr/bin/env Rscript' . "\n";
   $rscript .= 'library(DESeq)' . "\n";
   $rscript .= 'thisCountTable = read.table( "' . $self->deseq_file_path . '", header=TRUE, row.names=1 )' . "\n";
   $rscript .= 'thisDesign = data.frame(' . "\n";
