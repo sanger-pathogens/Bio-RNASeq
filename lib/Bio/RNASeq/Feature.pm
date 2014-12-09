@@ -24,6 +24,7 @@ has 'exons'         => ( is => 'rw', isa => 'ArrayRef',            lazy =>1, bui
 
 has 'locus_tag'     => ( is => 'rw', isa => 'Maybe[Str]',          lazy_build => 1 );
 has 'feature_type'  => ( is => 'rw', isa => 'Maybe[Str]',          lazy_build => 1 );
+has 'reads_mapping' => ( is => 'rw', isa => 'Bool',                default => 0 );
 
 
 sub _build_locus_tag
@@ -162,15 +163,17 @@ sub _update_exon_length_from_exon_list
 
 sub add_discontinuous_feature
 {
-  my ($self,$raw_feature) = @_;
-  push @{$self->exons}, [$raw_feature->start, $raw_feature->end ];
-  my $gene_start = ($raw_feature->start < $self->gene_start) ? $raw_feature->start : $self->gene_start;
-  my $gene_end = ($raw_feature->end   > $self->gene_end) ? $raw_feature->end : $self->gene_end;
+  my ($self,$raw_feature, $filter_parents) = @_;
+  my $rf_start = $raw_feature->start;
+  my $rf_end = $raw_feature->end ;
+  push @{$self->exons}, [$rf_start, $rf_end ];
+  my $gene_start = ($rf_start < $self->gene_start) ? $rf_start : $self->gene_start;
+  my $gene_end = ($rf_end  > $self->gene_end) ? $rf_end : $self->gene_end;
 
   $self->gene_start($gene_start);
   $self->gene_end($gene_end);
   
-  $self->_filter_out_parent_features_from_exon_list();
+  $self->_filter_out_parent_features_from_exon_list() if($filter_parents);
   $self->_update_exon_length_from_exon_list();
   
   return;

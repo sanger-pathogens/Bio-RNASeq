@@ -16,9 +16,17 @@ extends('Bio::RNASeq::GeneModelHandlers::GeneModelHandler');
 has 'tags_of_interest' => (
     is      => 'rw',
     isa     => 'ArrayRef',
-    default => sub { [ 'gene', 'mRNA', 'transcript', 'exon' ] }
+    default => sub { ['mRNA', 'transcript', 'exon' ] }
 );
 
+# This filters out the tags from the gff file with awk to reduce the amount going into Bio::Tools::GFF, which is very slow
+has 'tags_to_ignore' => 
+(
+  is      => 'rw',
+  isa     => 'ArrayRef',
+   default => sub { ['gene', 'stop_codon', 'start_codon', 'three_prime_UTR', 'five_prime_UTR', 'CDS'] }
+  );
+  
 has 'exon_tag' => ( is => 'rw', isa => 'Str', default => 'exon' );
 
 

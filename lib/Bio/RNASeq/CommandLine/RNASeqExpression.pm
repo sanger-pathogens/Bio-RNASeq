@@ -29,6 +29,9 @@ has 'minimum_mapping_quality' => ( is => 'rw', isa => 'Int', default => 1);
 has 'no_coverage_plots' => ( is => 'rw', isa => 'Bool', default => 0);
 has 'intergenic_regions' => ( is => 'rw', isa => 'Bool', default => 0);
 has 'bitwise_flag' => ( is => 'rw', isa => 'Bool', default => 1);
+has 'parallel_processes'   => ( is => 'rw', isa => 'Int', default  => 1 );
+
+
 
 has '_filters' => ( is => 'rw', isa => 'HashRef', lazy => 1, builder => '_build__filters');
 has '_protocols' => ( is => 'rw', isa => 'HashRef', lazy => 1, builder => '_build__protocols');
@@ -40,7 +43,7 @@ sub BUILD {
 
 	my ($self) =@_;
 	
-	my($sequence_file, $annotation_file, $protocol_name, $output_base_filename, $minimum_mapping_quality, $no_coverage_plots, $intergenic_regions, $bitwise_flag, $help );
+	my($sequence_file, $annotation_file,$parallel_processes, $protocol_name, $output_base_filename, $minimum_mapping_quality, $no_coverage_plots, $intergenic_regions, $bitwise_flag, $help );
 
 	GetOptionsFromArray(
 	$self->args,
@@ -52,6 +55,7 @@ sub BUILD {
 	'c|no_coverage_plots'                    => \$no_coverage_plots,
 	'i|intergenic_regions'                   => \$intergenic_regions,
 	'b|bitwise_flag'                         => \$bitwise_flag,
+	'k|parallel_processes=i'                 => \$parallel_processes,
 	'h|help'                                 => \$help,
     );
 	
@@ -63,6 +67,7 @@ sub BUILD {
 	$self->no_coverage_plots($no_coverage_plots) if ( defined($no_coverage_plots) );
 	$self->intergenic_regions($intergenic_regions) if ( defined($intergenic_regions) );
 	$self->bitwise_flag($bitwise_flag) if ( defined($bitwise_flag) );
+	$self->parallel_processes($parallel_processes) if(defined($parallel_processes));
 
 }
 
@@ -80,6 +85,7 @@ Usage:
   -c|no_coverage_plots       <Dont create Artemis coverage plots>
   -i|intergenic_regions      <Include intergenic regions>
   -b|bitwise_flag            <Only include reads which pass filter>
+  -k|parallel_processes      <Number of CPUs to use, defaults to 1>
   -h|help                    <print this message>
 
 This script takes in an aligned sequence file (BAM) and a corresponding annotation file (GFF) and creates a spreadsheet with expression values.
@@ -96,6 +102,7 @@ USAGE
 	  protocol             => $self->_protocols->{$self->protocol},
 	  output_base_filename => $self->output_base_filename,
 	  intergenic_regions   => $self->intergenic_regions,
+	  parallel_processes   => $self->parallel_processes
 	  );
 	
 	$expression_results->output_spreadsheet();
