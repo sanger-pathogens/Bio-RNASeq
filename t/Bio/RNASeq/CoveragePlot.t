@@ -18,6 +18,14 @@ ok my $coverage_plots_from_bam = Bio::RNASeq::CoveragePlot->new(
   );
 ok $coverage_plots_from_bam->create_plots();
 
+ok are_coverage_files_created(
+			      't/data/coverage.FN543502.coverageplot.gz',
+			      't/data/coverage.pCROD1.coverageplot.gz',
+			      't/data/coverage.pCROD2.coverageplot.gz',
+			      't/data/coverage.pCROD3.coverageplot.gz',
+			      't/data/coverage.all.coverageplot.gz'
+			      );
+
 # parse output files and check they are okay
 ok is_input_string_found_on_given_line("0 0", 1,    't/data/coverage.FN543502.coverageplot.gz'), 'check main sequence coverage values first value';
 ok is_input_string_found_on_given_line("1 1", 104,  't/data/coverage.FN543502.coverageplot.gz'), 'check main sequence coverage values for forward read only';
