@@ -156,8 +156,8 @@ sub create_plots
   my $input_file_handle = $self->_input_file_handle;
 
   print($self->filename, "\n");
+  my $position_tracker = 0;
   while(my $line = <$input_file_handle>) {
-    my $position_tracker = 0;
     print "$position_tracker\n";
     my($sequence_name, $base_position, $read_string) = split(/\t/, $line);
     my $padding_string = $self->_create_padding_string($self->_sequence_base_counters->{$sequence_name},$base_position);
