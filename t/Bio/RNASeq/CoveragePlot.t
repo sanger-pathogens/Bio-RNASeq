@@ -73,7 +73,7 @@ unlink("t/data/coverage.FN543502.coverageplot.gz");
 unlink("t/data/coverage.pCROD1.coverageplot.gz");
 unlink("t/data/coverage.pCROD2.coverageplot.gz");
 unlink("t/data/coverage.pCROD3.coverageplot.gz");
-#unlink("t/data/coverage.all_sequences.coverageplot.gz");
+unlink("t/data/coverage.all_sequences.coverageplot.gz");
 
 done_testing();
 
