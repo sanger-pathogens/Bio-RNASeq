@@ -7,8 +7,9 @@ use Data::Dumper;
 BEGIN { unshift(@INC, './lib') }
 BEGIN {
 
-    use Test::Most;
-    use_ok('Bio::RNASeq::CoveragePlot');
+  use Test::Most;
+  use List::MoreUtils qw(uniq);
+  use_ok('Bio::RNASeq::CoveragePlot');
 }
 
 ok my $coverage_plots_from_bam = Bio::RNASeq::CoveragePlot->new(
@@ -24,7 +25,7 @@ ok are_coverage_files_created(
 			      't/data/coverage.pCROD2.coverageplot.gz',
 			      't/data/coverage.pCROD3.coverageplot.gz',
 			      't/data/coverage.all.coverageplot.gz'
-			      );
+			      ), 'check if all coveragplot files have been created';
 
 # parse output files and check they are okay
 ok is_input_string_found_on_given_line("0 0", 1,    't/data/coverage.FN543502.coverageplot.gz'), 'check main sequence coverage values first value';
@@ -52,6 +53,30 @@ unlink("t/data/coverage.pCROD2.coverageplot.gz");
 unlink("t/data/coverage.pCROD3.coverageplot.gz");
 
 done_testing();
+
+
+sub are_coverage_files_created {
+
+  my (@array_of_filenames) = @_;
+  my @array_of_presence;
+  for my $filename(@array_of_filenames) {
+    if(-e $filename) {
+      push(@array_of_presence, 1);
+    }
+    else {
+      push(@array_of_presence, 0);
+    }
+  }	
+
+  my @unique_array_of_presence = uniq(@array_of_presence);
+
+  if( scalar  @unique_array_of_presence == 1 &&  $unique_array_of_presence[0] == 1) {
+    return 1;
+  }
+  else {
+    return 0;
+  }
+}
 
 sub is_input_string_found_on_given_line
 {
