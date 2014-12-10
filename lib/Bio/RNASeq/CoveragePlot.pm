@@ -160,7 +160,7 @@ sub create_plots
     my $reverse_reads = $self->_number_of_reverse_reads($read_string);
     
     print { $self->_output_file_handles->{$sequence_name} } $padding_string.$forward_reads." ".$reverse_reads."\n";
-    print { $self->_output_file_handles->{all_sequences} } $padding_string.$forward_reads." ".$reverse_reads."\n";
+    print { $self->_output_file_handles->{all} } $padding_string.$forward_reads." ".$reverse_reads."\n";
     $position_tracker++;
   }
   $self->_print_padding_at_end_of_sequence;
