@@ -135,8 +135,10 @@ sub _print_padding_at_end_of_sequence
      next unless($sequence_length =~ /^[\d]+$/);
      $sequence_length++;
      my $padding_string = $self->_create_padding_string($self->_sequence_base_counters->{$sequence_name}, $sequence_length);
+     my $tabbed_padding_string = $self->_create_padding_string($self->_sequence_base_counters->{$sequence_name}, $sequence_length,'tab');
      $self->_sequence_base_counters->{$sequence_name} = $sequence_length;
      print { $self->_output_file_handles->{$sequence_name} } $padding_string;
+     print { $self->_output_file_handles->{all} } $tabbed_padding_string;
    }
 }
 
@@ -168,7 +170,7 @@ sub create_plots
     my $reverse_reads = $self->_number_of_reverse_reads($read_string);
     
     print { $self->_output_file_handles->{$sequence_name} } $padding_string.$forward_reads." ".$reverse_reads."\n";
-    print { $self->_output_file_handles->{all} } $sequence_name."\t".$position_tracker."\t".$forward_reads."\t".$reverse_reads."\n";
+    print { $self->_output_file_handles->{all} } $sequence_name."\t".$position_tracker.$tabbed_padding_string."\t".$forward_reads."\t".$reverse_reads."\n";
     $position_tracker++;
   }
   $self->_print_padding_at_end_of_sequence;
