@@ -67,7 +67,7 @@ sub _build__output_file_handles
     open($output_file_handles{$sequence_name}, '|-', " gzip >". $self->output_base_filename.".$sequence_name.coverageplot.gz") || Bio::RNASeq::Exceptions::FailedToCreateOutputFileHandle->throw(error => "Couldnt create output file handle for saving coverage plot results for ". $sequence_name. " in ". $self->filename. " and output base ".$self->output_base_filename);
   }
 
-  open($output_file_handles{all}, '|-', " gzip >". $self->output_base_filename.".all_sequences.coverageplot.gz") || Bio::RNASeq::Exceptions::FailedToCreateOutputFileHandle->throw(error => "Couldnt create output file handle for saving coverage plot results for all_sequences in ". $self->filename. " and output base ".$self->output_base_filename);
+  open($output_file_handles{all}, '|-', " gzip >>". $self->output_base_filename.".all_sequences.coverageplot.gz") || Bio::RNASeq::Exceptions::FailedToCreateOutputFileHandle->throw(error => "Couldnt create output file handle for saving coverage plot results for all_sequences in ". $self->filename. " and output base ".$self->output_base_filename);
   
   return \%output_file_handles;
 }
@@ -145,7 +145,7 @@ sub _close_output_file_handles
   my ($self) = @_;
   for my $output_file_handle (values %{$self->_output_file_handles} )
   {
-    close($output_file_handle);
+    close($output_file_handle) unless $output_file_handle eq 'all';
   }
   return;
 }
@@ -158,10 +158,11 @@ sub create_plots
   print($self->filename, "\n");
   my $position_tracker = 1;
   while(my $line = <$input_file_handle>) {
-    print "$position_tracker\n";
+
     my($sequence_name, $base_position, $read_string) = split(/\t/, $line);
     my $padding_string = $self->_create_padding_string($self->_sequence_base_counters->{$sequence_name},$base_position);
     my $tabbed_padding_string = $self->_create_padding_string($self->_sequence_base_counters->{$sequence_name},$base_position,'tab');
+
     $self->_sequence_base_counters->{$sequence_name} = $base_position;
     my $forward_reads = $self->_number_of_forward_reads($read_string);
     my $reverse_reads = $self->_number_of_reverse_reads($read_string);
