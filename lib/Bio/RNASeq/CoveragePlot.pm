@@ -154,13 +154,12 @@ sub create_plots
     my $position_tracker = 0;
     my($sequence_name, $base_position, $read_string) = split(/\t/, $line);
     my $padding_string = $self->_create_padding_string($self->_sequence_base_counters->{$sequence_name},$base_position);
-
     $self->_sequence_base_counters->{$sequence_name} = $base_position;
     my $forward_reads = $self->_number_of_forward_reads($read_string);
     my $reverse_reads = $self->_number_of_reverse_reads($read_string);
     
     print { $self->_output_file_handles->{$sequence_name} } $padding_string.$forward_reads." ".$reverse_reads."\n";
-    print { $self->_output_file_handles->{all} } $padding_string.$forward_reads."\t".$reverse_reads."\n";
+    print { $self->_output_file_handles->{all} } "0\t0\n".$forward_reads."\t".$reverse_reads."\n";
     $position_tracker++;
   }
   $self->_print_padding_at_end_of_sequence;
