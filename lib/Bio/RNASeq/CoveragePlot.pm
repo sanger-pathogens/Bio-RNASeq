@@ -112,11 +112,16 @@ sub _number_of_reads
 # work out if padding is needed and return it as a formatted string
 sub _create_padding_string
 {
-  my ($self,$previous_counter, $current_counter) = @_;
+  my ($self,$previous_counter, $current_counter, $separator) = @_;
   my $padding_string = "";
   for(my $i = $previous_counter+1 ; $i < $current_counter; $i++)
-  {
-    $padding_string .= "0 0\n";
+    {
+      unless($separator) {
+	$padding_string .= "0 0\n";
+      }
+      else {
+	$padding_string .= "0\t0\n";
+      }
   }
   return $padding_string;
 }
@@ -154,12 +159,13 @@ sub create_plots
     my $position_tracker = 0;
     my($sequence_name, $base_position, $read_string) = split(/\t/, $line);
     my $padding_string = $self->_create_padding_string($self->_sequence_base_counters->{$sequence_name},$base_position);
+    my $tabbed_padding_string = $self->_create_padding_string($self->_sequence_base_counters->{$sequence_name},$base_position,'tab');
     $self->_sequence_base_counters->{$sequence_name} = $base_position;
     my $forward_reads = $self->_number_of_forward_reads($read_string);
     my $reverse_reads = $self->_number_of_reverse_reads($read_string);
     
     print { $self->_output_file_handles->{$sequence_name} } $padding_string.$forward_reads." ".$reverse_reads."\n";
-    print { $self->_output_file_handles->{all} } $forward_reads."\t".$reverse_reads."\n";
+    print { $self->_output_file_handles->{all} } $tabbed_padding_string.$forward_reads."\t".$reverse_reads."\n";
     $position_tracker++;
   }
   $self->_print_padding_at_end_of_sequence;
