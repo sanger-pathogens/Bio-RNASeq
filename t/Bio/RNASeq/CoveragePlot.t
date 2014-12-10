@@ -24,8 +24,8 @@ ok are_coverage_files_created(
 			      't/data/coverage.pCROD1.coverageplot.gz',
 			      't/data/coverage.pCROD2.coverageplot.gz',
 			      't/data/coverage.pCROD3.coverageplot.gz',
-			      't/data/coverage.all.coverageplot.gz'
-			      ), 'check if all coveragplot files have been created';
+			      't/data/coverage.all_sequences.coverageplot.gz'
+			      ), 'check if all coverageplot files have been created';
 
 # parse output files and check they are okay
 ok is_input_string_found_on_given_line("0 0", 1,    't/data/coverage.FN543502.coverageplot.gz'), 'check main sequence coverage values first value';

@@ -66,6 +66,8 @@ sub _build__output_file_handles
   {
     open($output_file_handles{$sequence_name}, '|-', " gzip >". $self->output_base_filename.".$sequence_name.coverageplot.gz") || Bio::RNASeq::Exceptions::FailedToCreateOutputFileHandle->throw(error => "Couldnt create output file handle for saving coverage plot results for ". $sequence_name. " in ". $self->filename. " and output base ".$self->output_base_filename);
   }
+
+  open($output_file_handles{all}, '|-', " gzip >". $self->output_base_filename.".all_sequences.coverageplot.gz") || Bio::RNASeq::Exceptions::FailedToCreateOutputFileHandle->throw(error => "Couldnt create output file handle for saving coverage plot results for all_sequences in ". $self->filename. " and output base ".$self->output_base_filename);
   
   return \%output_file_handles;
 }
