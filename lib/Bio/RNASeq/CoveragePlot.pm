@@ -156,7 +156,7 @@ sub create_plots
   my $input_file_handle = $self->_input_file_handle;
 
   print($self->filename, "\n");
-  my $position_tracker = 0;
+  my $position_tracker = 1;
   while(my $line = <$input_file_handle>) {
     print "$position_tracker\n";
     my($sequence_name, $base_position, $read_string) = split(/\t/, $line);
