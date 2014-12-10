@@ -48,24 +48,24 @@ ok is_input_string_found_on_given_line("0 0", 1,   't/data/coverage.pCROD3.cover
 ok is_input_string_found_on_given_line("0 0", 100, 't/data/coverage.pCROD3.coverageplot.gz'), 'check another empty plasmid coverage values last value';
 
 
-ok is_input_string_found_on_given_line("0\t0", 1,    't/data/coverage.all_sequences.coverageplot.gz'), 'check main sequence coverage values first value in all_sequences';
-ok is_input_string_found_on_given_line("1\t1", 104,  't/data/coverage.all_sequences.coverageplot.gz'), 'check main sequence coverage values for forward read only in all_sequences';
-ok is_input_string_found_on_given_line("0\t4", 548,  't/data/coverage.all_sequences.coverageplot.gz'), 'check main sequence coverage values for reverse reads only in all_sequences';
-ok is_input_string_found_on_given_line("7\t24", 7795, 't/data/coverage.all_sequences.coverageplot.gz'), 'check main sequence coverage values for both in all_sequences';
-ok is_input_string_found_on_given_line("0\t0", 8974, 't/data/coverage.all_sequences.coverageplot.gz'), 'check main sequence coverage values last value in all_sequences';
+ok is_input_string_found_on_given_line("FN543502\t1\t0\t0", 1,    't/data/coverage.all_sequences.coverageplot.gz'), 'check main sequence coverage values first value in all_sequences';
+ok is_input_string_found_on_given_line("FN543502\t104\t1\t1", 104,  't/data/coverage.all_sequences.coverageplot.gz'), 'check main sequence coverage values for forward read only in all_sequences';
+ok is_input_string_found_on_given_line("FN543502\t548\t0\t4", 548,  't/data/coverage.all_sequences.coverageplot.gz'), 'check main sequence coverage values for reverse reads only in all_sequences';
+ok is_input_string_found_on_given_line("FN543502\t7795\t\t24", 7795, 't/data/coverage.all_sequences.coverageplot.gz'), 'check main sequence coverage values for both in all_sequences';
+ok is_input_string_found_on_given_line("FN543502\t8974\t0\t0", 8974, 't/data/coverage.all_sequences.coverageplot.gz'), 'check main sequence coverage values last value in all_sequences';
 
-ok is_input_string_found_on_given_line("0\t0", 8975,    't/data/coverage.all_sequences.coverageplot.gz'), 'check empty plasmid coverage values first value in all_sequences';
-ok is_input_string_found_on_given_line("0\t0", 9033,   't/data/coverage.all_sequences.coverageplot.gz'), 'check empty plasmid coverage values last value in all_sequences';
+ok is_input_string_found_on_given_line("pCROD1\t8975\t0\t0", 8975,    't/data/coverage.all_sequences.coverageplot.gz'), 'check empty plasmid coverage values first value in all_sequences';
+ok is_input_string_found_on_given_line("pCROD1\t9033\t0\t0", 9033,   't/data/coverage.all_sequences.coverageplot.gz'), 'check empty plasmid coverage values last value in all_sequences';
 
-ok is_input_string_found_on_given_line("0\t0", 9034,    't/data/coverage.all_sequences.coverageplot.gz'), 'check plasmid with 1 read coverage values first value in all_sequences';
-ok is_input_string_found_on_given_line("0\t0", 9123,   't/data/coverage.all_sequences.coverageplot.gz'), 'check plasmid with 1 read coverage values before first base of read in all_sequences';
-ok is_input_string_found_on_given_line("0\t1", 9124,   't/data/coverage.all_sequences.coverageplot.gz'), 'check plasmid with 1 read coverage values first base of read in all_sequences';
-ok is_input_string_found_on_given_line("0\t1", 9176,  't/data/coverage.all_sequences.coverageplot.gz'), 'check plasmid with 1 read coverage values last base of read in all_sequences';
-ok is_input_string_found_on_given_line("0\t0", 9177,  't/data/coverage.all_sequences.coverageplot.gz'), 'check plasmid with 1 read coverage values after last base of read in all_sequences';
-ok is_input_string_found_on_given_line("0\t0", 10033, 't/data/coverage.all_sequences.coverageplot.gz'), 'check plasmid with 1 read coverage values last value in all_sequences';
+ok is_input_string_found_on_given_line("pCROD2\t9034\t0\t0", 9034,    't/data/coverage.all_sequences.coverageplot.gz'), 'check plasmid with 1 read coverage values first value in all_sequences';
+ok is_input_string_found_on_given_line("pCROD2\t9123\t0\t0", 9123,   't/data/coverage.all_sequences.coverageplot.gz'), 'check plasmid with 1 read coverage values before first base of read in all_sequences';
+ok is_input_string_found_on_given_line("pCROD2\t0124\t0\t1", 9124,   't/data/coverage.all_sequences.coverageplot.gz'), 'check plasmid with 1 read coverage values first base of read in all_sequences';
+ok is_input_string_found_on_given_line("pCROD2\t9176\t0\t1", 9176,  't/data/coverage.all_sequences.coverageplot.gz'), 'check plasmid with 1 read coverage values last base of read in all_sequences';
+ok is_input_string_found_on_given_line("pCROD2\t9177\t0\t0", 9177,  't/data/coverage.all_sequences.coverageplot.gz'), 'check plasmid with 1 read coverage values after last base of read in all_sequences';
+ok is_input_string_found_on_given_line("pCROD2\t10033\t0\t0", 10033, 't/data/coverage.all_sequences.coverageplot.gz'), 'check plasmid with 1 read coverage values last value in all_sequences';
 
-ok is_input_string_found_on_given_line("0\t0", 10034,   't/data/coverage.all_sequences.coverageplot.gz'), 'check another empty plasmid coverage values first value in all_sequences';
-ok is_input_string_found_on_given_line("0\t0", 10133, 't/data/coverage.all_sequences.coverageplot.gz'), 'check another empty plasmid coverage values last value in all_sequences';
+ok is_input_string_found_on_given_line("pCROD3\t10034\t0\t0", 10034,   't/data/coverage.all_sequences.coverageplot.gz'), 'check another empty plasmid coverage values first value in all_sequences';
+ok is_input_string_found_on_given_line("pCROD3\t10133\t0\t0", 10133, 't/data/coverage.all_sequences.coverageplot.gz'), 'check another empty plasmid coverage values last value in all_sequences';
 
 
 
