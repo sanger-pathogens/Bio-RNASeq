@@ -48,10 +48,10 @@ ok is_input_string_found_on_given_line("0 0", 1,   't/data/coverage.pCROD3.cover
 ok is_input_string_found_on_given_line("0 0", 100, 't/data/coverage.pCROD3.coverageplot.gz'), 'check another empty plasmid coverage values last value';
 
 
-ok is_input_string_found_on_given_line("FN543502\t1\t0\t0", 1,    't/data/coverage.all_sequences.coverageplot.gz'), 'check main sequence coverage values first value in all_sequences';
-ok is_input_string_found_on_given_line("FN543502\t104\t1\t1", 104,  't/data/coverage.all_sequences.coverageplot.gz'), 'check main sequence coverage values for forward read only in all_sequences';
-ok is_input_string_found_on_given_line("FN543502\t548\t0\t4", 548,  't/data/coverage.all_sequences.coverageplot.gz'), 'check main sequence coverage values for reverse reads only in all_sequences';
-ok is_input_string_found_on_given_line("FN543502\t7795\t\t24", 7795, 't/data/coverage.all_sequences.coverageplot.gz'), 'check main sequence coverage values for both in all_sequences';
+ok is_input_string_found_on_given_line("FN543502\t1\t0\t1", 1,    't/data/coverage.all_sequences.coverageplot.gz'), 'check main sequence coverage values first value in all_sequences';
+ok is_input_string_found_on_given_line("FN543502\t104\t0\t5", 104,  't/data/coverage.all_sequences.coverageplot.gz'), 'check main sequence coverage values for forward read only in all_sequences';
+ok is_input_string_found_on_given_line("FN543502\t548\t0\t1", 548,  't/data/coverage.all_sequences.coverageplot.gz'), 'check main sequence coverage values for reverse reads only in all_sequences';
+ok is_input_string_found_on_given_line("FN543502\t7795\t0\t0", 7795, 't/data/coverage.all_sequences.coverageplot.gz'), 'check main sequence coverage values for both in all_sequences';
 ok is_input_string_found_on_given_line("FN543502\t8974\t0\t0", 8974, 't/data/coverage.all_sequences.coverageplot.gz'), 'check main sequence coverage values last value in all_sequences';
 
 ok is_input_string_found_on_given_line("pCROD1\t8975\t0\t0", 8975,    't/data/coverage.all_sequences.coverageplot.gz'), 'check empty plasmid coverage values first value in all_sequences';
