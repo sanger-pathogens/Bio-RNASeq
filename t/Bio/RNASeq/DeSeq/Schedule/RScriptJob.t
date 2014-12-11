@@ -27,7 +27,6 @@ ok( my $deseq_job = Bio::RNASeq::DeSeq::Schedule::RScriptJob->new(
 
 ok( $deseq_job->bsub_command(), 'Build bsub command string');
 
-throws_ok { $deseq_job->submit_deseq_job() }  qr/system bsub/, 'Throw exception if invalid samples file is invalid';
 
 ok ( $deseq_job = Bio::RNASeq::DeSeq::Schedule::RScriptJob->new(
 							      job_name => 'blah',
