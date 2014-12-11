@@ -200,8 +200,8 @@ sub _sort_compress_and_index {
   my ($self) = @_;
   my $coverage_plot_filename = $self->joined_coverage_plots_filename;
   my $sorted_bgzip_filename = $self->output_base_filename . '.all_for_tabix.coverageplot.gz';
-  `gzcat $coverage_plot_filename | sort -k1,1 -k2,2n | bgzip > $sorted_bgzip_filename && tabix -b 2 -e 2 $sorted_bgzip_filename`;
-  #unlink($self->joined_coverage_plots_filenam)e;
+  `zcat $coverage_plot_filename | sort -k1,1 -k2,2n | bgzip > $sorted_bgzip_filename && tabix -b 2 -e 2 $sorted_bgzip_filename`;
+  unlink($self->joined_coverage_plots_filename);
 
 }
 
