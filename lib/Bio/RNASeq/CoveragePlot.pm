@@ -24,6 +24,8 @@ has 'output_base_filename'    => ( is => 'rw', isa => 'Str',      required  => 1
 # optional inputs
 has 'mpileup_cmd'             => ( is => 'rw', isa => 'Str',      default   => "samtools mpileup -d 1000" );
 has 'mapping_quality'         => ( is => 'rw', isa => 'Int',      default   => 0 );
+has 'joined_coverage_plots_filename'             => ( is => 'rw', isa => 'Str', lazy  => 1, default => "./coverage.all_sequences.coverageplot.gz");
+has 'sorted_for_tabix_coverage_plots_filename'             => ( is => 'rw', isa => 'Str', lazy  => 1, default => "./coverage.all_for_tabix.coverageplot.gz");
                             
 has '_input_file_handle'      => ( is => 'rw',                    lazy_build => 1 );
 has '_output_file_handles'    => ( is => 'rw', isa => 'HashRef',  lazy_build => 1 );
@@ -164,14 +166,15 @@ sub create_plots
   $self->_print_padding_at_end_of_sequence;
   $self->_close_output_file_handles;
   $self->_join_all_coverage_plots;
+  $self->_sort_compress_and_index;
   return 1;
 }
 
 sub _join_all_coverage_plots {
 
   my ($self) = @_;
-  my $joined_coverage_plots_filename = $self->output_base_filename . ".all_sequences.coverageplot.gz";
-  open(my $joined_covplot_fh, '|-', " gzip >". $joined_coverage_plots_filename) || Bio::RNASeq::Exceptions::FailedToCreateOutputFileHandle->throw(error => "Couldnt create output file handle for joining all coverage plot results in " . $self->filename );
+  $self->joined_coverage_plots_filename($self->output_base_filename . ".all_sequences.coverageplot.gz");
+  open(my $joined_covplot_fh, '|-', " gzip >". $self->joined_coverage_plots_filename) || Bio::RNASeq::Exceptions::FailedToCreateOutputFileHandle->throw(error => "Couldnt create output file handle for joining all coverage plot results in " . $self->filename );
 
   for my $sequence_name (sort {$a cmp $b} @{$self->_sequence_names} ) {
     
@@ -188,6 +191,17 @@ sub _join_all_coverage_plots {
       }
     }
   }
+  close($joined_covplot_fh);
+ 
+}
+
+sub _sort_compress_and_index {
+
+  my ($self) = @_;
+  my $coverage_plot_filename = $self->joined_coverage_plots_filename;
+  my $sorted_bgzip_filename = $self->output_base_filename . '.all_for_tabix.coverageplot.gz';
+  `gzcat $coverage_plot_filename | sort -k1,1 -k2,2n | bgzip > $sorted_bgzip_filename && tabix -b 2 -e 2 $sorted_bgzip_filename`;
+  #unlink($self->joined_coverage_plots_filenam)e;
 
 }
 
