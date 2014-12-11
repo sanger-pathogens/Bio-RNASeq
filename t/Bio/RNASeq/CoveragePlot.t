@@ -24,7 +24,6 @@ ok are_coverage_files_created(
 			      't/data/coverage.pCROD1.coverageplot.gz',
 			      't/data/coverage.pCROD2.coverageplot.gz',
 			      't/data/coverage.pCROD3.coverageplot.gz',
-			      't/data/coverage.all_sequences.coverageplot.gz',
 			      't/data/coverage.all_for_tabix.coverageplot.gz.tbi',
 			      ), 'check if all coverageplot files have been created';
 
