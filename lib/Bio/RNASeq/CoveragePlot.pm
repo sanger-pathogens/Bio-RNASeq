@@ -66,8 +66,6 @@ sub _build__output_file_handles
   {
     open($output_file_handles{$sequence_name}, '|-', " gzip >". $self->output_base_filename.".$sequence_name.coverageplot.gz") || Bio::RNASeq::Exceptions::FailedToCreateOutputFileHandle->throw(error => "Couldnt create output file handle for saving coverage plot results for ". $sequence_name. " in ". $self->filename. " and output base ".$self->output_base_filename);
   }
-
-  open($output_file_handles{all}, '|-', " gzip >>". $self->output_base_filename.".all_sequences.coverageplot.gz") || Bio::RNASeq::Exceptions::FailedToCreateOutputFileHandle->throw(error => "Couldnt create output file handle for saving coverage plot results for all_sequences in ". $self->filename. " and output base ".$self->output_base_filename);
   
   return \%output_file_handles;
 }
@@ -112,17 +110,12 @@ sub _number_of_reads
 # work out if padding is needed and return it as a formatted string
 sub _create_padding_string
 {
-  my ($self,$previous_counter, $current_counter, $separator) = @_;
+  my ($self,$previous_counter, $current_counter) = @_;
   my $padding_string = "";
   for(my $i = $previous_counter+1 ; $i < $current_counter; $i++)
     {
-      unless($separator) {
-	$padding_string .= "0 0\n";
-      }
-      else {
-	$padding_string .= "0\t0\n";
-      }
-  }
+      $padding_string .= "0 0\n";
+    }
   return $padding_string;
 }
 
@@ -135,10 +128,10 @@ sub _print_padding_at_end_of_sequence
      next unless($sequence_length =~ /^[\d]+$/);
      $sequence_length++;
      my $padding_string = $self->_create_padding_string($self->_sequence_base_counters->{$sequence_name}, $sequence_length);
-     my $tabbed_padding_string = $self->_create_padding_string($self->_sequence_base_counters->{$sequence_name}, $sequence_length,'tab');
+     
      $self->_sequence_base_counters->{$sequence_name} = $sequence_length;
      print { $self->_output_file_handles->{$sequence_name} } $padding_string;
-     print { $self->_output_file_handles->{all} } $tabbed_padding_string;
+
    }
 }
 
@@ -147,7 +140,7 @@ sub _close_output_file_handles
   my ($self) = @_;
   for my $output_file_handle (values %{$self->_output_file_handles} )
   {
-    close($output_file_handle) unless $output_file_handle eq 'all';
+    close($output_file_handle);
   }
   return;
 }
@@ -157,26 +150,47 @@ sub create_plots
   my ($self) = @_;
   my $input_file_handle = $self->_input_file_handle;
 
-  print($self->filename, "\n");
-  my $position_tracker = 1;
   while(my $line = <$input_file_handle>) {
 
     my($sequence_name, $base_position, $read_string) = split(/\t/, $line);
     my $padding_string = $self->_create_padding_string($self->_sequence_base_counters->{$sequence_name},$base_position);
-    my $tabbed_padding_string = $self->_create_padding_string($self->_sequence_base_counters->{$sequence_name},$base_position,'tab');
 
     $self->_sequence_base_counters->{$sequence_name} = $base_position;
     my $forward_reads = $self->_number_of_forward_reads($read_string);
     my $reverse_reads = $self->_number_of_reverse_reads($read_string);
     
     print { $self->_output_file_handles->{$sequence_name} } $padding_string.$forward_reads." ".$reverse_reads."\n";
-    print { $self->_output_file_handles->{all} } $sequence_name."\t".$position_tracker.$tabbed_padding_string."\t".$forward_reads."\t".$reverse_reads."\n";
-    $position_tracker++;
   }
   $self->_print_padding_at_end_of_sequence;
   $self->_close_output_file_handles;
+  $self->_join_all_coverage_plots;
   return 1;
 }
+
+sub _join_all_coverage_plots {
+
+  my ($self) = @_;
+  my $joined_coverage_plots_filename = $self->output_base_filename . ".all_sequences.coverageplot.gz";
+  open(my $joined_covplot_fh, '|-', " gzip >". $joined_coverage_plots_filename) || Bio::RNASeq::Exceptions::FailedToCreateOutputFileHandle->throw(error => "Couldnt create output file handle for joining all coverage plot results in " . $self->filename );
+
+  for my $sequence_name (sort {$a cmp $b} @{$self->_sequence_names} ) {
+    
+    if(-e $self->output_base_filename . ".$sequence_name.coverageplot.gz") {
+      my $partial_coverage_filename = $self->output_base_filename . ".$sequence_name.coverageplot.gz";
+      my $coverage_string = `zcat $partial_coverage_filename`;
+      my @coverage_array = split(/\n/, $coverage_string);
+
+      my $position_tracker = 1;
+      for my $item(@coverage_array) {
+	$item =~ s/\s/\t/;
+	print $joined_covplot_fh ($sequence_name, "\t", $position_tracker, "\t", $item, "\n");
+	$position_tracker++;
+      }
+    }
+  }
+
+}
+
 
 no Moose;
 __PACKAGE__->meta->make_immutable;
