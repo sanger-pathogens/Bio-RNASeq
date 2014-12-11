@@ -37,7 +37,7 @@ sub submit_deseq_job {
 
     if ( $exit ) {
 
-       Bio::RNASeq::Exceptions::FailedBsubCommand->throw( error => 'system ' . $self->bsub_command() . "failed: $!" )
+       Bio::RNASeq::Exceptions::FailedBsubCommand->throw( error => 'Bsub command failed' . $self->bsub_command() . "failed: $!" )
 
     }
 

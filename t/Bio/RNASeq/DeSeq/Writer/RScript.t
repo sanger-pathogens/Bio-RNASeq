@@ -17,20 +17,20 @@ BEGIN {
 my $rscript = Bio::RNASeq::DeSeq::Writer::RScript->new(
     deseq_file      => 'deseq_test',
     deseq_file_path => 'tester/deseq_test',
-    r_conditions    => 'treated,treated,treated,untreated,untreated',
-    r_lib_types     => 'paired-end,paired-end,paired-end,paired-end,paired-end',
+    r_conditions    => 'c( "treated","treated","treated","untreated","untreated")',
+    r_lib_types     => 'c( "paired-end","paired-end","paired-end","paired-end","paired-end")',
     mode            => 'test'
 );
 
 $rscript->set_r_script();
 
-my $expected_rscript = '#!/usr/bin/env Rscript
+my $expected_rscript = q{#!/usr/bin/env Rscript
 library(DESeq)
 thisCountTable = read.table( "tester/deseq_test", header=TRUE, row.names=1 )
 thisDesign = data.frame(
 row.names = colnames(thisCountTable),
-condition = treated,treated,treated,untreated,untreated,
-libType = paired-end,paired-end,paired-end,paired-end,paired-end)
+condition = c( "treated","treated","treated","untreated","untreated"),
+libType = c( "paired-end","paired-end","paired-end","paired-end","paired-end"))
 pairedSamples = thisDesign$libType == "paired-end"
 countTable = thisCountTable[, pairedSamples]
 condition = thisDesign$condition[ pairedSamples ]
@@ -39,7 +39,7 @@ cds = estimateSizeFactors( cds )
 cds = estimateDispersions(cds, fitType="local")
 res = nbinomTest( cds, "untreated", "treated" )
 write.csv( res, file="deseq_test_result_table.csv")
-';
+};
 
 is($rscript->rscript, $expected_rscript, 'Generated rscript test mode');
 
@@ -47,19 +47,19 @@ is($rscript->rscript, $expected_rscript, 'Generated rscript test mode');
 $rscript = Bio::RNASeq::DeSeq::Writer::RScript->new(
     deseq_file      => 'deseq_test',
     deseq_file_path => 'tester/deseq_test',
-    r_conditions    => 'treated,treated,treated,untreated,untreated',
-    r_lib_types     => 'paired-end,paired-end,paired-end,paired-end,paired-end'
+    r_conditions    => 'c( "treated","treated","treated","untreated","untreated")',
+    r_lib_types     => 'c( "paired-end","paired-end","paired-end","paired-end","paired-end")'
 );
 
 $rscript->set_r_script();
 
-$expected_rscript = '#!/usr/bin/env Rscript
+$expected_rscript = q{#!/usr/bin/env Rscript
 library(DESeq)
 thisCountTable = read.table( "tester/deseq_test", header=TRUE, row.names=1 )
 thisDesign = data.frame(
 row.names = colnames(thisCountTable),
-condition = treated,treated,treated,untreated,untreated,
-libType = paired-end,paired-end,paired-end,paired-end,paired-end)
+condition = c( "treated","treated","treated","untreated","untreated"),
+libType = c( "paired-end","paired-end","paired-end","paired-end","paired-end"))
 pairedSamples = thisDesign$libType == "paired-end"
 countTable = thisCountTable[, pairedSamples]
 condition = thisDesign$condition[ pairedSamples ]
@@ -68,7 +68,7 @@ cds = estimateSizeFactors( cds )
 cds = estimateDispersions(cds)
 res = nbinomTest( cds, "untreated", "treated" )
 write.csv( res, file="deseq_test_result_table.csv")
-';
+};
 
 is($rscript->rscript, $expected_rscript, 'Generated rscript normal mode');
 

@@ -24,6 +24,8 @@ has 'output_base_filename'    => ( is => 'rw', isa => 'Str',      required  => 1
 # optional inputs
 has 'mpileup_cmd'             => ( is => 'rw', isa => 'Str',      default   => "samtools mpileup -d 1000" );
 has 'mapping_quality'         => ( is => 'rw', isa => 'Int',      default   => 0 );
+has 'joined_coverage_plots_filename'             => ( is => 'rw', isa => 'Str', lazy  => 1, default => "./coverage.all_sequences.coverageplot.gz");
+has 'sorted_for_tabix_coverage_plots_filename'             => ( is => 'rw', isa => 'Str', lazy  => 1, default => "./coverage.all_for_tabix.coverageplot.gz");
                             
 has '_input_file_handle'      => ( is => 'rw',                    lazy_build => 1 );
 has '_output_file_handles'    => ( is => 'rw', isa => 'HashRef',  lazy_build => 1 );
@@ -113,9 +115,9 @@ sub _create_padding_string
   my ($self,$previous_counter, $current_counter) = @_;
   my $padding_string = "";
   for(my $i = $previous_counter+1 ; $i < $current_counter; $i++)
-  {
-    $padding_string .= "0 0\n";
-  }
+    {
+      $padding_string .= "0 0\n";
+    }
   return $padding_string;
 }
 
@@ -128,8 +130,10 @@ sub _print_padding_at_end_of_sequence
      next unless($sequence_length =~ /^[\d]+$/);
      $sequence_length++;
      my $padding_string = $self->_create_padding_string($self->_sequence_base_counters->{$sequence_name}, $sequence_length);
+     
      $self->_sequence_base_counters->{$sequence_name} = $sequence_length;
      print { $self->_output_file_handles->{$sequence_name} } $padding_string;
+
    }
 }
 
@@ -148,8 +152,8 @@ sub create_plots
   my ($self) = @_;
   my $input_file_handle = $self->_input_file_handle;
 
-  while(my $line = <$input_file_handle>)
-  {
+  while(my $line = <$input_file_handle>) {
+
     my($sequence_name, $base_position, $read_string) = split(/\t/, $line);
     my $padding_string = $self->_create_padding_string($self->_sequence_base_counters->{$sequence_name},$base_position);
 
@@ -161,8 +165,46 @@ sub create_plots
   }
   $self->_print_padding_at_end_of_sequence;
   $self->_close_output_file_handles;
+  $self->_join_all_coverage_plots;
+  $self->_sort_compress_and_index;
   return 1;
 }
+
+sub _join_all_coverage_plots {
+
+  my ($self) = @_;
+  $self->joined_coverage_plots_filename($self->output_base_filename . ".all_sequences.coverageplot.gz");
+  open(my $joined_covplot_fh, '|-', " gzip >". $self->joined_coverage_plots_filename) || Bio::RNASeq::Exceptions::FailedToCreateOutputFileHandle->throw(error => "Couldnt create output file handle for joining all coverage plot results in " . $self->filename );
+
+  for my $sequence_name (sort {$a cmp $b} @{$self->_sequence_names} ) {
+    
+    if(-e $self->output_base_filename . ".$sequence_name.coverageplot.gz") {
+      my $partial_coverage_filename = $self->output_base_filename . ".$sequence_name.coverageplot.gz";
+      my $coverage_string = `zcat $partial_coverage_filename`;
+      my @coverage_array = split(/\n/, $coverage_string);
+
+      my $position_tracker = 1;
+      for my $item(@coverage_array) {
+	$item =~ s/\s/\t/;
+	print $joined_covplot_fh ($sequence_name, "\t", $position_tracker, "\t", $item, "\n");
+	$position_tracker++;
+      }
+    }
+  }
+  close($joined_covplot_fh);
+ 
+}
+
+sub _sort_compress_and_index {
+
+  my ($self) = @_;
+  my $coverage_plot_filename = $self->joined_coverage_plots_filename;
+  my $sorted_bgzip_filename = $self->output_base_filename . '.all_for_tabix.coverageplot.gz';
+  `zcat $coverage_plot_filename | sort -k1,1 -k2,2n | bgzip > $sorted_bgzip_filename && tabix -b 2 -e 2 $sorted_bgzip_filename`;
+  unlink($self->joined_coverage_plots_filename);
+
+}
+
 
 no Moose;
 __PACKAGE__->meta->make_immutable;

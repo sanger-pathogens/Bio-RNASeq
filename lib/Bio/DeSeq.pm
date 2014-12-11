@@ -51,7 +51,7 @@ sub run {
 								rscript_path => $self->rscript_path,
 								mode => $self->mode,
 							       );
-  if ( $self->mode eq 'test') {
+  unless ( $self->mode eq 'test') {
     $deseq_job->bsub_command();
   }
   $deseq_job->submit_deseq_job();
