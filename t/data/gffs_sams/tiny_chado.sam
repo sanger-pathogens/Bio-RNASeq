@@ -1,5 +1,5 @@
 @HD	VN:1.0	SO:coordinate
-@SQ	SN:DUMMY_TINY_CHR	LN:30	AS:DummyOrganism	UR:file:/lustre/scratch108/pathogen/pathpipe/refs/Plasmodium/chabaudi/Plasmodium_chabaudi_01Oct2010.fa	M5:9bbef99059e95f86f177463094544e07
+@SQ	SN:DUMMY_TINY_CHR	LN:30	AS:DummyOrganism	UR:file:/lustre/scratch118/infgen/pathogen/pathpipe/refs/Plasmodium/chabaudi/Plasmodium_chabaudi_01Oct2010.fa	M5:9bbef99059e95f86f177463094544e07
 @RG	ID:Dummy	LB:B_1-RNA 5710450	SM:B_1-RNA	PI:450	CN:SC	PL:ILLUMINA	DS:ERP001696
 @PG	ID:byHand	VN:2.0.5	CL:Manually created DummyTinyOrganism
 something_to_map1	0	DUMMY_TINY_CHR	6	50	4M	=	0	109	CTAA	@@CD	AS:i:0	XN:i:0	XM:i:0	XO:i:0	XG:i:0	NM:i:0	MD:Z:100	YT:Z:UU	NH:i:1	RG:Z::
