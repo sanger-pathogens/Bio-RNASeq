@@ -1,7 +1,7 @@
 # Bio-RNASeq
 Allows the analysis of RNA-Seq data from BAM files all the way to Differential Gene Expression.
 
-[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-brightgreen.svg)](https://github.com/sanger-pathogens/bio-rnaseq/blob/master/GPL-LICENSE)
+[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-brightgreen.svg)](https://github.com/sanger-pathogens/Bio-RNASeq/blob/master/GPL-LICENCE)
 
 ## Content
   * [Introduction](#introduction)
@@ -139,7 +139,7 @@ Example	usage:
 differential_expression_with_deseq -i [file containing list of files to analyse and key descriptions] -o [name to be used for all the output files generated] -c [Number of the read count column (1-1000)]
 ```
 ## License
-Bio-RNASeq is free software, licensed under [GPLv3](https://github.com/sanger-pathogens/bio-rnaseq/blob/master/GPL-LICENSE).
+Bio-RNASeq is free software, licensed under [GPLv3](https://github.com/sanger-pathogens/Bio-RNASeq/blob/master/GPL-LICENCE).
 
 ## Feedback/Issues
 Please report any issues to the [issues page](https://github.com/sanger-pathogens/bio-rnaseq/issues) or email path-help@sanger.ac.uk
