@@ -16,8 +16,8 @@ install:
   - pushd R-3.4.0 && ./configure --with-readline=no --with-x --with-cairo --prefix=/usr && make && sudo make install && popd
   - sudo Rscript -e "source('http://bioconductor.org/biocLite.R')" -e "biocLite(c('DESeq'))"
   - wget https://github.com/samtools/samtools/archive/0.1.18.zip
-  - unzip samtools-0.1.18.zip
-  - pushd samtools-0.1.18 && make && popd
+  - unzip 0.1.18.zip
+  - pushd 0.1.18 && make && popd
   - wget https://github.com/samtools/samtools/releases/download/1.8/samtools-1.8.tar.bz2
   - tar -xjvf samtools-1.8.tar.bz2
   - pushd samtools-1.8 && ./configure && make && sudo make install && popd
@@ -27,7 +27,7 @@ install:
   - wget https://github.com/samtools/htslib/releases/download/1.8/htslib-1.8.tar.bz2
   - tar -xjvf htslib-1.8.tar.bz2
   - pushd htslib-1.8 && ./configure && make && sudo make install && popd
-  - export PATH=$PWD/samtools-1.8:$PWD/bcftools-1.8:$PWD/htslib-1.8:$PATH
+  - export PATH=$PWD/samtools-1.8:$PWD/bcftools-1.8:$PWD/htslib-1.8:$PWD/0.1.18:$PATH
 
 script:
   - "dzil authordeps --missing | cpanm --notest"
