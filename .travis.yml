@@ -17,7 +17,7 @@ install:
   - sudo Rscript -e "source('http://bioconductor.org/biocLite.R')" -e "biocLite(c('DESeq'))"
   - wget https://github.com/samtools/samtools/archive/0.1.18.zip
   - unzip 0.1.18.zip
-  - pushd 0.1.18 && make && popd
+  - pushd samtools-0.1.18 && make && popd
   - wget https://github.com/samtools/samtools/releases/download/1.8/samtools-1.8.tar.bz2
   - tar -xjvf samtools-1.8.tar.bz2
   - pushd samtools-1.8 && ./configure && make && sudo make install && popd
