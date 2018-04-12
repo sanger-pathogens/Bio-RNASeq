@@ -31,6 +31,7 @@ install:
   - export SAMTOOLS=$PWD/0.1.18
 
 script:
+  - "cpanm --notest Bio::Tools::GFF Inline::C IO::Capture::Stderr Test::Deep::NoTest"
   - "dzil authordeps --missing | cpanm --notest"
   - "dzil listdeps --missing | cpanm --notest"
   - "dzil test" 
