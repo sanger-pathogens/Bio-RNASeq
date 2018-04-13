@@ -4,6 +4,7 @@ sudo: true
 addons:
   apt:
     packages:
+    - libssl-dev
     - r-base 
     - r-base-dev
 
@@ -14,10 +15,11 @@ install:
   - wget https://cran.r-project.org/src/base/R-3/R-3.4.0.tar.gz 
   - tar -xvf R-3.4.0.tar.gz
   - pushd R-3.4.0 && ./configure --with-readline=no --with-x --with-cairo --prefix=/usr && make && sudo make install && popd
+  - sudo Rscript -e "install.packages(c('codetools'), repos='http://mirrors.ebi.ac.uk/CRAN/')"
   - sudo Rscript -e "source('http://bioconductor.org/biocLite.R')" -e "biocLite(c('DESeq'))"
   - wget https://github.com/samtools/samtools/archive/0.1.18.zip
   - unzip 0.1.18.zip
-  - pushd samtools-0.1.18 && make && popd
+  - pushd samtools-0.1.18 && sed -i 's!#-m64 #-arch ppc!-m64 -fPIC #-arch ppc"!' Makefile && make && popd
   - wget https://github.com/samtools/samtools/releases/download/1.8/samtools-1.8.tar.bz2
   - tar -xjvf samtools-1.8.tar.bz2
   - pushd samtools-1.8 && ./configure && make && sudo make install && popd
@@ -27,8 +29,7 @@ install:
   - wget https://github.com/samtools/htslib/releases/download/1.8/htslib-1.8.tar.bz2
   - tar -xjvf htslib-1.8.tar.bz2
   - pushd htslib-1.8 && ./configure && make && sudo make install && popd
-  - export PATH=$PWD/samtools-1.8:$PWD/bcftools-1.8:$PWD/htslib-1.8:$PWD/0.1.18:$PATH
-  - export SAMTOOLS=$PWD/0.1.18
+  - export SAMTOOLS=$PWD/samtools-0.1.18
 
 script:
   - "cpanm --notest Inline::C Inline::Filters"
