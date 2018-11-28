@@ -1,6 +1,7 @@
 # Bio-RNASeq
 Allows the analysis of RNA-Seq data from BAM files all the way to Differential Gene Expression.
 
+[![Build Status](https://travis-ci.org/sanger-pathogens/Bio-RNASeq.svg?branch=master)](https://travis-ci.org/sanger-pathogens/Bio-RNASeq)   
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-brightgreen.svg)](https://github.com/sanger-pathogens/Bio-RNASeq/blob/master/GPL-LICENCE)
 
 ## Content
