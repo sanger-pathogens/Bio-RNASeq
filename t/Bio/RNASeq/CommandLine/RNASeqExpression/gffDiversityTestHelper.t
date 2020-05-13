@@ -8,7 +8,6 @@ use File::Temp qw/ tempdir /;
 use Text::CSV;
 use Cwd;
 
-BEGIN { unshift( @INC, './lib' ) }
 BEGIN { unshift( @INC, './t/lib' ) }
 with 'gffTestHelper';
 

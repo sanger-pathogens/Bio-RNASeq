@@ -92,7 +92,10 @@ use Cwd qw(abs_path);
 use Inline C => Config => FILTERS => 'Strip_POD' =>
            INC => "-I$ENV{SAMTOOLS}" =>
            LIBS => "-L$ENV{SAMTOOLS} -lbam -lz" =>
-           CCFLAGS => '-D_IOLIB=2 -D_FILE_OFFSET_BITS=64';
+           CCFLAGS => '-D_IOLIB=2 -D_FILE_OFFSET_BITS=64' =>
+	   enable => 'UNTAINT' =>
+           DIRECTORY => $ENV{PERL_INLINE_DIRECTORY} =>
+           no_untaint_warn => 1;
 
 use base qw(Bio::RNASeq::VertRes::Parser::ParserI);
 

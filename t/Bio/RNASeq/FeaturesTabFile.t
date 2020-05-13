@@ -3,8 +3,6 @@ use strict;
 use warnings;
 use Data::Dumper;
 
-BEGIN { unshift(@INC, './lib') }
-
 BEGIN {
 	use Bio::RNASeq::GFF;
 	use Bio::RNASeq::IntergenicRegions;

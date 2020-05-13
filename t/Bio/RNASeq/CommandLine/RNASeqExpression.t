@@ -5,7 +5,6 @@ use File::Slurp;
 use File::Path qw( remove_tree);
 use Cwd;
 
-BEGIN { unshift( @INC, './lib' ) }
 BEGIN { unshift( @INC, './t/lib' ) }
 with 'TestHelper';
 

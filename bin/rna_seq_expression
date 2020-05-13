@@ -12,9 +12,6 @@ The BAM must be aligned to the same reference that the annotation refers to.
 
 =cut
 
-BEGIN { unshift( @INC, '../lib' ) }
-BEGIN { unshift( @INC, './lib' ) }
-BEGIN { unshift( @INC, '/software/pathogen/internal/prod/lib/' ) }
 use Bio::RNASeq::CommandLine::RNASeqExpression;
 
 Bio::RNASeq::CommandLine::RNASeqExpression->new(args => \@ARGV, script_name => $0)->run;

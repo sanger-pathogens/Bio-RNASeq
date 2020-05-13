@@ -10,9 +10,6 @@ use File::Temp qw/ tempdir /;
 use Text::CSV;
 use Cwd;
 
-BEGIN { unshift( @INC, './lib' ) }
-BEGIN { unshift( @INC, './t/lib' ) }
-
 BEGIN {
     use Bio::RNASeq::CommandLine::RNASeqExpression;
 }
@@ -262,4 +259,5 @@ sub parseExpressionResultsFile {
 
 }
 
+no Moose;
 1;

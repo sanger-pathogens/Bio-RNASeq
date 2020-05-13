@@ -149,4 +149,5 @@ sub mock_execute_script_and_check_multiple_file_output {
 
 }
 
+no Moose;
 1;

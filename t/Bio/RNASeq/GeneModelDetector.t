@@ -3,9 +3,6 @@ use Moose;
 use Data::Dumper;
 use Test::Most;
 
-BEGIN { unshift( @INC, './lib' ) }
-BEGIN { unshift( @INC, './t/lib' ) }
-
 BEGIN {
     use_ok("Bio::RNASeq::GeneModelDetector");
     use_ok("Bio::RNASeq::GeneModelHandlers::GeneModelHandler");

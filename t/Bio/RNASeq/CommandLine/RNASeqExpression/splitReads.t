@@ -3,7 +3,6 @@ use Moose;
 use Data::Dumper;
 use Test::Most;
 
-BEGIN { unshift( @INC, './lib' ) }
 BEGIN { unshift( @INC, './t/lib' ) }
 with 'gffTestHelper';
 

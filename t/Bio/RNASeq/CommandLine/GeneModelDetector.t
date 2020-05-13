@@ -6,7 +6,6 @@ use File::Path qw( remove_tree);
 use Cwd;
 use File::Temp;
 
-BEGIN { unshift( @INC, './lib' ) }
 BEGIN {
   use Test::Most;
   use Test::Output;
