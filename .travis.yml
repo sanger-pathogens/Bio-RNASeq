@@ -32,6 +32,8 @@ perl:
 - "5.30"
 install:
 - mkdir dependencies && cd dependencies
+- ls
+- ls ..
 - ../install_dependencies.sh ${SAMTOOLS_VERSION} ${TABIX_VERSION} ${SUBREAD_VERSION}
 - cd ..
 - export SAMTOOLS=/opt/samtools-${SAMTOOLS_VERSION}
