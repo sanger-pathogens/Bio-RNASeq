@@ -47,7 +47,7 @@ has 'minimum_intergenic_size'       => ( is => 'rw', isa => 'Int', default => 10
 has 'total_mapped_reads_gene_model' => ( is => 'rw', isa => 'Int', lazy => 1, default => 0 );
 
 has '_annotation_file' => ( is => 'rw', isa => 'Bio::RNASeq::GFF', lazy_build => 1 );
-has 'valid_run'        => ( is => 'rw', isa => 'Bool',             builder    => '_build__sequence_file' );
+has 'valid_run'        => ( is => 'rw', isa => 'Bool', lazy_build => 1, builder    => '_build__sequence_file' );
 has '_results_spreadsheet' => (
     is         => 'rw',
     isa        => 'Bio::RNASeq::ExpressionStatsSpreadsheet',
