@@ -31,11 +31,11 @@ addons:
 perl:
 - "5.30"
 install:
-- mkdir dependencies && cd dependencies
-- ls
-- ls ..
-- ../install_dependencies.sh ${SAMTOOLS_VERSION} ${TABIX_VERSION} ${SUBREAD_VERSION}
-- cd ..
+- mkdir dependencies
+- export SAMTOOLS_VERSION=0.1.19
+- export SUBREAD_VERSION=1.4.5-p1
+- export TABIX_VERSION=0.2.5
+- ./install_dependencies.sh $(pwd)/dependencies ${SAMTOOLS_VERSION} ${TABIX_VERSION} ${SUBREAD_VERSION}
 - export SAMTOOLS=/opt/samtools-${SAMTOOLS_VERSION}
 - export PATH=$(pwd)/dependencies/samtools-${SAMTOOLS_VERSION}:$(pwd)/dependencies/tabix-${TABIX_VERSION}:$(pwd)/dependencies/subread-${SUBREAD_VERSION}-Linux-x86_64/bin:$(pwd)/dependencies/subread-${SUBREAD_VERSION}-Linux-x86_64/bin/utilities:$PATH
 - export PERL_INLINE_DIRECTORY=$(pwd)/Inline
