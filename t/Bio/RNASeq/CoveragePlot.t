@@ -4,7 +4,6 @@ use warnings;
 use Data::Dumper;
 
 
-BEGIN { unshift(@INC, './lib') }
 BEGIN {
 
   use Test::Most;
